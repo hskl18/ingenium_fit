@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mgkf.mapper.FaqsMapper">
+    
+    <resultMap type="Faqs" id="FaqsResult">
+        <result property="id"    column="id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createDept"    column="create_dept"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="titleZh"    column="title_zh"    />
+        <result property="titleEn"    column="title_en"    />
+        <result property="contentZh"    column="content_zh"    />
+        <result property="contentEn"    column="content_en"    />
+        <result property="sort"    column="sort"    />
+        <result property="images"    column="images"    />
+    </resultMap>
+
+    <sql id="selectFaqsVo">
+        select id, del_flag, create_dept, create_by, create_time, update_by, update_time, title_zh, title_en, content_zh, content_en, sort, images from t_faqs
+    </sql>
+
+    <select id="selectFaqsList" parameterType="Faqs" resultMap="FaqsResult">
+        <include refid="selectFaqsVo"/>
+        <where>  
+            <if test="delFlag != null "> and del_flag = #{delFlag}</if>
+            <if test="delFlag == null "> and del_flag != 2</if>
+            <if test="titleZh != null  and titleZh != ''"> and title_zh like concat('%', #{titleZh}, '%')</if>
+            <if test="titleEn != null  and titleEn != ''"> and title_en like concat('%', #{titleEn}, '%')</if>
+            <if test="contentZh != null  and contentZh != ''"> and content_zh = #{contentZh}</if>
+            <if test="contentEn != null  and contentEn != ''"> and content_en = #{contentEn}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="searchKey != null and searchKey != ''">
+                and (title_zh like concat('%',#{searchKey},'%') or title_en like concat('%',#{searchKey},'%'))
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectFaqsById" parameterType="Long" resultMap="FaqsResult">
+        <include refid="selectFaqsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFaqs" parameterType="Faqs" useGeneratedKeys="true" keyProperty="id">
+        insert into t_faqs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createDept != null">create_dept,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="titleZh != null">title_zh,</if>
+            <if test="titleEn != null">title_en,</if>
+            <if test="contentZh != null">content_zh,</if>
+            <if test="contentEn != null">content_en,</if>
+            <if test="sort != null">sort,</if>
+            <if test="images != null">images,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createDept != null">#{createDept},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="titleZh != null">#{titleZh},</if>
+            <if test="titleEn != null">#{titleEn},</if>
+            <if test="contentZh != null">#{contentZh},</if>
+            <if test="contentEn != null">#{contentEn},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="images != null">#{images},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFaqs" parameterType="Faqs">
+        update t_faqs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createDept != null">create_dept = #{createDept},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="titleZh != null">title_zh = #{titleZh},</if>
+            <if test="titleEn != null">title_en = #{titleEn},</if>
+            <if test="contentZh != null">content_zh = #{contentZh},</if>
+            <if test="contentEn != null">content_en = #{contentEn},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="images != null">images = #{images},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFaqsById" parameterType="Long">
+        delete from t_faqs where id = #{id}
+    </delete>
+
+    <delete id="deleteFaqsByIds" parameterType="String">
+        delete from t_faqs where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

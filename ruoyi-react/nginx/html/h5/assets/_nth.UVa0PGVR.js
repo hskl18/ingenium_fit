@@ -1,0 +1,1 @@
+const t=Number.isInteger||function(t){return(t|0)===t};function r(t,r){var n,e=t<0?r.length+t:t;return n=r,"[object String]"===Object.prototype.toString.call(n)?r.charAt(e):r[e]}export{r as _,t as a};

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mgkf.mapper.ScienceMapper">
+
+    <resultMap type="Science" id="ScienceResult">
+        <result property="id" column="id"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDept" column="create_dept"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="scienceCategoryId" column="science_category_id"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="coverVideo" column="cover_video"/>
+        <result property="detailImages" column="detail_images"/>
+        <result property="detailVideos" column="detail_videos"/>
+        <result property="titleZh" column="title_zh"/>
+        <result property="titleEn" column="title_en"/>
+        <result property="contentZh" column="content_zh"/>
+        <result property="contentEn" column="content_en"/>
+        <result property="whetherRecommend" column="whether_recommend"/>
+        <result property="commentNum" column="comment_num"/>
+    </resultMap>
+
+    <sql id="selectScienceVo">
+        select id,
+               del_flag,
+               create_dept,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               science_category_id,
+               cover_image,
+               cover_video,
+               detail_images,
+               detail_videos,
+               title_zh,
+               title_en,
+               content_zh,
+               content_en,
+               whether_recommend,
+               comment_num
+        from t_science
+    </sql>
+
+    <select id="selectScienceList" parameterType="Science" resultMap="ScienceResult">
+        <include refid="selectScienceVo"/>
+        <where>
+            <if test="delFlag != null ">and del_flag = #{delFlag}</if>
+            <if test="delFlag == null ">and del_flag != 2</if>
+            <if test="scienceCategoryId != null ">and science_category_id = #{scienceCategoryId}</if>
+            <if test="coverImage != null  and coverImage != ''">and cover_image = #{coverImage}</if>
+            <if test="coverVideo != null  and coverVideo != ''">and cover_video = #{coverVideo}</if>
+            <if test="detailImages != null  and detailImages != ''">and detail_images = #{detailImages}</if>
+            <if test="detailVideos != null  and detailVideos != ''">and detail_videos = #{detailVideos}</if>
+            <if test="titleZh != null  and titleZh != ''">and title_zh like concat('%',#{titleZh},'%')</if>
+            <if test="titleEn != null  and titleEn != ''">and title_en like concat('%',#{titleEn},'%')</if>
+            <if test="contentZh != null  and contentZh != ''">and content_zh  = #{contentZh}</if>
+            <if test="contentEn != null  and contentEn != ''">and content_en = #{contentEn}</if>
+            <if test="whetherRecommend != null ">and whether_recommend = #{whetherRecommend}</if>
+            <if test="searchKey != null and searchKey != ''">
+                and (title_zh like concat('%',#{searchKey},'%') or title_en like concat('%',#{searchKey},'%'))
+            </if>
+            <if test="scienceIdList != null and scienceIdList.size() > 0">
+                AND id IN
+                <foreach item="scienceId" collection="scienceIdList" open="(" separator="," close=")">
+                    #{scienceId}
+                </foreach>
+            </if>
+            <if test="createStartTime != null">
+                and create_time >= #{createStartTime}
+            </if>
+            <if test="createEndTime != null">
+                and create_time <![CDATA[<=]]> #{createEndTime}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectScienceById" parameterType="Long" resultMap="ScienceResult">
+        <include refid="selectScienceVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM t_science WHERE del_flag != 2
+    </select>
+
+    <insert id="insertScience" parameterType="Science" useGeneratedKeys="true" keyProperty="id">
+        insert into t_science
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createDept != null">create_dept,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="scienceCategoryId != null">science_category_id,</if>
+            <if test="coverImage != null">cover_image,</if>
+            <if test="coverVideo != null">cover_video,</if>
+            <if test="detailImages != null">detail_images,</if>
+            <if test="detailVideos != null">detail_videos,</if>
+            <if test="titleZh != null">title_zh,</if>
+            <if test="titleEn != null">title_en,</if>
+            <if test="contentZh != null">content_zh,</if>
+            <if test="contentEn != null">content_en,</if>
+            <if test="whetherRecommend != null">whether_recommend,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createDept != null">#{createDept},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="scienceCategoryId != null">#{scienceCategoryId},</if>
+            <if test="coverImage != null">#{coverImage},</if>
+            <if test="coverVideo != null">#{coverVideo},</if>
+            <if test="detailImages != null">#{detailImages},</if>
+            <if test="detailVideos != null">#{detailVideos},</if>
+            <if test="titleZh != null">#{titleZh},</if>
+            <if test="titleEn != null">#{titleEn},</if>
+            <if test="contentZh != null">#{contentZh},</if>
+            <if test="contentEn != null">#{contentEn},</if>
+            <if test="whetherRecommend != null">#{whetherRecommend},</if>
+        </trim>
+    </insert>
+
+    <update id="updateScience" parameterType="Science">
+        update t_science
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createDept != null">create_dept = #{createDept},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="scienceCategoryId != null">science_category_id = #{scienceCategoryId},</if>
+            <if test="coverImage != null">cover_image = #{coverImage},</if>
+            <if test="coverVideo != null">cover_video = #{coverVideo},</if>
+            <if test="detailImages != null">detail_images = #{detailImages},</if>
+            <if test="detailVideos != null">detail_videos = #{detailVideos},</if>
+            <if test="titleZh != null">title_zh = #{titleZh},</if>
+            <if test="titleEn != null">title_en = #{titleEn},</if>
+            <if test="contentZh != null">content_zh = #{contentZh},</if>
+            <if test="contentEn != null">content_en = #{contentEn},</if>
+            <if test="whetherRecommend != null">whether_recommend = #{whetherRecommend},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateCommentNum">
+        update t_science
+        set comment_num = if(comment_num + #{commentNum} > 0, comment_num + #{commentNum}, 0)
+        where id = #{scienceId}
+    </update>
+
+    <delete id="deleteScienceById" parameterType="Long">
+        delete
+        from t_science
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteScienceByIds" parameterType="String">
+        delete from t_science where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mgkf.mapper.AppVersionMapper">
+    
+    <resultMap type="AppVersion" id="AppVersionResult">
+        <result property="id"    column="id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createDept"    column="create_dept"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="versionNo"    column="version_no"    />
+        <result property="isForce"    column="is_force"    />
+        <result property="url"    column="url"    />
+        <result property="appType"    column="app_type"    />
+        <result property="content"    column="content"    />
+        <result property="title"    column="title"    />
+        <result property="port"    column="port"    />
+    </resultMap>
+
+    <sql id="selectAppVersionVo">
+        select id, del_flag, create_dept, create_by, create_time, update_by, update_time, version_no, is_force, url, app_type, content, title, port from t_app_version
+    </sql>
+
+    <select id="selectAppVersionList" parameterType="AppVersion" resultMap="AppVersionResult">
+        <include refid="selectAppVersionVo"/>
+        <where>  
+            <if test="delFlag != null "> and del_flag = #{delFlag}</if>
+            <if test="delFlag == null "> and del_flag != 2</if>
+            <if test="versionNo != null  and versionNo != ''"> and version_no = #{versionNo}</if>
+            <if test="isForce != null "> and is_force = #{isForce}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="appType != null "> and app_type = #{appType}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="port != null "> and port = #{port}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectAppVersionById" parameterType="Long" resultMap="AppVersionResult">
+        <include refid="selectAppVersionVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLatestVersion" resultType="com.ruoyi.mgkf.domain.AppVersion">
+        SELECT * FROM t_app_version
+        WHERE del_flag = 1
+        ORDER BY version_no DESC
+        LIMIT 1
+    </select>
+
+    <insert id="insertAppVersion" parameterType="AppVersion" useGeneratedKeys="true" keyProperty="id">
+        insert into t_app_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createDept != null">create_dept,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="versionNo != null">version_no,</if>
+            <if test="isForce != null">is_force,</if>
+            <if test="url != null">url,</if>
+            <if test="appType != null">app_type,</if>
+            <if test="content != null">content,</if>
+            <if test="title != null">title,</if>
+            <if test="port != null">port,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createDept != null">#{createDept},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="versionNo != null">#{versionNo},</if>
+            <if test="isForce != null">#{isForce},</if>
+            <if test="url != null">#{url},</if>
+            <if test="appType != null">#{appType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="title != null">#{title},</if>
+            <if test="port != null">#{port},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAppVersion" parameterType="AppVersion">
+        update t_app_version
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createDept != null">create_dept = #{createDept},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="versionNo != null">version_no = #{versionNo},</if>
+            <if test="isForce != null">is_force = #{isForce},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="appType != null">app_type = #{appType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="port != null">port = #{port},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAppVersionById" parameterType="Long">
+        delete from t_app_version where id = #{id}
+    </delete>
+
+    <delete id="deleteAppVersionByIds" parameterType="String">
+        delete from t_app_version where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

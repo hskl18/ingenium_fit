@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mgkf.mapper.DoctorEducationalBackgroundMapper">
+
+    <resultMap type="DoctorEducationalBackground" id="DoctorEducationalBackgroundResult">
+        <result property="id" column="id"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDept" column="create_dept"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="qualificationZh" column="qualification_zh"/>
+        <result property="qualificationEn" column="qualification_en"/>
+    </resultMap>
+
+    <sql id="selectDoctorEducationalBackgroundVo">
+        select id,
+               del_flag,
+               create_dept,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               doctor_id,
+               start_time,
+               end_time,
+               qualification_zh,
+               qualification_en
+        from t_doctor_educational_background
+    </sql>
+
+    <select id="selectDoctorEducationalBackgroundList" parameterType="DoctorEducationalBackground"
+            resultMap="DoctorEducationalBackgroundResult">
+        <include refid="selectDoctorEducationalBackgroundVo"/>
+        <where>
+            <if test="delFlag != null ">and del_flag = #{delFlag}</if>
+            <if test="delFlag == null ">and del_flag != 2</if>
+            <if test="doctorId != null ">and doctor_id = #{doctorId}</if>
+            <if test="startTime != null  and startTime != ''">and start_time = #{startTime}</if>
+            <if test="endTime != null  and endTime != ''">and end_time = #{endTime}</if>
+            <if test="qualificationZh != null  and qualificationZh != ''">and qualification_zh = #{qualificationZh}</if>
+            <if test="qualificationEn != null  and qualificationEn != ''">and qualification_en = #{qualificationEn}</if>
+            <if test="doctorIdList != null and doctorIdList.size() > 0">
+                and doctor_id in
+                <foreach item="item" collection="doctorIdList" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectDoctorEducationalBackgroundById" parameterType="Long"
+            resultMap="DoctorEducationalBackgroundResult">
+        <include refid="selectDoctorEducationalBackgroundVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDoctorEducationalBackground" parameterType="DoctorEducationalBackground" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into t_doctor_educational_background
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createDept != null">create_dept,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="doctorId != null">doctor_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="qualificationZh != null">qualification_zh,</if>
+            <if test="qualificationEn != null">qualification_en,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createDept != null">#{createDept},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="qualificationZh != null">#{qualificationZh},</if>
+            <if test="qualificationEn != null">#{qualificationEn},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="DoctorEducationalBackground" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_doctor_educational_background
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list != null and list.size() > 0">
+                <if test="list[0].delFlag != null">del_flag,</if>
+                <if test="list[0].createDept != null">create_dept,</if>
+                <if test="list[0].createBy != null">create_by,</if>
+                <if test="list[0].createTime != null">create_time,</if>
+                <if test="list[0].updateBy != null">update_by,</if>
+                <if test="list[0].updateTime != null">update_time,</if>
+                <if test="list[0].doctorId != null">doctor_id,</if>
+                <if test="list[0].startTime != null">start_time,</if>
+                <if test="list[0].endTime != null">end_time,</if>
+                <if test="list[0].qualificationZh != null">qualification_zh,</if>
+                <if test="list[0].qualificationEn != null">qualification_en,</if>
+            </if>
+        </trim>
+        VALUES
+        <foreach collection="list"
+                 item="item"
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.delFlag != null">#{item.delFlag},</if>
+                <if test="item.createDept != null">#{item.createDept},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.doctorId != null">#{item.doctorId},</if>
+                <if test="item.startTime != null">#{item.startTime},</if>
+                <if test="item.endTime != null">#{item.endTime},</if>
+                <if test="item.qualificationZh != null">#{item.qualificationZh},</if>
+                <if test="item.qualificationEn != null">#{item.qualificationEn},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateDoctorEducationalBackground" parameterType="DoctorEducationalBackground">
+        update t_doctor_educational_background
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createDept != null">create_dept = #{createDept},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="qualificationZh != null">qualification_zh = #{qualificationZh},</if>
+            <if test="qualificationEn != null">qualification_en = #{qualificationEn},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateBatchById" parameterType="DoctorEducationalBackground">
+        <foreach collection="list" item="item" separator=";">
+                UPDATE t_doctor_educational_background
+                <trim prefix="SET" suffixOverrides=",">
+                    <if test="item.delFlag != null">del_flag = #{item.delFlag},</if>
+                    <if test="item.createDept != null">create_dept = #{item.createDept},</if>
+                    <if test="item.createBy != null">create_by = #{item.createBy},</if>
+                    <if test="item.createTime != null">create_time = #{item.createTime},</if>
+                    <if test="item.updateBy != null">update_by = #{item.updateBy},</if>
+                    <if test="item.updateTime != null">update_time = #{item.updateTime},</if>
+                    <if test="item.doctorId != null">doctor_id = #{item.doctorId},</if>
+                    <if test="item.startTime != null">start_time = #{item.startTime},</if>
+                    <if test="item.endTime != null">end_time = #{item.endTime},</if>
+                    <if test="item.qualificationZh != null">qualification_zh = #{item.qualificationZh},</if>
+                    <if test="item.qualificationEn != null">qualification_en = #{item.qualificationEn},</if>
+                </trim>
+                WHERE id = #{item.id}
+         </foreach>
+    </update>
+
+    <delete id="deleteDoctorEducationalBackgroundById" parameterType="Long">
+        delete
+        from t_doctor_educational_background
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteDoctorEducationalBackgroundByIds" parameterType="String">
+        delete from t_doctor_educational_background where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByDoctorIds">
+        delete from t_doctor_educational_background where doctor_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mgkf.mapper.LeaveWordMapper">
+    
+    <resultMap type="LeaveWord" id="LeaveWordResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createDept"    column="create_dept"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="userIds"    column="user_ids"    />
+    </resultMap>
+
+    <sql id="selectLeaveWordVo">
+        select id, create_by, create_time, update_by, update_time, create_dept, del_flag, user_ids from t_leave_word
+    </sql>
+
+    <select id="selectLeaveWordList" parameterType="LeaveWord" resultMap="LeaveWordResult">
+        <include refid="selectLeaveWordVo"/>
+        <where>  
+            <if test="delFlag != null "> and del_flag = #{delFlag}</if>
+            <if test="delFlag == null "> and del_flag != 2</if>
+            <if test="userIds != null  and userIds != ''"> and user_ids = #{userIds}</if>
+            <if test="userId != null">
+                and find_in_set(#{userId}, user_ids) > 0
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectLeaveWordById" parameterType="Long" resultMap="LeaveWordResult">
+        <include refid="selectLeaveWordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectUnReadNum" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM t_leave_word leaveWord
+                 INNER JOIN t_leave_word_sub leaveWordSub
+                            ON leaveWord.id = leaveWordSub.leave_word_id
+        WHERE leaveWord.del_flag = 1
+          AND leaveWordSub.del_flag = 1
+          AND FIND_IN_SET(#{userId}, leaveWord.user_ids) > 0
+          AND leaveWordSub.send_user_id != #{userId}
+          AND leaveWordSub.is_read = 2
+    </select>
+
+    <select id="selectLatestMessage" resultType="com.ruoyi.mgkf.domain.LeaveWordSub">
+        SELECT leaveWordSub.*
+        FROM t_leave_word leaveWord
+                 INNER JOIN t_leave_word_sub leaveWordSub
+                            ON leaveWord.id = leaveWordSub.leave_word_id
+        WHERE leaveWord.del_flag = 1
+          AND leaveWordSub.del_flag = 1
+          AND FIND_IN_SET(#{userId}, leaveWord.user_ids) > 0
+        ORDER BY leaveWordSub.create_time DESC
+        LIMIT 1
+    </select>
+
+    <insert id="insertLeaveWord" parameterType="LeaveWord" useGeneratedKeys="true" keyProperty="id">
+        insert into t_leave_word
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createDept != null">create_dept,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="userIds != null">user_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createDept != null">#{createDept},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="userIds != null">#{userIds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLeaveWord" parameterType="LeaveWord">
+        update t_leave_word
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createDept != null">create_dept = #{createDept},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="userIds != null">user_ids = #{userIds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLeaveWordById" parameterType="Long">
+        delete from t_leave_word where id = #{id}
+    </delete>
+
+    <delete id="deleteLeaveWordByIds" parameterType="String">
+        delete from t_leave_word where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

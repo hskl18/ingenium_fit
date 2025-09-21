@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mgkf.mapper.ScienceCategoryMapper">
+
+    <resultMap type="ScienceCategory" id="ScienceCategoryResult">
+        <result property="id" column="id"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDept" column="create_dept"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="nameZh" column="name_zh"/>
+        <result property="nameEn" column="name_en"/>
+        <result property="icon" column="icon"/>
+        <result property="sort" column="sort"/>
+    </resultMap>
+
+    <sql id="selectScienceCategoryVo">
+        select id,
+               del_flag,
+               create_dept,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               name_zh,
+               name_en,
+               icon,
+               sort
+        from t_science_category
+    </sql>
+
+    <select id="selectScienceCategoryList" parameterType="ScienceCategory" resultMap="ScienceCategoryResult">
+        <include refid="selectScienceCategoryVo"/>
+        <where>
+            <if test="delFlag != null ">and del_flag = #{delFlag}</if>
+            <if test="delFlag == null ">and del_flag != 2</if>
+            <if test="nameZh != null  and nameZh != ''">and name_zh like concat('%', #{nameZh}, '%')</if>
+            <if test="nameEn != null  and nameEn != ''">and name_en like concat('%', #{nameEn}, '%')</if>
+            <if test="name != null  and name != ''">and (name_zh like concat('%', #{name}, '%') or name_en like concat('%', #{name}, '%'))</if>
+            <if test="scienceCategoryIdList != null and scienceCategoryIdList.size() > 0">
+                and id in
+                <foreach item="id" collection="scienceCategoryIdList" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        order by sort, create_time desc
+    </select>
+
+    <select id="selectScienceCategoryById" parameterType="Long" resultMap="ScienceCategoryResult">
+        <include refid="selectScienceCategoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertScienceCategory" parameterType="ScienceCategory" useGeneratedKeys="true" keyProperty="id">
+        insert into t_science_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createDept != null">create_dept,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="nameZh != null">name_zh,</if>
+            <if test="nameEn != null">name_en,</if>
+            <if test="icon != null">icon,</if>
+            <if test="sort != null">sort,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createDept != null">#{createDept},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="nameZh != null">#{nameZh},</if>
+            <if test="nameEn != null">#{nameEn},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="sort != null">#{sort},</if>
+        </trim>
+    </insert>
+
+    <update id="updateScienceCategory" parameterType="ScienceCategory">
+        update t_science_category
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createDept != null">create_dept = #{createDept},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="nameZh != null">name_zh = #{nameZh},</if>
+            <if test="nameEn != null">name_en = #{nameEn},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="sort != null">sort = #{sort},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteScienceCategoryById" parameterType="Long">
+        delete
+        from t_science_category
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteScienceCategoryByIds" parameterType="String">
+        delete from t_science_category where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

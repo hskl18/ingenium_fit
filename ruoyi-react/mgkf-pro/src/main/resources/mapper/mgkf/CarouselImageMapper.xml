@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mgkf.mapper.CarouselImageMapper">
+
+    <resultMap type="CarouselImage" id="CarouselImageResult">
+        <result property="id" column="id"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDept" column="create_dept"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="image" column="image"/>
+        <result property="sort" column="sort"/>
+        <result property="type" column="type"/>
+        <result property="objectId" column="object_id"/>
+        <result property="contentZh" column="content_zh"/>
+        <result property="contentEn" column="content_en"/>
+    </resultMap>
+
+    <sql id="selectCarouselImageVo">
+        select id,
+               del_flag,
+               create_dept,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               image,
+               sort,
+               type,
+               object_id,
+               content_zh,
+               content_en
+        from t_carousel_image
+    </sql>
+
+    <select id="selectCarouselImageList" parameterType="CarouselImage" resultMap="CarouselImageResult">
+        <include refid="selectCarouselImageVo"/>
+        <where>
+            <if test="delFlag != null ">and del_flag = #{delFlag}</if>
+            <if test="delFlag == null ">and del_flag != 2</if>
+            <if test="image != null  and image != ''">and image = #{image}</if>
+            <if test="sort != null ">and sort = #{sort}</if>
+            <if test="type != null ">and type = #{type}</if>
+            <if test="objectId != null ">and object_id = #{objectId}</if>
+        </where>
+        order by sort, create_time desc
+    </select>
+
+    <select id="selectCarouselImageById" parameterType="Long" resultMap="CarouselImageResult">
+        <include refid="selectCarouselImageVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCarouselImage" parameterType="CarouselImage" useGeneratedKeys="true" keyProperty="id">
+        insert into t_carousel_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createDept != null">create_dept,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="image != null">image,</if>
+            <if test="sort != null">sort,</if>
+            <if test="type != null">type,</if>
+            <if test="objectId != null">object_id,</if>
+            <if test="contentZh != null">content_zh,</if>
+            <if test="contentEn != null">content_en,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createDept != null">#{createDept},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="image != null">#{image},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="type != null">#{type},</if>
+            <if test="objectId != null">#{objectId},</if>
+            <if test="contentZh != null">#{contentZh},</if>
+            <if test="contentEn != null">#{contentEn},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCarouselImage" parameterType="CarouselImage">
+        update t_carousel_image
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createDept != null">create_dept = #{createDept},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="objectId != null">object_id = #{objectId},</if>
+            <if test="contentZh != null">content_zh = #{contentZh},</if>
+            <if test="contentEn != null">content_en = #{contentEn},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCarouselImageById" parameterType="Long">
+        delete
+        from t_carousel_image
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteCarouselImageByIds" parameterType="String">
+        delete from t_carousel_image where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

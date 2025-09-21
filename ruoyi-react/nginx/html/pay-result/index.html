@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--强制浏览器以竖屏的布局来显示页面，缩放比例为1，最小缩放值为1，最大缩放值为1，用户缩放设置为不允许-->
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />-->
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="format-detection" content="telephone=no, email=no"/>
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+    <!-- uc强制竖屏 -->
+    <!--<meta name="screen-orientation" content="portrait">-->
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <!--<meta name="full-screen" content="yes">-->
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <!-- windows phone 点击无高光 -->
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <title>Order result</title>
+    <script type="text/javascript" src="./uni.webview.1.5.6.js"></script>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #F6F6F6;
+        }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 39px 15px 34px;
+            background: #fff;
+        }
+
+        .header-icon {
+            width: 169px;
+            height: 140px;
+            margin-bottom: 17px;
+        }
+
+        .header-text {
+            font-size: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 16px 15px;
+        }
+
+        .container-title {
+            margin-bottom: 12px;
+            font-size: 17px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .info {
+            padding: 3px 12px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 18px 0;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .info-item--left {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .btn-wrapper {
+            margin-top: 48px;
+        }
+
+        .btn-wrapper .btn {
+            width: 345px;
+            height: 46px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            background: #5087ef;
+            border: none;
+            border-radius: 46px;
+        }
+
+        .btn-wrapper .btn::after {
+            border: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="header flex">
+        <img class="header-icon w-338rpx h-280rpx mb-34rpx" src="./images/1086@2x.png"></img>
+        <div class="header-text text-40rpx text-#333 font-bold">Payment successful</div>
+    </div>
+
+    <div class="container">
+        <div class="container-title">Payment information</div>
+        <div class="info">
+            <div class="info-item">
+                <span>Amount</span>
+                <span class="info-item--left order-amount"></span>
+            </div>
+            <div class="info-item">
+                <span>Method</span>
+                <span class="info-item--left">PAyNow</span>
+            </div>
+        </div>
+
+        <div class="btn-wrapper">
+            <button id="btn" class="btn">
+                CHECK MY ORDER
+            </button>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const element = document.querySelector('.order-amount')
+    element.innerText = `SGD ${searchParams.get('orderAmount')}`
+
+    //监听js是否加载完毕，在页面加载完成 并且uni的集成方法加载完成后调用
+    document.addEventListener('UniAppJSBridgeReady', function () {
+        console.log('111')
+
+
+        document.getElementById('btn').addEventListener('click', function (evt) {
+            console.log(evt)
+            uni.redirectTo({
+                url: `/pages/order/detail/index?orderId=${searchParams.get('orderId')}`,
+            })
+        });
+    });
+
+
+</script>
+</body>
+</html>
