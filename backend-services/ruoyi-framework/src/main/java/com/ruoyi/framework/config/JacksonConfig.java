@@ -5,12 +5,13 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.ruoyi.framework.handler.BigDecimalToStringSerializer;
 import com.ruoyi.framework.handler.BigNumberSerializer;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,9 +24,10 @@ import java.util.TimeZone;
  *
  * @author Lion Li
  */
-@Slf4j
 @Configuration
 public class JacksonConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(JacksonConfig.class);
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer customizer() {

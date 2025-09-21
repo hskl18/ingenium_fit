@@ -69,6 +69,8 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
+.DS_Store
+
 # dotenv environment variable files
 .env
 .env.development.local
@@ -141,6 +143,9 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
+/.m2/
+backend-services/.m2/
+backend-services/logs/
 
 # Gradle
 .gradle
@@ -157,6 +162,17 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
+# pnpm store cache
+.pnpm-store/
+
+# macOS metadata
+**/.DS_Store
+
+# Editor backups
+*.swp
+*.swo
+*.orig
 
 # Eclipse
 .apt_generated

@@ -131,6 +131,43 @@ Ingenium Fit creates a unified digital rehabilitation ecosystem that:
 - **Backup**: Automated backup strategies
 - **Migration**: Flyway for version-controlled schema changes
 
+## ⚙️ Local Development
+
+### iOS Mobile App (macOS)
+
+1. Install prerequisites: Node.js ≥ 20, `pnpm` (v9+), Xcode 15+ with the iOS Simulator, and CocoaPods (`sudo gem install cocoapods`).
+2. Install JavaScript dependencies: `cd mobile-app && pnpm install`.
+3. Install native iOS pods once per machine: `pnpm pod-install` (or `cd ios && pod install`).
+4. Configure API access by duplicating `mobile-app/.env` to `.env.local` and pointing `API_URL` at your local backend (e.g. `http://localhost:8080/prod-api`).
+5. Start Metro in one terminal: `pnpm start`.
+6. In another terminal run the app: `pnpm ios -- --simulator "iPhone 17 Pro"`. You can also open `mobile-app/ios/kangfu_app.xcworkspace` in Xcode and run it directly. If the build complains about missing `.xcconfig` files, rerun step 3 to regenerate Pods support files.
+
+### Web Admin Dashboard (React)
+
+1. Ensure Node.js ≥ 18 and `pnpm` are available.
+2. Install dependencies: `cd admin-dashboard && pnpm install`.
+3. Point the development proxy at your backend by updating the `dev` targets in `admin-dashboard/config/proxy.ts` (switch the IPs to `http://localhost:8080`, `http://localhost:8080/app`, etc.). Add any API keys (e.g. Google Maps) to an `.env.local` if needed.
+4. Launch the admin console: `pnpm dev` (alias for `pnpm start`). The dashboard serves on `http://localhost:8000` and leverages the proxy you configured.
+
+### Java Backend Services (Spring Boot)
+
+1. Install prerequisites: JDK 17 (e.g. `brew install openjdk@17`), Maven 3.9+, MySQL 8+, and Redis (e.g. `brew install redis`).
+2. Set `JAVA_HOME` to the JDK 17 installation before running Maven (`export JAVA_HOME=/opt/homebrew/opt/openjdk@17`).
+3. Create a local database (default name `db_mgkf`) and import the schemas in `backend-services/sql/ry_react.sql` and `backend-services/sql/quartz.sql`. The following example assumes a local MySQL superuser:
+   
+   ```bash
+   mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS db_mgkf DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+   mysql -u root -p db_mgkf < backend-services/sql/ry_react.sql
+   mysql -u root -p db_mgkf < backend-services/sql/quartz.sql
+   # Optional: load sample data/patches
+   mysql -u root -p db_mgkf < backend-services/sql/20250908.sql
+   ```
+4. Update `backend-services/ruoyi-admin/src/main/resources/application-druid.yml` to use your local database URL, username, and password (the file contains commented localhost defaults you can restore). Ensure Redis host is set to `localhost` in `backend-services/ruoyi-admin/src/main/resources/application.yml` if you’re running it locally.
+5. From `backend-services/`, run `JAVA_HOME=/opt/homebrew/opt/openjdk@17 mvn -pl ruoyi-admin -am clean install -DskipTests -Dmaven.repo.local=./.m2` to build and install all modules into a local Maven repo.
+6. Start Redis (`brew services start redis` or `redis-server /opt/homebrew/etc/redis.conf`) and verify it responds with `redis-cli ping`.
+7. Launch the API layer: `JAVA_HOME=/opt/homebrew/opt/openjdk@17 mvn -pl ruoyi-admin spring-boot:run -Dmaven.repo.local=./.m2`. The service listens on `http://localhost:8080` and exposes the `/prod-api` routes consumed by the web and mobile apps. Logs are written to `backend-services/logs/`.
+8. Alternative: package a runnable jar with `JAVA_HOME=/opt/homebrew/opt/openjdk@17 mvn -pl ruoyi-admin -am package -DskipTests -Dmaven.repo.local=./.m2` and run it via `java -jar ruoyi-admin/target/ruoyi-admin.jar`.
+
 ## 📱 Mobile App Features
 
 ### Patient Experience
@@ -230,280 +267,3 @@ sys_logininfor: Login attempt tracking
 ### Prerequisites Installation
 
 #### System Requirements (macOS)
-
-```bash
-# Install Homebrew package manager
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Core development tools
-brew install node@20          # Node.js runtime
-brew install pnpm             # Fast package manager
-brew install openjdk@21       # Java development kit
-brew install mysql            # Database server
-brew install redis            # Caching server (optional)
-
-# React Native iOS development
-brew install cocoapods        # iOS dependency manager
-brew install watchman         # File watching service
-xcode-select --install        # Xcode command line tools
-
-# Configure Java environment
-echo 'export JAVA_HOME="/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home"' >> ~/.zshrc
-echo 'export PATH="$JAVA_HOME/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-
-# Verify installations
-node --version    # Should show v20.x.x
-java --version    # Should show 21.x.x
-mysql --version   # Should show 8.x.x
-```
-
-#### iOS Development Setup
-
-1. Install Xcode from Mac App Store (required for iOS Simulator)
-2. Accept Xcode License: `sudo xcodebuild -license accept`
-3. Install iOS Simulator (included with Xcode)
-4. Verify Setup: `xcrun simctl list devices`
-
-### Database Configuration
-
-#### MySQL Setup & Data Import
-
-```bash
-# Start MySQL service
-brew services start mysql
-
-# Create application database
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS db_mgkf CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-
-# Import database schema and seed data
-cd backend-services
-mysql -u root db_mgkf < sql/ry_react.sql      # Core schema and admin users
-mysql -u root db_mgkf < sql/quartz.sql        # Scheduler tables
-mysql -u root db_mgkf < sql/20250908.sql      # Application-specific updates
-
-# Verify database setup
-mysql -u root db_mgkf -e "SHOW TABLES; SELECT COUNT(*) as admin_users FROM sys_user;"
-```
-
-**Default Admin Credentials:**
-
-- Username: `admin` / Password: `admin123`
-- Username: `ry` / Password: `123456`
-
-### Backend Services Setup
-
-#### Build & Deploy Java Services
-
-```bash
-cd backend-services
-
-# Clean build all services
-mvn clean package -DskipTests
-
-# Verify successful build
-ls -la ruoyi-admin/target/ruoyi-admin.jar
-
-# Start the main service (includes both admin and rehab functionality)
-java -Dspring.profiles.active=dev -Dlogging.level.root=INFO -jar ruoyi-admin/target/ruoyi-admin.jar
-
-# Service will be available at:
-# - Admin API: http://localhost:8080
-# - Rehab API: http://localhost:8080/app/*
-# - Swagger UI: http://localhost:8080/swagger-ui.html
-```
-
-### Environment Configuration
-
-#### AWS S3 Setup (Required for File Uploads)
-
-```bash
-# 1. Copy environment templates
-cp admin-dashboard/.env.example admin-dashboard/.env
-cp mobile-app/.env.example mobile-app/.env
-
-# 2. Edit .env files with your AWS credentials
-# admin-dashboard/.env:
-REACT_APP_AWS_ACCESS_KEY_ID=your_aws_access_key_id
-REACT_APP_AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-REACT_APP_AWS_REGION=your_aws_region
-REACT_APP_AWS_BUCKET=your_bucket_name
-
-# mobile-app/.env:
-AWS_ACCESS_KEY_ID=your_aws_access_key_id
-AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-AWS_REGION=your_aws_region
-AWS_BUCKET=your_bucket_name
-```
-
-### Frontend Applications Setup
-
-#### Web Admin Dashboard
-
-```bash
-# Terminal 1: Admin Dashboard
-cd admin-dashboard
-pnpm install                    # Install dependencies
-pnpm start                      # Start development server
-
-# Dashboard available at: http://localhost:8000
-# Login with: admin/admin123
-```
-
-#### Mobile Application
-
-```bash
-# Terminal 2: Metro Bundler
-cd mobile-app
-pnpm install                    # Install JavaScript dependencies
-npx pod-install                 # Install iOS native dependencies
-pnpm start                      # Start Metro bundler (keep running)
-
-# Terminal 3: iOS Simulator
-cd mobile-app
-pnpm ios                        # Build and launch in iOS Simulator
-```
-
-**Mobile App Notes:**
-
-- Mobile app uses separate user registration (not the same as admin users)
-- Users must register a new account within the mobile app
-- Language can be switched to English in Profile → Language settings
-
-## 🔧 Development Workflow
-
-### Daily Development Routine
-
-#### Starting Development Environment
-
-```bash
-# 1. Start database
-brew services start mysql
-
-# 2. Start backend (Terminal 1)
-cd backend-services && java -jar ruoyi-admin/target/ruoyi-admin.jar
-
-# 3. Start admin dashboard (Terminal 2)
-cd admin-dashboard && pnpm start
-
-# 4. Start mobile Metro bundler (Terminal 3)
-cd mobile-app && pnpm start
-
-# 5. Launch iOS simulator (Terminal 4)
-cd mobile-app && pnpm ios
-```
-
-#### Development URLs
-
-- **Backend API**: http://localhost:8080
-- **Admin Dashboard**: http://localhost:8000
-- **API Documentation**: http://localhost:8080/swagger-ui.html
-- **Mobile App**: iOS Simulator
-
-### Testing Data Flow
-
-#### End-to-End Testing Scenario
-
-1. **Admin Dashboard**: Login → Create new rehabilitation content
-2. **Database**: Verify content stored in `t_science` table
-3. **Mobile App**: Refresh → Verify new content appears
-4. **Mobile App**: Register new user → Test community features
-5. **Admin Dashboard**: View user analytics and engagement metrics
-
-## 🐛 Troubleshooting Guide
-
-### Common Issues & Solutions
-
-#### Backend Issues
-
-```bash
-# Java build failures
-mvn clean package -DskipTests -X  # Verbose build output
-echo $JAVA_HOME                    # Verify Java path
-
-# Database connection errors
-mysql -u root -e "SELECT 1;"      # Test MySQL connection
-brew services restart mysql       # Restart MySQL service
-
-# Port conflicts
-lsof -ti:8080 | xargs kill -9     # Kill process on port 8080
-```
-
-#### Frontend Issues
-
-```bash
-# Admin dashboard build errors
-cd admin-dashboard
-rm -rf node_modules .umi
-pnpm install
-pnpm start
-
-# Mobile app Metro issues
-cd mobile-app
-npx react-native start --reset-cache
-rm -rf node_modules && pnpm install
-```
-
-#### iOS Simulator Issues
-
-```bash
-# Simulator not launching
-xcrun simctl list devices                    # List available simulators
-xcrun simctl boot [DEVICE_ID]              # Boot specific simulator
-xcrun simctl erase all                      # Reset all simulators
-
-# Build failures
-cd mobile-app/ios
-pod install --repo-update                   # Update CocoaPods
-```
-
-### Performance Optimization
-
-#### Development Performance Tips
-
-- Keep Metro bundler running between builds
-- Use `--reset-cache` only when necessary
-- Pre-warm iOS Simulator before development
-- Monitor system resources during multi-service development
-- Use console logging instead of file logging for backend during development
-
-## 📈 Future Roadmap
-
-### Planned Features
-
-- **Telemedicine Integration**: Video consultations with healthcare providers
-- **Wearable Device Support**: Integration with fitness trackers and health monitors
-- **AI-Powered Recommendations**: Machine learning for personalized therapy programs
-- **Multi-tenant Architecture**: Support for multiple healthcare organizations
-- **Advanced Analytics**: Predictive analytics for patient outcomes
-- **Mobile Web App**: Progressive Web App for broader device support
-
-### Technical Improvements
-
-- **Microservices Migration**: Full microservices architecture with Docker
-- **Cloud Deployment**: AWS/Azure deployment with auto-scaling
-- **Real-time Features**: WebSocket integration for live updates
-- **Enhanced Security**: OAuth 2.0, multi-factor authentication
-- **Performance Monitoring**: APM integration with detailed metrics
-- **Automated Testing**: Comprehensive test suite with CI/CD pipeline
-
-## 🤝 Contributing
-
-### Development Guidelines
-
-- Follow established code style and conventions
-- Write comprehensive tests for new features
-- Update documentation for API changes
-- Use semantic versioning for releases
-- Submit pull requests with detailed descriptions
-
-### Getting Help
-
-- Check troubleshooting guide for common issues
-- Review API documentation for backend integration
-- Consult component documentation for frontend development
-- Join development discussions for architecture decisions
-
----
-
-**Ingenium Fit** represents the future of digital healthcare, creating meaningful connections between patients, providers, and technology to improve rehabilitation outcomes and quality of life.

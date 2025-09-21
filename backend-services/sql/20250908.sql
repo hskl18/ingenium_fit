@@ -1,7 +1,7 @@
 alter table t_science
-    add comment_num int default 0 null comment '评论数量';
+    add comment_num int default 0 null comment 'Number of comments';
 alter table t_dynamics_post
-    add source_type tinyint default 2 null comment '来源：1-平台创建 2-用户创建';
+    add source_type tinyint default 2 null comment 'Source: 1 = platform created, 2 = user created';
 
 alter table t_leave_word_sub
-    add duration varchar(100) default null null comment '时长';
+    add duration varchar(100) default null null comment 'Duration';
