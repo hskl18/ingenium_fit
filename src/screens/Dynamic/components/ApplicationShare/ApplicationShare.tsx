@@ -1,4 +1,3 @@
-import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
@@ -39,9 +38,7 @@ export default function ApplicationShare({
 }: {
   readonly hideModal: () => void;
   readonly visible: boolean;
-}) {
-  const { t } = useTranslation();
-  const { backgrounds } = useTheme();
+}) {  const { backgrounds } = useTheme();
 
   const menus: Menu[] = [
     {

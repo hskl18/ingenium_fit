@@ -8,7 +8,6 @@ import {
 } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as React from "react";
-import { useTranslation } from "@/hooks";
 import {
   Animated,
   Dimensions,
@@ -61,9 +60,7 @@ import {
 export default function RehabilitationCenterDetail({
   route,
 }: RootScreenProps<Paths.RehabilitationCenterDetail>) {
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+  const navigation = useNavigation();  const { backgrounds, colors } = useTheme();
   const { id } = route.params;
   const progress = useSharedValue<number>(0);
   const [post, setPost] = useState({});
@@ -479,7 +476,7 @@ export default function RehabilitationCenterDetail({
             mode="contained"
             onPress={handleSend}
           >
-            {t("common.send")}
+            {"Send"}
           </Button>
         </View>
       </>

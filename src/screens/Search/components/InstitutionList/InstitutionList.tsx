@@ -1,23 +1,23 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useContext, useState } from 'react';
-import { useTranslation } from '@/hooks';
-import { StyleSheet, View } from 'react-native';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useContext, useState } from "react";
+import { useTranslation } from "@/hooks";
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import InstitutionItem from '@/components/common/InstitutionItem/InstitutionItem.tsx';
-import { SafeScreen } from '@/components/templates';
+import InstitutionItem from "@/components/common/InstitutionItem/InstitutionItem.tsx";
+import { SafeScreen } from "@/components/templates";
 
-import { rehabilitationCenterList } from '@/services';
-import { SearchContext } from '@/screens/Search/Search.tsx';
+import { rehabilitationCenterList } from "@/services";
+import { SearchContext } from "@/screens/Search/SearchContext";
 import Empty from "@/components/common/Empty/Empty.tsx";
-import { useLocationStore } from '@/store';
+import { useLocationStore } from "@/store";
 
 export default function RehabilitationCenterList() {
-  const { t } = useTranslation();
   const { backgrounds } = useTheme();
+  const { t } = useTranslation();
   const { searchKey } = useContext(SearchContext);
   const location = useLocationStore((state) => state.location);
 
@@ -45,7 +45,7 @@ export default function RehabilitationCenterList() {
         searchKey: searchKey,
       });
     },
-    queryKey: [Paths.Search, 'rehabilitationCenterList', searchKey,location],
+    queryKey: [Paths.Search, "rehabilitationCenterList", searchKey, location],
   });
 
   console.log(hasNextPage, data);
@@ -65,7 +65,7 @@ export default function RehabilitationCenterList() {
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
@@ -73,7 +73,7 @@ export default function RehabilitationCenterList() {
         data={dataList}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<Empty/>}
+        ListEmptyComponent={<Empty />}
         onEndReached={fetchNextPage}
       />
     </SafeScreen>
@@ -86,8 +86,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   safeScreen: {
-      flex:1,
-
+    flex: 1,
   },
   searchIcon: {
     height: 44,

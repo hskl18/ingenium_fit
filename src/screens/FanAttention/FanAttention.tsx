@@ -14,9 +14,7 @@ const Tab = createMaterialTopTabNavigator();
 export default function FanAttention({
   route,
 }: RootScreenProps<Paths.FanAttention>) {
-  const { name } = route.params;
-  const { t } = useTranslation();
-  return (
+  const { name } = route.params;  return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {

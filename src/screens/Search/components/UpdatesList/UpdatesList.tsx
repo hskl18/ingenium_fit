@@ -1,23 +1,23 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useContext, useState } from 'react';
-import { useTranslation } from '@/hooks';
-import { StyleSheet, View } from 'react-native';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useContext, useState } from "react";
+import { useTranslation } from "@/hooks";
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import DynamicItem from '@/components/common/DynamicItem/DynamicItem.tsx';
-import { SafeScreen } from '@/components/templates';
-import { SearchContext } from '@/screens/Search/Search.tsx';
+import DynamicItem from "@/components/common/DynamicItem/DynamicItem.tsx";
+import { SafeScreen } from "@/components/templates";
+import { SearchContext } from "@/screens/Search/SearchContext";
 
-import { postList } from '@/services';
+import { postList } from "@/services";
 import Empty from "@/components/common/Empty/Empty.tsx";
 
 export default function UpdatesList() {
-  const { t } = useTranslation();
   const { backgrounds } = useTheme();
+  const { t } = useTranslation();
   const { searchKey } = useContext(SearchContext);
   const queryClient = useQueryClient();
 
@@ -46,14 +46,14 @@ export default function UpdatesList() {
         searchKey,
       });
     },
-    queryKey: [Paths.Search, 'postList', searchKey],
+    queryKey: [Paths.Search, "postList", searchKey],
   });
-  const onRefresh = ()=> {
+  const onRefresh = () => {
     queryClient.refetchQueries({
-      queryKey: [Paths.Search, 'postList'],
-      type: 'active',
+      queryKey: [Paths.Search, "postList"],
+      type: "active",
     });
-  }
+  };
   console.log(hasNextPage, data);
 
   let dataList = [];
@@ -64,21 +64,21 @@ export default function UpdatesList() {
   const renderItem = ({ item, index }) => {
     return (
       <View key={item.id} style={{ marginTop: index > 0 ? 20 : 0 }}>
-        <DynamicItem item={item} onRefresh={onRefresh}/>
+        <DynamicItem item={item} onRefresh={onRefresh} />
       </View>
     );
   };
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
         contentContainerStyle={styles.container}
         data={dataList}
         renderItem={renderItem}
-        ListEmptyComponent={<Empty/>}
+        ListEmptyComponent={<Empty />}
         keyExtractor={(item) => item.id}
         onEndReached={fetchNextPage}
       />

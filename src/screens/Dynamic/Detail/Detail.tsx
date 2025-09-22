@@ -7,7 +7,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "@/hooks";
 import {
   Animated,
   Dimensions,
@@ -75,9 +74,7 @@ import * as React from "react";
 export default function DynamicDetail({
   route,
 }: RootScreenProps<Paths.DynamicDetail>) {
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+  const navigation = useNavigation();  const { backgrounds, colors } = useTheme();
   const { id } = route.params;
 
   const userInfo = useUserStore((state) => state.userInfo);
@@ -154,7 +151,7 @@ export default function DynamicDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        Toast.show(t("common.block_success"), {
+        Toast.show("Blocked successfully", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -179,7 +176,7 @@ export default function DynamicDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        Toast.show(t("common.delete_success"), {
+        Toast.show("Deleted successfully", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -281,7 +278,7 @@ export default function DynamicDetail({
                             },
                           ]}
                         >
-                          {t("common.delete")}
+                          {"Delete"}
                         </Text>
                       </ImageBackground>
                     </Pressable>
@@ -725,7 +722,7 @@ export default function DynamicDetail({
             mode="contained"
             onPress={handleSend}
           >
-            {t("common.send")}
+            {"Send"}
           </Button>
         </View>
       </>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useTranslation } from "@/hooks";
 import { StyleSheet, View } from "react-native";
 import { Text, Button } from "react-native-paper";
 import { useShallow } from "zustand/react/shallow";
@@ -16,9 +15,7 @@ export default function SelectLocation({
   route,
   navigation,
 }: RootScreenProps<Paths.SelectLocation>) {
-  const { source } = route.params;
-  const { t } = useTranslation();
-  const [location, setLocation] = useLocationStore(
+  const { source } = route.params;  const [location, setLocation] = useLocationStore(
     useShallow((state) => [state.location, state.setLocation])
   );
 
@@ -74,7 +71,7 @@ export default function SelectLocation({
     <View style={[styles.container, backgrounds.gray1600]}>
       <View style={styles.content}>
         <Text variant="headlineMedium" style={styles.title}>
-          {t("common.select_location")}
+          {"Select Location"}
         </Text>
         <Text variant="bodyLarge" style={styles.description}>
           Maps are not available on web. Please use the mobile app for full

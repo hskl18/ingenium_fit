@@ -2,7 +2,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useTranslation } from "@/hooks";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, Divider, TextInput } from "react-native-paper";
 
@@ -21,9 +20,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function ForgotPassword({
   navigation,
-}: RootScreenProps<Paths.ForgotPassword>) {
-  const { t } = useTranslation();
-  const { backgrounds, navigationTheme } = useTheme();
+}: RootScreenProps<Paths.ForgotPassword>) {  const { backgrounds, navigationTheme } = useTheme();
   const userInfo = useUserStore((state) => state.userInfo);
   const [isSend, setIsSend] = useState(0);
   const [parameters, setParameters] = useState({
@@ -47,11 +44,11 @@ export default function ForgotPassword({
   }, [isSend, setIsSend]);
 
   const FormSchema = z.object({
-    captcha: z.string().min(1, { message: t("message.verification_code") }),
-    loginPwd: z.string().min(1, { message: t("message.new_password") }),
+    captcha: z.string().min(1, { message: "Verification code is required" }),
+    loginPwd: z.string().min(1, { message: "New password is required" }),
     confirmNewPassword: z
       .string()
-      .min(1, { message: t("message.confirm_new_password") }),
+      .min(1, { message: "Confirm new password is required" }),
   });
 
   const checkForm = (): boolean => {
@@ -119,7 +116,7 @@ export default function ForgotPassword({
       // Invalidate and refetch
       if (response.code === 200) {
         console.log("验证码发送成功");
-        Toast.show(t("message.verification_code_sent_successfully"), {
+        Toast.show("Verification code sent successfully", {
           animation: true,
           delay: 0,
           duration: 500,
@@ -140,7 +137,7 @@ export default function ForgotPassword({
       // Invalidate and refetch
       if (response.code === 200) {
         console.log("验证码发送成功");
-        Toast.show(t("message.verification_code_sent_successfully"), {
+        Toast.show("Verification code sent successfully", {
           animation: true,
           delay: 0,
           duration: 500,
@@ -195,7 +192,7 @@ export default function ForgotPassword({
               <TextInput
                 maxLength={255}
                 label=""
-                placeholder={t("input.email_address")}
+                placeholder={"Enter your email address"}
                 readOnly
                 style={[backgrounds.gray1600]}
                 underlineColor="transparent"
@@ -210,7 +207,7 @@ export default function ForgotPassword({
                 onChangeText={(text) => {
                   handleUpdateParameters(text, "captcha");
                 }}
-                placeholder={t("input.verification_code")}
+                placeholder={"Enter verification code"}
                 style={[backgrounds.gray1600]}
                 underlineColor="transparent"
                 value={parameters.captcha}
@@ -230,7 +227,7 @@ export default function ForgotPassword({
                     onPress={handleSendCode}
                     textColor={navigationTheme.colors.tertiary}
                   >
-                    {t("common.send")}
+                    {"Send"}
                   </Button>
                 )}
               </View>
@@ -244,7 +241,7 @@ export default function ForgotPassword({
                 onChangeText={(text) => {
                   handleUpdateParameters(text, "loginPwd");
                 }}
-                placeholder={t("input.new_password")}
+                placeholder={"Enter new password"}
                 secureTextEntry
                 style={[backgrounds.gray1600]}
                 underlineColor="transparent"
@@ -261,7 +258,7 @@ export default function ForgotPassword({
                 onChangeText={(text) => {
                   handleUpdateParameters(text, "confirmNewPassword");
                 }}
-                placeholder={t("input.confirm_new_password")}
+                placeholder={"Confirm new password"}
                 secureTextEntry
                 style={[backgrounds.gray1600]}
                 textContentType="newPassword"
@@ -277,7 +274,7 @@ export default function ForgotPassword({
                 mode="contained"
                 onPress={handleSubmit}
               >
-                {t("common.confirm")}
+                {"Confirm"}
               </Button>
             </View>
           </View>

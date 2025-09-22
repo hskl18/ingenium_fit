@@ -1,9 +1,9 @@
-import { Image, ImageURISource, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
-import { useTranslation } from '@/hooks';
+import { Image, ImageURISource, StyleSheet, View } from "react-native";
+import { Text } from "react-native-paper";
+import { useTranslation } from "@/hooks";
 
-import NothingIcon from '@/assets/images/nothing.png';
-import { useTheme } from '@/theme';
+import NothingIcon from "@/assets/images/nothing.png";
+import { useTheme } from "@/theme";
 
 export default function Empty() {
   const { colors } = useTheme();
@@ -14,7 +14,9 @@ export default function Empty() {
         source={NothingIcon as ImageURISource}
         style={styles.nothingIcon}
       />
-      <Text style={{ ...styles.text, color: colors.gray800 }}>{t('common.no_data')}</Text>
+      <Text style={{ ...styles.text, color: colors.gray800 }}>
+        {t("common.no_data")}
+      </Text>
     </View>
   );
 }
@@ -22,7 +24,7 @@ export default function Empty() {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 60,
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
   },
   nothingIcon: {

@@ -45,9 +45,7 @@ type Menu = {
 
 export default function Profile({
   navigation,
-}: RootScreenProps<Paths.Profile>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.Profile>) {  const { backgrounds, colors } = useTheme();
   const [visibleLogOut, setVisibleLogOut] = useState(false);
   const [visibleSetLanguage, setVisibleSetLanguage] = useState(false);
   const [userProfile, setUserProfile] = useState({});

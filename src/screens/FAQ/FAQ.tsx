@@ -29,8 +29,6 @@ import Empty from '@/components/common/Empty/Empty.tsx';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
-  const { t } = useTranslation();
-
   const { backgrounds } = useTheme();
   const [activeSections, setActiveSections] = useState([]);
   const [searchKey, setSearchKey] = useState('');

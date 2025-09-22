@@ -1,5 +1,5 @@
-import type { Paths } from '@/navigation/paths';
-import type { StackScreenProps } from '@react-navigation/stack';
+import type { Paths } from "@/navigation/paths";
+import type { StackScreenProps } from "@react-navigation/stack";
 
 export type RootScreenProps<
   S extends keyof RootStackParamList = keyof RootStackParamList,
@@ -84,5 +84,7 @@ export type RootStackParamList = {
     id: string;
   };
   [Paths.Tabbar]: undefined;
-  [Paths.VerificationCode]: undefined;
+  [Paths.VerificationCode]: {
+    email?: string;
+  };
 };

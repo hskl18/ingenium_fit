@@ -2,7 +2,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
@@ -37,9 +36,7 @@ import AWSHelper from "@/services/mock/upload";
 export default function RehabilitationCenterDoctorEvaluate({
   navigation,
   route,
-}: RootScreenProps<Paths.RehabilitationCenterDoctorEvaluate>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterDoctorEvaluate>) {  const { backgrounds, colors } = useTheme();
   const { id, name, headImage } = route.params;
   const [images, setImages] = useState<string[]>([]);
   const [parameters, setParameters] = useState({

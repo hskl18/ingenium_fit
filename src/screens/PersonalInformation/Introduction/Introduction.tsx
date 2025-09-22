@@ -2,7 +2,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useTranslation } from "@/hooks";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-root-toast";
@@ -20,9 +19,7 @@ export function Introduction({
   navigation,
 }: RootScreenProps<Paths.Introduction>) {
   const userInfo = useUserStore((state) => state.userInfo);
-  const { backgrounds } = useTheme();
-  const { t } = useTranslation();
-  const [parameters, setParameters] = useState({
+  const { backgrounds } = useTheme();  const [parameters, setParameters] = useState({
     introduction: userInfo.introduction ?? "",
   });
 
@@ -64,7 +61,7 @@ export function Introduction({
         type: "active",
       });
       if (response.code === 200) {
-        Toast.show(t("common.save_success"), {
+        Toast.show("Saved successfully", {
           animation: true,
           delay: 0,
           duration: 1000,

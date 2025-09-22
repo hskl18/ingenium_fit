@@ -22,7 +22,6 @@ import LogoIocn from "@/assets/logo/logo.png";
 
 function Startup({ navigation }: RootScreenProps<Paths.Startup>) {
   const { fonts, gutters, layout } = useTheme();
-  const { t } = useTranslation();
 
   const { isError, isFetching, isSuccess } = useQuery({
     queryFn: () => {
@@ -78,7 +77,7 @@ function Startup({ navigation }: RootScreenProps<Paths.Startup>) {
           <ActivityIndicator size="large" style={[gutters.marginVertical_24]} />
         ) : undefined}
         {isError ? (
-          <Text style={[fonts.size_16, fonts.red500]}>{t("common_error")}</Text>
+          <Text style={[fonts.size_16, fonts.red500]}>{"An error occurred"}</Text>
         ) : undefined}
       </View>
     </SafeScreen>

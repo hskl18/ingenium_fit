@@ -38,7 +38,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function Dynamic({
   navigation,
 }: RootScreenProps<Paths.Dynamic>) {
-  const { t } = useTranslation();
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
   const [selectType, setSelectType] = useState(undefined);
   const [whetherRecommend, setWhetherRecommend] = useState(1);

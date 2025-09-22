@@ -31,7 +31,6 @@ export default function RehabilitationCenterSort({
 }) {
   const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
-  const { t } = useTranslation();
 
   // 排序方式：1-默认排序(默认) 2-距离排序 3-星级排序
   const [sort, setSort] = useState(sortBy || '');

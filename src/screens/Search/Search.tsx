@@ -43,12 +43,9 @@ import { Configs } from "@/common/configs.ts";
 import { termsList } from "@/services";
 import { useSearchStore } from "@/store";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SearchContext } from "./SearchContext";
 
 const Tab = createMaterialTopTabNavigator();
-
-export const SearchContext = createContext({
-  searchKey: "",
-});
 
 export default function Search({
   navigation,
@@ -155,7 +152,7 @@ export default function Search({
               style={styles.rightBtn}
             >
               <Text style={[styles.rightBtnText, { color: colors.gray1600 }]}>
-                {t("common.delete")}
+                {"Delete"}
               </Text>
             </Pressable>
           </View>

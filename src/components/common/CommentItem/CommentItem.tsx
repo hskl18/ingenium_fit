@@ -11,9 +11,7 @@ import { Pressable } from 'react-native-gesture-handler';
 
 export default function CommentItem({ item, onReply }: any) {
   const { backgrounds, colors } = useTheme();
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-  const replyList = item.userCommentReplyList || [];
+  const navigation = useNavigation();  const replyList = item.userCommentReplyList || [];
   console.log('replyList', replyList);
   return (
     <View>

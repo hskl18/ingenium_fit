@@ -30,8 +30,6 @@ export default function DynamicSort({
   readonly visible: boolean;
 }) {
   const { backgrounds } = useTheme();
-  const { t } = useTranslation();
-
   // 排序方式：1-点赞数 2-分享数
   const [sort, setSort] = useState(sortBy || '');
 

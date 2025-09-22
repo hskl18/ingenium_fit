@@ -17,9 +17,7 @@ import Empty from '@/components/common/Empty/Empty.tsx';
 export default function SciencePopularizationList({
   navigation,
   route,
-}: RootScreenProps<Paths.SciencePopularizationList>) {
-  const { t } = useTranslation();
-  const { backgrounds } = useTheme();
+}: RootScreenProps<Paths.SciencePopularizationList>) {  const { backgrounds } = useTheme();
   const {
     id,
     name,

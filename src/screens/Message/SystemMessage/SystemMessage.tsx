@@ -33,9 +33,7 @@ import Empty from '@/components/common/Empty/Empty.tsx';
 export default function SystemMessage({
   navigation,
 }: RootScreenProps<Paths.SystemMessage>) {
-  const { backgrounds, colors } = useTheme();
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
+  const { backgrounds, colors } = useTheme();  const queryClient = useQueryClient();
 
   const {
     isPending,

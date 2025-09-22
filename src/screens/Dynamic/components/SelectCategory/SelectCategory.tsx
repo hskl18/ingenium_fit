@@ -11,9 +11,7 @@ import { dynamicsCategoryList } from '@/services';
 import Empty from '@/components/common/Empty/Empty.tsx';
 import { useTranslation } from '@/hooks';
 
-export default function SelectCategory({ ref, onChange }) {
-  const { t } = useTranslation();
-  const [categoryList, setCategoryList] = useState([]);
+export default function SelectCategory({ ref, onChange }) {  const [categoryList, setCategoryList] = useState([]);
   const [value, setValue] = useState('');
   const [visible, setVisible] = useState(false);
   const { backgrounds, colors } = useTheme();

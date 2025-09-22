@@ -78,7 +78,6 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   const [carousels, setCarouses] = useState(pasadenaCarousels);
   const [message, setMessage] = useState({});
   const [leaveWord, setLeaveWord] = useState({});
-  const { t } = useTranslation();
   const progress = useSharedValue<number>(0);
   const [userInfo, setUserInfo] = useUserStore(
     useShallow((state) => [state.userInfo, state.setUserInfo]),

@@ -18,7 +18,6 @@ export default function DynamicList({
   route,
   navigation,
 }: RootScreenProps<Paths.DynamicList>) {
-  const { t } = useTranslation();
   const { backgrounds } = useTheme();
   const { selectType, whetherRecommend } = route.params;
   const queryClient = useQueryClient();

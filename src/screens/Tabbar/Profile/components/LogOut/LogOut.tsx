@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import { StyleSheet, View } from "react-native";
 import { Button, Modal, Portal, Text } from "react-native-paper";
 import Toast from "react-native-root-toast";
-import { useTranslation } from "@/hooks";
 
 import { Paths } from "@/navigation/paths.ts";
 import { useTheme } from "@/theme";
@@ -18,9 +17,7 @@ export default function LogOut({
 }: {
   readonly hideModal: () => void;
   readonly visible: boolean;
-}) {
-  const { t } = useTranslation();
-  const navigation = useNavigation();
+}) {  const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
   const containerStyle = {
     backgroundColor: "transparent",

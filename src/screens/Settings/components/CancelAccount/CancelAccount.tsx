@@ -26,9 +26,9 @@ export default function CancelAccount({
   readonly hideModal: () => void;
   readonly visible: boolean;
 }) {
-  const { t } = useTranslation();
   const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
+  const { t } = useTranslation();
   const containerStyle = {
     backgroundColor: "transparent",
     bottom: 0,

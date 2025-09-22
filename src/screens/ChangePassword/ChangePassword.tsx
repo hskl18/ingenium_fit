@@ -2,7 +2,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useTranslation } from "@/hooks";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, Divider, TextInput } from "react-native-paper";
 import Toast from "react-native-root-toast";
@@ -20,9 +19,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function Login({
   navigation,
-}: RootScreenProps<Paths.ChangePassword>) {
-  const { t } = useTranslation();
-  const { navigationTheme, backgrounds } = useTheme();
+}: RootScreenProps<Paths.ChangePassword>) {  const { navigationTheme, backgrounds } = useTheme();
 
   const [parameters, setParameters] = useState({
     oldPassword: "",
@@ -31,11 +28,11 @@ export default function Login({
   });
 
   const FormSchema = z.object({
-    oldPassword: z.string().min(1, { message: t("message.old_password") }),
-    newPassword: z.string().min(1, { message: t("message.new_password") }),
+    oldPassword: z.string().min(1, { message: "Old password is required" }),
+    newPassword: z.string().min(1, { message: "New password is required" }),
     confirmNewPassword: z
       .string()
-      .min(1, { message: t("message.confirm_new_password") }),
+      .min(1, { message: "Confirm new password is required" }),
   });
 
   const checkForm = (): boolean => {
@@ -70,7 +67,7 @@ export default function Login({
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
         storage.delete(Configs.Token);
-        Toast.show(t("common.password_change_success"), {
+        Toast.show("Password changed successfully", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -123,7 +120,7 @@ export default function Login({
                 onChangeText={(text) => {
                   handleUpdateParameters(text, "oldPassword");
                 }}
-                placeholder={t("input.old_password")}
+                placeholder={"Enter old password"}
                 secureTextEntry
                 style={[backgrounds.gray1600]}
                 textContentType="newPassword"
@@ -141,7 +138,7 @@ export default function Login({
                 onChangeText={(text) => {
                   handleUpdateParameters(text, "newPassword");
                 }}
-                placeholder={t("input.new_password")}
+                placeholder={"Enter new password"}
                 secureTextEntry
                 style={[backgrounds.gray1600]}
                 textContentType="newPassword"
@@ -159,7 +156,7 @@ export default function Login({
                 onChangeText={(text) => {
                   handleUpdateParameters(text, "confirmNewPassword");
                 }}
-                placeholder={t("input.confirm_new_password")}
+                placeholder={"Confirm new password"}
                 secureTextEntry
                 style={[backgrounds.gray1600]}
                 textContentType="newPassword"
@@ -176,7 +173,7 @@ export default function Login({
                 }}
                 textColor={navigationTheme.colors.primary}
               >
-                {t("login.forgot_password")}
+                {"Forgot Password"}
               </Button>
             </View>
             <View style={styles.buttonContainer}>
@@ -187,7 +184,7 @@ export default function Login({
                 mode="contained"
                 onPress={handleSubmit}
               >
-                {t("common.confirm")}
+                {"Confirm"}
               </Button>
             </View>
           </View>

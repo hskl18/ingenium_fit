@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { useTranslation } from "@/hooks";
 import { StyleSheet, View } from "react-native";
 import GooglePlacesTextInput from "react-native-google-places-textinput";
 import MapView, { Marker } from "react-native-maps";
@@ -16,9 +15,7 @@ export default function SelectLocation({
   route,
   navigation,
 }: RootScreenProps<Paths.SelectLocation>) {
-  const { source } = route.params;
-  const { t } = useTranslation();
-  const [location, setLocation] = useLocationStore(
+  const { source } = route.params;  const [location, setLocation] = useLocationStore(
     useShallow((state) => [state.location, state.setLocation])
   );
 
@@ -59,7 +56,7 @@ export default function SelectLocation({
         <GooglePlacesTextInput
           apiKey={Configs.GoogleApiKey}
           fetchDetails
-          placeHolderText={t("common.search_location")}
+          placeHolderText={"Search Location"}
           onPlaceSelect={handlePlaceSelect}
           style={{
             container: {},

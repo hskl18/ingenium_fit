@@ -5,6 +5,9 @@ export const useI18n = () => {
     changeLanguage: (lang: string) => {
       console.log("Language changed to:", lang);
     },
+    toggleLanguage: (lang: string) => {
+      console.log("Language toggled to:", lang);
+    },
   };
 };
 

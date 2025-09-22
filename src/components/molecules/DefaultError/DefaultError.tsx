@@ -11,9 +11,7 @@ type Properties = {
 };
 
 function DefaultErrorScreen({ onReset = undefined }: Properties) {
-  const { colors, fonts, gutters, layout } = useTheme();
-  const { t } = useTranslation();
-  const { resetBoundary } = useErrorBoundary();
+  const { colors, fonts, gutters, layout } = useTheme();  const { resetBoundary } = useErrorBoundary();
 
   return (
     <View

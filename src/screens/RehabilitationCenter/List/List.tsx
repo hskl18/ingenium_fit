@@ -24,9 +24,7 @@ import { useLocationStore } from '@/store';
 
 export default function RehabilitationCenterList({
   navigation,
-}: RootScreenProps<Paths.RehabilitationCenterList>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterList>) {  const { backgrounds, colors } = useTheme();
   const queryClient = useQueryClient();
   const location = useLocationStore((state) => state.location);
 

@@ -2,7 +2,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useTranslation } from "@/hooks";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import Toast from "react-native-root-toast";
@@ -20,9 +19,7 @@ export default function Nickname({
   navigation,
 }: RootScreenProps<Paths.Nickname>) {
   const userInfo = useUserStore((state) => state.userInfo);
-  const { backgrounds } = useTheme();
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
+  const { backgrounds } = useTheme();  const queryClient = useQueryClient();
   const [parameters, setParameters] = useState({
     nickName: userInfo.nickName ?? "",
   });
@@ -63,7 +60,7 @@ export default function Nickname({
           type: "active",
         });
 
-        Toast.show(t("common.save_success"), {
+        Toast.show("Saved successfully", {
           animation: true,
           delay: 0,
           duration: 1000,

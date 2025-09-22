@@ -70,9 +70,7 @@ export const renderComposer = (props) => (
   />
 );
 
-export const renderSend = (openToolbar) => {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+export const renderSend = (openToolbar) => {  const { backgrounds, colors } = useTheme();
   return (props) => (
     <View style={styles.sendContainer}>
       <Send

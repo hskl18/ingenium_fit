@@ -1,39 +1,34 @@
-import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Card, Text } from 'react-native-paper';
-import { useTranslation } from '@/hooks';
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { Button, Card, Text } from "react-native-paper";
+import { useTranslation } from "@/hooks";
 
-import { SafeScreen } from '@/components/templates';
-import { showcaseCtaCards, showcaseSections } from '@/data/showcaseContent';
-import { Paths } from '@/navigation/paths';
-import type { RootScreenProps } from '@/navigation/types';
-import { useTheme } from '@/theme';
+import { SafeScreen } from "@/components/templates";
+import { showcaseCtaCards, showcaseSections } from "@/data/showcaseContent";
+import { Paths } from "@/navigation/paths";
+import type { RootScreenProps } from "@/navigation/types";
+import { useTheme } from "@/theme";
 
 function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
   const { backgrounds, colors } = useTheme();
   const { t } = useTranslation();
-
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <ScrollView
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>{t('common.showcase_title')}</Text>
+        <Text style={styles.title}>{t("common.showcase_title")}</Text>
         <Text style={{ ...styles.subtitle, color: colors.gray500 }}>
-          {t('common.showcase_subtitle')}
+          {t("common.showcase_subtitle")}
         </Text>
 
         <View style={styles.ctaWrapper}>
           {showcaseCtaCards.map((card) => (
-            <Card
-              key={card.id}
-              mode="contained"
-              style={styles.ctaCard}
-            >
+            <Card key={card.id} mode="contained" style={styles.ctaCard}>
               <Card.Cover
                 source={{ uri: card.media }}
                 style={styles.cardCover}
@@ -105,7 +100,7 @@ function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
           }}
           style={styles.backButton}
         >
-          {t('common.showcase_cta')}
+          {t("common.showcase_cta")}
         </Button>
       </ScrollView>
     </SafeScreen>
@@ -114,18 +109,18 @@ function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
 
 const styles = StyleSheet.create({
   badge: {
-    backgroundColor: 'rgba(0, 119, 210, 0.12)',
+    backgroundColor: "rgba(0, 119, 210, 0.12)",
     borderRadius: 999,
-    color: '#0B3A64',
+    color: "#0B3A64",
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
   badgeRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
   },
   backButton: {
@@ -146,7 +141,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 16,
   },
   contentContainer: {
@@ -160,7 +155,7 @@ const styles = StyleSheet.create({
     minWidth: 220,
   },
   ctaWrapper: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 20,
     marginTop: 28,
   },
@@ -177,7 +172,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   sectionWrapper: {
     marginTop: 40,
@@ -189,7 +184,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: '700',
+    fontWeight: "700",
     lineHeight: 36,
   },
 });

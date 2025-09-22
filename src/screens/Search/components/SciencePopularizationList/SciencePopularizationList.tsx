@@ -1,23 +1,23 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useContext } from 'react';
-import { useTranslation } from '@/hooks';
-import { StyleSheet, View } from 'react-native';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useContext } from "react";
+import { useTranslation } from "@/hooks";
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import SciencePopularizationItem from '@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx';
-import { SafeScreen } from '@/components/templates';
-import { SearchContext } from '@/screens/Search/Search.tsx';
+import SciencePopularizationItem from "@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx";
+import { SafeScreen } from "@/components/templates";
+import { SearchContext } from "@/screens/Search/SearchContext";
 
-import { scienceList } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
+import { scienceList } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
 
 export default function SciencePopularizationList() {
-  const { t } = useTranslation();
   const { backgrounds } = useTheme();
+  const { t } = useTranslation();
   const { searchKey } = useContext(SearchContext);
 
   const {
@@ -43,7 +43,7 @@ export default function SciencePopularizationList() {
         searchKey,
       });
     },
-    queryKey: [Paths.Search, 'scienceList', searchKey],
+    queryKey: [Paths.Search, "scienceList", searchKey],
   });
 
   console.log(hasNextPage, data);
@@ -63,7 +63,7 @@ export default function SciencePopularizationList() {
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
@@ -92,11 +92,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   titleContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   titleText: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

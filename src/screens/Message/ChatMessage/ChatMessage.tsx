@@ -19,9 +19,7 @@ import { useTranslation } from '@/hooks';
 
 export default function ChatMessage({
   navigation,
-}: RootScreenProps<Paths.ChatMessage>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.ChatMessage>) {  const { backgrounds, colors } = useTheme();
   const queryClient = useQueryClient();
 
   useFocusEffect(

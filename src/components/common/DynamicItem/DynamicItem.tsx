@@ -16,7 +16,6 @@ try {
   VideoPlayer = ({ children, ...props }: any) => children;
 }
 import { Avatar, Card, Text } from "react-native-paper";
-import { useTranslation } from "@/hooks";
 import { useViewability, useViewabilityAmount } from "@legendapp/list";
 import { Paths } from "@/navigation/paths.ts";
 import { useTheme } from "@/theme";
@@ -58,8 +57,6 @@ export default function DynamicItem({
   const [visibleMenu, setVisibleMenu] = useState(false);
   const [paused, setPaused] = useState(true);
   const userInfo = useUserStore((state) => state.userInfo);
-  const { t } = useTranslation();
-
   const videoPlayerRef = useRef(null);
 
   const toggleOpenMenu = () => {
@@ -76,7 +73,7 @@ export default function DynamicItem({
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
         onRefresh();
-        Toast.show(t("common.block_success"), {
+        Toast.show("Blocked successfully", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -102,7 +99,7 @@ export default function DynamicItem({
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
         onRefresh();
-        Toast.show(t("common.delete_success"), {
+        Toast.show("Deleted successfully", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -197,7 +194,7 @@ export default function DynamicItem({
                         },
                       ]}
                     >
-                      {t("common.delete")}
+                      {"Delete"}
                     </Text>
                   </ImageBackground>
                 </Pressable>
@@ -220,7 +217,7 @@ export default function DynamicItem({
                         },
                       ]}
                     >
-                      {t("common.block")}
+                      {"Block"}
                     </Text>
                   </ImageBackground>
                 </Pressable>

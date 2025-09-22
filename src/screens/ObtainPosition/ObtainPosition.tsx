@@ -20,7 +20,6 @@ try {
   };
 }
 import { useEffect } from "react";
-import { useTranslation } from "@/hooks";
 import {
   PermissionsAndroid,
   Platform,
@@ -62,9 +61,7 @@ import Toast from "react-native-root-toast";
 
 export default function ObtainPosition({
   navigation,
-}: RootScreenProps<Paths.ObtainPosition>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors, navigationTheme } = useTheme();
+}: RootScreenProps<Paths.ObtainPosition>) {  const { backgrounds, colors, navigationTheme } = useTheme();
 
   const setLocation = useLocationStore((state) => state.setLocation);
   // useEffect(() => {
@@ -102,7 +99,7 @@ export default function ObtainPosition({
       "We need access to your location to provide accurate results and personalized services. Please enable location permissions in your device settings.",
       [
         {
-          text: t("common.cancel"),
+          text: "Cancel",
           style: "cancel",
         },
         {

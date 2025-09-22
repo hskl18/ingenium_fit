@@ -43,9 +43,7 @@ import GalleryPreview from 'react-native-gallery-preview';
 export function RehabilitationCenterDoctor({
   navigation,
   route,
-}: RootScreenProps<Paths.RehabilitationCenterDoctor>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterDoctor>) {  const { backgrounds, colors } = useTheme();
   const { id } = route.params;
   const progress = useSharedValue<number>(0);
   const [post, setPost] = useState({});

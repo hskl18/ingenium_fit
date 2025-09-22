@@ -11,7 +11,6 @@ import { useI18n } from "@/hooks";
 import { SupportedLanguages } from "@/hooks/language/schema.ts";
 import { useTheme } from "@/theme";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "@/hooks";
 import { storage } from "@/storage";
 import { Configs } from "@/common/configs.ts";
 
@@ -25,9 +24,7 @@ export default function SetLanguage({
 }: {
   readonly hideModal: () => void;
   readonly visible: boolean;
-}) {
-  const { t } = useTranslation();
-  const { toggleLanguage } = useI18n();
+}) {  const { toggleLanguage } = useI18n();
   const { backgrounds } = useTheme();
   const queryClient = useQueryClient();
 

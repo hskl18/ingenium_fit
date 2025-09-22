@@ -1,9 +1,9 @@
-import type { RootStackParamList } from '@/navigation/types';
-import { navigationRef } from '../RootNavigation';
-import { NavigationContainer } from '@react-navigation/native';
-import { PaperProvider } from 'react-native-paper';
-import { Paths } from '@/navigation/paths';
-import { useTheme } from '@/theme';
+import type { RootStackParamList } from "@/navigation/types";
+import { navigationRef } from "../RootNavigation";
+import { NavigationContainer } from "@react-navigation/native";
+import { PaperProvider } from "react-native-paper";
+import { Paths } from "@/navigation/paths";
+import { useTheme } from "@/theme";
 
 import {
   Agreement,
@@ -42,23 +42,22 @@ import {
   SystemMessageDetail,
   Tabbar,
   VerificationCode,
-} from '@/screens';
-import { useTranslation } from '@/hooks';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+} from "@/screens";
+import { useTranslation } from "@/hooks";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function ApplicationNavigator() {
   const { backgrounds, navigationTheme } = useTheme();
   const { t } = useTranslation();
-
   return (
     <PaperProvider theme={navigationTheme}>
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
         <Stack.Navigator
           initialRouteName={Paths.Startup}
           screenOptions={{
-            headerTitleAlign: 'center',
+            headerTitleAlign: "center",
           }}
         >
           <Stack.Screen
@@ -79,7 +78,7 @@ function ApplicationNavigator() {
             component={Search}
             name={Paths.Search}
             options={{
-              animation: 'fade_from_bottom',
+              animation: "fade_from_bottom",
               headerShown: false,
             }}
           />
@@ -87,12 +86,12 @@ function ApplicationNavigator() {
             component={Message}
             name={Paths.Message}
             options={{
-              animation: 'fade_from_bottom',
+              animation: "fade_from_bottom",
               headerShadowVisible: false,
               headerStyle: {
                 ...backgrounds.gray1600,
               },
-              headerTitle: t('title.message_notifications'),
+              headerTitle: t("title.message_notifications"),
             }}
           />
           <Stack.Screen
@@ -103,14 +102,14 @@ function ApplicationNavigator() {
               headerStyle: {
                 ...backgrounds.gray1600,
               },
-              headerTitle: '',
+              headerTitle: "",
             }}
           />
           <Stack.Screen
             component={ObtainPosition}
             name={Paths.ObtainPosition}
             options={{
-              animation: 'fade_from_bottom',
+              animation: "fade_from_bottom",
               headerShown: false,
             }}
           />
@@ -119,12 +118,12 @@ function ApplicationNavigator() {
             component={SelectLocation}
             name={Paths.SelectLocation}
             options={{
-              animation: 'fade_from_bottom',
+              animation: "fade_from_bottom",
               headerShadowVisible: false,
               headerStyle: {
                 ...backgrounds.gray1600,
               },
-              headerTitle: t('title.select_location'),
+              headerTitle: t("title.select_location"),
             }}
           />
 
@@ -138,7 +137,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
             <Stack.Screen
@@ -156,7 +155,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
             <Stack.Screen
@@ -167,7 +166,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
           </Stack.Group>
@@ -182,7 +181,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.rehabilitation_center'),
+                headerTitle: t("title.rehabilitation_center"),
               }}
             />
             <Stack.Screen
@@ -191,7 +190,7 @@ function ApplicationNavigator() {
               options={{
                 headerTransparent: true,
                 headerShadowVisible: false,
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
             <Stack.Screen
@@ -200,7 +199,7 @@ function ApplicationNavigator() {
               options={{
                 headerTransparent: true,
                 headerShadowVisible: false,
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
             <Stack.Screen
@@ -211,7 +210,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.evaluate_physician'),
+                headerTitle: t("title.evaluate_physician"),
               }}
             />
             <Stack.Screen
@@ -222,7 +221,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.evaluate'),
+                headerTitle: t("title.evaluate"),
               }}
             />
           </Stack.Group>
@@ -236,7 +235,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
             <Stack.Screen
@@ -245,7 +244,7 @@ function ApplicationNavigator() {
               options={{
                 headerTransparent: true,
                 headerShadowVisible: false,
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
           </Stack.Group>
@@ -260,7 +259,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.chat_message'),
+                headerTitle: t("title.chat_message"),
               }}
             />
             <Stack.Screen
@@ -271,7 +270,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
 
@@ -279,12 +278,12 @@ function ApplicationNavigator() {
               component={SystemMessage}
               name={Paths.SystemMessage}
               options={{
-                headerTitleAlign: 'left',
+                headerTitleAlign: "left",
                 headerShadowVisible: false,
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.system_message'),
+                headerTitle: t("title.system_message"),
               }}
             />
             <Stack.Screen
@@ -295,7 +294,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.detail'),
+                headerTitle: t("title.detail"),
               }}
             />
 
@@ -307,7 +306,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.detail'),
+                headerTitle: t("title.detail"),
               }}
             />
           </Stack.Group>
@@ -318,12 +317,12 @@ function ApplicationNavigator() {
               component={DynamicPublish}
               name={Paths.DynamicPublish}
               options={{
-                animation: 'fade_from_bottom',
+                animation: "fade_from_bottom",
                 headerShadowVisible: false,
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t('title.publish'),
+                headerTitle: t("title.publish"),
               }}
             />
             <Stack.Screen
@@ -334,7 +333,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
             <Stack.Screen
@@ -343,7 +342,7 @@ function ApplicationNavigator() {
               options={{
                 headerTransparent: true,
                 headerShadowVisible: false,
-                headerTitle: '',
+                headerTitle: "",
               }}
             />
           </Stack.Group>
@@ -361,71 +360,71 @@ function ApplicationNavigator() {
               component={MyUpdates}
               name={Paths.MyUpdates}
               options={{
-                headerTitle: t('title.my_updates'),
+                headerTitle: t("title.my_updates"),
               }}
             />
             <Stack.Screen
               component={PersonalInformation}
               name={Paths.PersonalInformation}
               options={{
-                animation: 'fade_from_bottom',
-                headerTitle: t('title.personal_information'),
+                animation: "fade_from_bottom",
+                headerTitle: t("title.personal_information"),
               }}
             />
             <Stack.Screen
               component={FAQ}
               name={Paths.FAQ}
               options={{
-                headerTitle: t('title.faq'),
+                headerTitle: t("title.faq"),
               }}
             />
             <Stack.Screen
               component={Settings}
               name={Paths.Settings}
               options={{
-                headerTitle: t('title.settings'),
+                headerTitle: t("title.settings"),
               }}
             />
             <Stack.Screen
               component={ChangePassword}
               name={Paths.ChangePassword}
               options={{
-                headerTitle: t('title.change_password'),
+                headerTitle: t("title.change_password"),
               }}
             />
             <Stack.Screen
               component={ForgotPassword}
               name={Paths.ForgotPassword}
               options={{
-                headerTitle: t('title.forgot_password'),
+                headerTitle: t("title.forgot_password"),
               }}
             />
             <Stack.Screen
               component={Collection}
               name={Paths.Collection}
               options={{
-                headerTitle: t('title.collection'),
+                headerTitle: t("title.collection"),
               }}
             />
             <Stack.Screen
               component={FanAttention}
               name={Paths.FanAttention}
               options={{
-                headerTitle: t('title.fans_follow'),
+                headerTitle: t("title.fans_follow"),
               }}
             />
             <Stack.Screen
               component={Nickname}
               name={Paths.Nickname}
               options={{
-                headerTitle: t('title.nickname'),
+                headerTitle: t("title.nickname"),
               }}
             />
             <Stack.Screen
               component={Introduction}
               name={Paths.Introduction}
               options={{
-                headerTitle: t('title.introduction'),
+                headerTitle: t("title.introduction"),
               }}
             />
           </Stack.Group>

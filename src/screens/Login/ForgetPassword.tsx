@@ -2,7 +2,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useEffect, useState } from "react";
-import { useTranslation } from "@/hooks";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 
@@ -18,9 +17,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function ForgetPassword({
   navigation,
-}: RootScreenProps<Paths.LoginForgetPassword>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors, navigationTheme } = useTheme();
+}: RootScreenProps<Paths.LoginForgetPassword>) {  const { backgrounds, colors, navigationTheme } = useTheme();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isSend, setIsSend] = useState(0);
 
@@ -46,9 +43,9 @@ export default function ForgetPassword({
   const EmailSchema = z
     .string()
     .min(1, {
-      message: t("message.email_address"),
+      message: "Email address is required",
     })
-    .pipe(z.email(t("message.email_address_incorrect")));
+    .pipe(z.email("Email address is incorrect"));
 
   const checkForm = (): boolean => {
     let FormSchema;
@@ -58,20 +55,20 @@ export default function ForgetPassword({
           account: EmailSchema,
           captcha: z
             .string()
-            .min(1, { message: t("message.verification_code") }),
-          loginPwd: z.string().min(1, { message: t("message.password") }),
+            .min(1, { message: "Verification code is required" }),
+          loginPwd: z.string().min(1, { message: "Password is required" }),
         });
         break;
       }
       case 1: {
         FormSchema = z.object({
           account: z.string().min(1, {
-            message: t("message.phone_number"),
+            message: "Phone number is required",
           }),
           captcha: z
             .string()
-            .min(1, { message: t("message.verification_code") }),
-          loginPwd: z.string().min(1, { message: t("message.password") }),
+            .min(1, { message: "Verification code is required" }),
+          loginPwd: z.string().min(1, { message: "Password is required" }),
         });
         break;
       }
@@ -112,7 +109,7 @@ export default function ForgetPassword({
       // Invalidate and refetch
       if (response.code === 200) {
         console.log("验证码发送成功");
-        Toast.show(t("message.verification_code_sent_successfully"), {
+        Toast.show("Verification code sent successfully", {
           animation: true,
           delay: 0,
           duration: 500,
@@ -133,7 +130,7 @@ export default function ForgetPassword({
       // Invalidate and refetch
       if (response.code === 200) {
         console.log("验证码发送成功");
-        Toast.show(t("message.verification_code_sent_successfully"), {
+        Toast.show("Verification code sent successfully", {
           animation: true,
           delay: 0,
           duration: 500,
@@ -153,7 +150,7 @@ export default function ForgetPassword({
     onSuccess: (response: IResponseData) => {
       console.log(response);
       if (response.code === 200) {
-        Toast.show(t("message.password_reset_successfully"), {
+        Toast.show("Password reset successfully", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -191,7 +188,7 @@ export default function ForgetPassword({
       });
     } else if (selectedIndex === 1) {
       if (!parameters.account) {
-        return Toast.show(t("message.phone_number"), {
+        return Toast.show("Phone number is required", {
           animation: true,
           delay: 0,
           duration: 500,
@@ -226,7 +223,7 @@ export default function ForgetPassword({
         <SafeScreen style={[styles.safeScreen, backgrounds.gray1600]}>
           <View style={styles.container}>
             <View style={styles.titleContainer}>
-              <Text style={styles.titleText}>{t("login.forgot_password")}</Text>
+              <Text style={styles.titleText}>{"Forgot Password"}</Text>
               <Text
                 style={[
                   styles.subtitleText,
@@ -235,7 +232,7 @@ export default function ForgetPassword({
                   },
                 ]}
               >
-                {t("login.forgot_password_subtitle")}
+                {"Enter your email or phone number to reset your password"}
               </Text>
             </View>
 
@@ -249,14 +246,14 @@ export default function ForgetPassword({
                   selectedIndex={selectedIndex}
                   sliderStyle={styles.segmentedControlSlider}
                   style={styles.segmentedControl}
-                  values={[t("common.email"), t("common.phone_number")]}
+                  values={["Email", "Phone Number"]}
                 />
               </View>
             </View>
             {selectedIndex === 0 ? (
               <View style={styles.inputContainer}>
                 <Text style={styles.labelText}>
-                  {t("common.email_address")}
+                  {"Email Address"}
                 </Text>
                 <TextInput
                   maxLength={255}
@@ -268,7 +265,7 @@ export default function ForgetPassword({
                   }}
                   outlineColor="transparent"
                   outlineStyle={styles.textInputOutline}
-                  placeholder={t("input.email_address")}
+                  placeholder={"Enter your email address"}
                   style={[backgrounds.gray50]}
                   underlineColor="transparent"
                   value={parameters.account}
@@ -276,7 +273,7 @@ export default function ForgetPassword({
               </View>
             ) : (
               <View style={styles.inputContainer}>
-                <Text style={styles.labelText}>{t("common.phone_number")}</Text>
+                <Text style={styles.labelText}>{"Phone Number"}</Text>
                 <TextInput
                   maxLength={40}
                   inputMode="numeric"
@@ -288,7 +285,7 @@ export default function ForgetPassword({
                   }}
                   outlineColor="transparent"
                   outlineStyle={styles.textInputOutline}
-                  placeholder={t("input.phone_number")}
+                  placeholder={"Enter your phone number"}
                   textContentType="telephoneNumber"
                   style={[backgrounds.gray50]}
                   underlineColor="transparent"
@@ -297,7 +294,7 @@ export default function ForgetPassword({
               </View>
             )}
             <View style={styles.inputContainer}>
-              <Text style={styles.labelText}>{t("common.verify_code")}</Text>
+              <Text style={styles.labelText}>{"Verification Code"}</Text>
               <View>
                 <TextInput
                   maxLength={6}
@@ -309,7 +306,7 @@ export default function ForgetPassword({
                   }}
                   outlineColor="transparent"
                   outlineStyle={styles.textInputOutline}
-                  placeholder={t("input.verification_code")}
+                  placeholder={"Enter verification code"}
                   style={[backgrounds.gray50]}
                   underlineColor="transparent"
                   value={parameters.captcha}
@@ -329,13 +326,13 @@ export default function ForgetPassword({
                       onPress={handleSendCode}
                       textColor={navigationTheme.colors.tertiary}
                     >
-                      {t("common.send")}
+                      {"Send"}
                     </Button>
                   )}
                 </View>
               </View>
               <View style={styles.inputContainer}>
-                <Text style={styles.labelText}>{t("common.password")}</Text>
+                <Text style={styles.labelText}>{"Password"}</Text>
                 <TextInput
                   maxLength={40}
                   activeUnderlineColor="transparent"
@@ -346,7 +343,7 @@ export default function ForgetPassword({
                   }}
                   outlineColor="transparent"
                   outlineStyle={styles.textInputOutline}
-                  placeholder={t("input.password")}
+                  placeholder={"Enter your password"}
                   style={[backgrounds.gray50]}
                   textContentType="password"
                   underlineColor="transparent"
@@ -363,7 +360,7 @@ export default function ForgetPassword({
                 mode="contained"
                 onPress={handleSubmit}
               >
-                {t("common.confirm")}
+                {"Confirm"}
               </Button>
             </View>
           </View>

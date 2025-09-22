@@ -17,7 +17,6 @@ export default function Agreement({
   navigation,
   route,
 }: RootScreenProps<Paths.Agreement>) {
-  const { t } = useTranslation();
   const { code } = route.params;
   const { backgrounds } = useTheme();
   const [agreement, setAgreement] = useState({});

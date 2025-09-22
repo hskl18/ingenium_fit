@@ -30,9 +30,7 @@ import { useFocusEffect } from '@react-navigation/native';
 export default function Message({
   navigation,
 }: RootScreenProps<Paths.Message>) {
-  const { backgrounds, colors } = useTheme();
-  const { t } = useTranslation();
-  const [message, setMessage] = useState({});
+  const { backgrounds, colors } = useTheme();  const [message, setMessage] = useState({});
   const [leaveWord, setLeaveWord] = useState({});
 
   const queryClient = useQueryClient();

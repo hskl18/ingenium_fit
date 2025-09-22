@@ -3,7 +3,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
@@ -46,9 +45,7 @@ import AWSHelper from "@/services/mock/upload";
 
 export default function DynamicPublish({
   navigation,
-}: RootScreenProps<Paths.DynamicPublish>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.DynamicPublish>) {  const { backgrounds, colors } = useTheme();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [pictures, setPictures] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);

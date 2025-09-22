@@ -49,8 +49,6 @@ export default function RehabilitationCenterFilter({
 }) {
   const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
-  const { t } = useTranslation();
-
   const [scopeScore, setScopeScore] = useState(score || {});
   const [scopeDistance, setScopeDistance] = useState(distance || {});
 

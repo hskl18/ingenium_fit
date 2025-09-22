@@ -12,9 +12,7 @@ import CollectFIcon from '@/assets/images/247.png';
 
 export default function InstitutionItem({ item }: any) {
   const { backgrounds, colors } = useTheme();
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-  return (
+  const navigation = useNavigation();  return (
     <Card
       onPress={() => {
         navigation.navigate(Paths.RehabilitationCenterDetail, {

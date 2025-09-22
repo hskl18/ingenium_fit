@@ -24,7 +24,6 @@ import Empty from "@/components/common/Empty/Empty.tsx";
 export default function FollowersList({
                                           route,
                                       }: RootScreenProps<Paths.FollowersList>) {
-    const { t } = useTranslation();
     const {backgrounds, colors} = useTheme();
     const navigation = useNavigation();
     const queryClient = useQueryClient();

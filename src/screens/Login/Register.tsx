@@ -6,7 +6,6 @@ import { usePreventRemove } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import { OTPInput, type SlotProps } from "input-otp-native";
 import { useEffect, useRef, useState } from "react";
-
 import {
   BackHandler,
   ScrollView,
@@ -66,33 +65,34 @@ export default function Register({
     lastName: "",
     loginPwd: "",
   });
+
   const EmailSchema = z
     .string()
     .min(1, {
-      message: t("message.email_address"),
+      message: "Email address is required",
     })
-    .pipe(z.email(t("message.email_address_incorrect")));
+    .pipe(z.email("Email address is incorrect"));
 
   const checkForm = (): boolean => {
     let FormSchema;
     switch (selectedIndex) {
       case 0: {
         FormSchema = z.object({
-          firstName: z.string().min(1, { message: t("message.first_name") }),
-          lastName: z.string().min(1, { message: t("message.last_name") }),
+          firstName: z.string().min(1, { message: "First name is required" }),
+          lastName: z.string().min(1, { message: "Last name is required" }),
           account: EmailSchema,
-          loginPwd: z.string().min(1, { message: t("message.password") }),
+          loginPwd: z.string().min(1, { message: "Password is required" }),
         });
         break;
       }
       case 1: {
         FormSchema = z.object({
-          firstName: z.string().min(1, { message: t("message.first_name") }),
-          lastName: z.string().min(1, { message: t("message.last_name") }),
+          firstName: z.string().min(1, { message: "First name is required" }),
+          lastName: z.string().min(1, { message: "Last name is required" }),
           account: z.string().min(1, {
-            message: t("message.phone_number"),
+            message: "Phone number is required",
           }),
-          loginPwd: z.string().min(1, { message: t("message.password") }),
+          loginPwd: z.string().min(1, { message: "Password is required" }),
         });
         break;
       }
@@ -118,7 +118,7 @@ export default function Register({
           shadow: true,
         });
     } else if (!isAgree) {
-      Toast.show(t("message.agree_agreement"), {
+      Toast.show("Please agree to the terms and conditions", {
         animation: true,
         delay: 0,
         duration: 1000,
@@ -169,10 +169,9 @@ export default function Register({
   const mutationEmailSmsCode = useMutation({
     mutationFn: sendEmailSmsCode,
     onSuccess: (response: IResponseData) => {
-      // Invalidate and refetch
       if (response.code === 200) {
         console.log("验证码发送成功");
-        Toast.show(t("message.verification_code_sent_successfully"), {
+        Toast.show("Verification code sent successfully", {
           animation: true,
           delay: 0,
           duration: 500,
@@ -190,10 +189,9 @@ export default function Register({
   const mutationPhoneSmsCode = useMutation({
     mutationFn: sendPhoneSmsCode,
     onSuccess: (response: IResponseData) => {
-      // Invalidate and refetch
       if (response.code === 200) {
         console.log("验证码发送成功");
-        Toast.show(t("message.verification_code_sent_successfully"), {
+        Toast.show("Verification code sent successfully", {
           animation: true,
           delay: 0,
           duration: 500,
@@ -213,7 +211,7 @@ export default function Register({
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
         storage.set(Configs.Token, response.data as string);
-        Toast.show(t("message.registered_successfully"), {
+        Toast.show("Registration successful!", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -259,20 +257,19 @@ export default function Register({
     if (selectedIndex === 0) {
       mutationEmailSmsCode.mutate({
         email: parameters.account,
-        // 短信类型：1-账号注册 2-忘记密码
         type: 1,
       });
     } else if (selectedIndex === 1) {
       mutationPhoneSmsCode.mutate({
         phone: parameters.account,
-        // 短信类型：1-账号注册 2-忘记密码
         type: 1,
       });
     }
   };
+
   const handleLogin = () => {
     if (!parameters.captcha) {
-      return Toast.show(t("message.verification_code"), {
+      return Toast.show("Verification code is required", {
         animation: true,
         delay: 0,
         duration: 1000,
@@ -290,7 +287,7 @@ export default function Register({
     return (
       <View style={styles.container}>
         <View style={styles.verificationTitleContainer}>
-          <Text style={styles.titleText}>{t("login.verification")}</Text>
+          <Text style={styles.titleText}>Verification</Text>
           <Text
             style={[
               styles.tipText,
@@ -299,7 +296,7 @@ export default function Register({
               },
             ]}
           >
-            {t("login.verification_subtitle")}
+            We've sent a verification code to
           </Text>
 
           <Text
@@ -333,7 +330,7 @@ export default function Register({
               mode="text"
               textColor={navigationTheme.colors.gray200}
             >
-              {t("common.resend")} {isSend}s
+              Resend {isSend}s
             </Button>
           ) : (
             <Button
@@ -341,7 +338,7 @@ export default function Register({
               onPress={handleSubmit}
               textColor={navigationTheme.colors.tertiary}
             >
-              {t("common.resend")}
+              Resend
             </Button>
           )}
         </View>
@@ -353,7 +350,7 @@ export default function Register({
             mode="contained"
             onPress={handleLogin}
           >
-            {t("login.verify")}
+            Verify
           </Button>
         </View>
       </View>
@@ -364,7 +361,7 @@ export default function Register({
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>{t("login.create_account")}</Text>
+          <Text style={styles.titleText}>Create Account</Text>
           <Text
             style={[
               styles.subtitleText,
@@ -373,7 +370,7 @@ export default function Register({
               },
             ]}
           >
-            {t("login.create_account_subtitle")}
+            Sign up to get started with your account
           </Text>
         </View>
 
@@ -387,11 +384,11 @@ export default function Register({
               selectedIndex={selectedIndex}
               sliderStyle={styles.segmentedControlSlider}
               style={styles.segmentedControl}
-              values={[t("common.email"), t("common.phone_number")]}
+              values={["Email", "Phone Number"]}
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.labelText}>{t("common.first_name")}</Text>
+            <Text style={styles.labelText}>First Name</Text>
 
             <TextInput
               maxLength={255}
@@ -403,14 +400,14 @@ export default function Register({
               }}
               outlineColor="transparent"
               outlineStyle={styles.textInputOutline}
-              placeholder={t("input.first_name")}
+              placeholder="Enter your first name"
               style={[backgrounds.gray50]}
               underlineColor="transparent"
               value={parameters.firstName}
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.labelText}>{t("common.last_name")}</Text>
+            <Text style={styles.labelText}>Last Name</Text>
             <TextInput
               maxLength={255}
               activeUnderlineColor="transparent"
@@ -421,7 +418,7 @@ export default function Register({
               }}
               outlineColor="transparent"
               outlineStyle={styles.textInputOutline}
-              placeholder={t("input.last_name")}
+              placeholder="Enter your last name"
               style={[backgrounds.gray50]}
               underlineColor="transparent"
               value={parameters.lastName}
@@ -429,7 +426,7 @@ export default function Register({
           </View>
           {selectedIndex === 0 ? (
             <View style={styles.inputContainer}>
-              <Text style={styles.labelText}>{t("common.email_address")}</Text>
+              <Text style={styles.labelText}>Email Address</Text>
               <TextInput
                 maxLength={255}
                 activeUnderlineColor="transparent"
@@ -440,7 +437,7 @@ export default function Register({
                 }}
                 outlineColor="transparent"
                 outlineStyle={styles.textInputOutline}
-                placeholder={t("input.email_address")}
+                placeholder="Enter your email address"
                 style={[backgrounds.gray50]}
                 underlineColor="transparent"
                 value={parameters.account}
@@ -448,7 +445,7 @@ export default function Register({
             </View>
           ) : (
             <View style={styles.inputContainer}>
-              <Text style={styles.labelText}>{t("common.phone_number")}</Text>
+              <Text style={styles.labelText}>Phone Number</Text>
               <TextInput
                 maxLength={40}
                 activeUnderlineColor="transparent"
@@ -460,7 +457,7 @@ export default function Register({
                 }}
                 outlineColor="transparent"
                 outlineStyle={styles.textInputOutline}
-                placeholder={t("input.phone_number")}
+                placeholder="Enter your phone number"
                 style={[backgrounds.gray50]}
                 textContentType="telephoneNumber"
                 underlineColor="transparent"
@@ -469,7 +466,7 @@ export default function Register({
             </View>
           )}
           <View style={styles.inputContainer}>
-            <Text style={styles.labelText}>{t("common.password")}</Text>
+            <Text style={styles.labelText}>Password</Text>
             <TextInput
               maxLength={40}
               activeUnderlineColor="transparent"
@@ -481,7 +478,7 @@ export default function Register({
               }}
               outlineColor="transparent"
               outlineStyle={styles.textInputOutline}
-              placeholder={t("input.password")}
+              placeholder="Enter your password"
               secureTextEntry
               style={[backgrounds.gray50]}
               textContentType="newPassword"
@@ -498,7 +495,7 @@ export default function Register({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t("login.register_button")}
+            Register
           </Button>
         </View>
 
@@ -510,7 +507,7 @@ export default function Register({
             size={20}
           />
           <Text>
-            {t("login.i_agree")}
+            I agree
             <Text
               onPress={() => {
                 navigation.push(Paths.Agreement, {
@@ -520,9 +517,9 @@ export default function Register({
               style={styles.linkText}
             >
               {" "}
-              {t("agreement.user_terms")}{" "}
+              User Terms{" "}
             </Text>
-            {t("common.and")}
+            and
             <Text
               onPress={() => {
                 navigation.push(Paths.Agreement, {
@@ -532,7 +529,7 @@ export default function Register({
               style={styles.linkText}
             >
               {" "}
-              {t("agreement.privacy_policy")}{" "}
+              Privacy Policy{" "}
             </Text>
           </Text>
         </View>

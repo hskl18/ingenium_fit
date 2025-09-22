@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useTranslation } from "@/hooks";
 import { Image, ImageURISource, StyleSheet, View } from "react-native";
 import { Avatar, Divider, Text } from "react-native-paper";
 import { useShallow } from "zustand/react/shallow";
@@ -34,27 +33,25 @@ type Menu = {
 
 export default function PersonalInformation({
   navigation,
-}: RootScreenProps<Paths.PersonalInformation>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.PersonalInformation>) {  const { backgrounds, colors } = useTheme();
 
   const menus: Menu[] = [
     {
       code: "nickname",
-      name: t("common.nickname"),
+      name: "Nickname",
       path: Paths.Nickname,
     },
     {
       code: "name",
-      name: t("common.name"),
+      name: "Name",
     },
     {
       code: "contactInformation",
-      name: t("common.contact"),
+      name: "Contact",
     },
     {
       code: "aboutUs",
-      name: t("common.introduction"),
+      name: "Introduction",
       path: Paths.Introduction,
     },
   ];
@@ -99,7 +96,7 @@ export default function PersonalInformation({
           type: "active",
         });
 
-        Toast.show(t("common.save_success"), {
+        Toast.show("Saved successfully", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -144,7 +141,7 @@ export default function PersonalInformation({
       <View style={styles.container}>
         <Pressable onPress={handleUploadImage}>
           <View style={[styles.menu, backgrounds.gray1600]}>
-            <Text style={styles.menuNameText}>{t("common.avatar")}</Text>
+            <Text style={styles.menuNameText}>{"Avatar"}</Text>
             <View style={styles.avatarWrapper}>
               <Avatar.Image
                 size={36}

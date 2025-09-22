@@ -22,7 +22,6 @@ import {followList, toggleFollow} from '@/services';
 import Empty from "@/components/common/Empty/Empty.tsx";
 
 export default function FollowingList() {
-    const { t } = useTranslation();
     const {backgrounds, colors} = useTheme();
     const navigation = useNavigation();
     const queryClient = useQueryClient();

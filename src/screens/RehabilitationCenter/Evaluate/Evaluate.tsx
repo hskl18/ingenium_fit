@@ -2,7 +2,6 @@ import type { RootScreenProps } from "@/navigation/types.ts";
 import { Rating } from "@kolking/react-native-rating";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
@@ -36,9 +35,7 @@ import AWSHelper from "@/services/mock/upload";
 export default function RehabilitationCenterEvaluate({
   navigation,
   route,
-}: RootScreenProps<Paths.RehabilitationCenterEvaluate>) {
-  const { t } = useTranslation();
-  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterEvaluate>) {  const { backgrounds, colors } = useTheme();
   const { id, name, coverImage } = route.params;
 
   console.log("id", id);
