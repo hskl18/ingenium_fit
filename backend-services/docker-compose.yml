@@ -1,8 +1,8 @@
 version: '3.8'
-# 声明要使用的外部网络
+# Declare the external network to use
 networks:
   docker_default:
-    external: true  # 表示该网络已存在，Compose 不会创建它
+    external: true  # Indicates the network already exists so Compose will not create it
 volumes:
   redis-data:
   mysql_data:
@@ -28,7 +28,7 @@ services:
     ports:
       - "81:80"
     volumes:
-      #       如果放开则必须在相对路径./nginx/html/dist下存在web资源
+      # Enable only when ./nginx/html/dist contains the web assets
       #      - ./nginx/html:/home/ziyuan/ruoyi-ui
       # - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       #      - ./nginx/conf/ssl:/etc/nginx/ssl

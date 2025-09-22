@@ -345,18 +345,21 @@ export default function RehabilitationCenterDetail({
         onLoadProgress={() => {
           console.log('loading…');
         }}
-        onMessage={(event) => {
-          console.log('event', event);
+        onMessage={({ nativeEvent }) => {
+          const messageData = nativeEvent?.data;
+
           setTimeout(() => {
-            const data = event.nativeEvent.data;
+            if (!messageData) {
+              return;
+            }
 
             // Handle the scrollHeight response
-            if (isNaN(Number.parseInt(data))) {
+            if (isNaN(Number.parseInt(messageData))) {
               // Open the embedded web browser if the user clicks a link instead of reloading content within
               // the webview itself
             } else {
               // If "data" is a number, we can use that the set the height of the webview dynamically
-              setSectionHeight(Number.parseInt(data));
+              setSectionHeight(Number.parseInt(messageData));
             }
           }, 100);
         }}
