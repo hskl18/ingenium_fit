@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { Image, ImageURISource, StyleSheet, View } from 'react-native';
 import { Avatar, Divider, Text } from 'react-native-paper';
 import { useShallow } from 'zustand/react/shallow';

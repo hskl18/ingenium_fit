@@ -12,7 +12,7 @@ import AudioIcon from '@/assets/images/234.png';
 import SendIcon from '@/assets/images/233.png';
 import { Text } from 'react-native-paper';
 import { useTheme } from '@/theme';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 export const renderInputToolbar = (props) => {
   const { selectImage, visibleToolbar } = props;

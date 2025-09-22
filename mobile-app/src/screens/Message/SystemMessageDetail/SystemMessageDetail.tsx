@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import {
   Image,
   ImageURISource,
+  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -73,20 +74,24 @@ export default function SystemMessageDetail({
            true;
         `}
           onMessage={(event) => {
-            console.log('event', event);
+            const payload = event?.nativeEvent?.data;
+            if (!payload) {
+              return;
+            }
 
-            setTimeout(()=>{
-              const data = event.nativeEvent.data;
+            const parsedHeight = Number.parseInt(payload, 10);
 
-              // Handle the scrollHeight response
-              if (!isNaN(parseInt(data))) {
-                // If "data" is a number, we can use that the set the height of the webview dynamically
-                setSectionHeight(parseInt(data));
-              } else {
-                // Open the embedded web browser if the user clicks a link instead of reloading content within
-                // the webview itself
+            if (Number.isNaN(parsedHeight)) {
+              const maybeUrl = payload.trim();
+              if (maybeUrl.startsWith('http')) {
+                Linking.openURL(maybeUrl).catch((error) =>
+                  console.warn('Failed to open system message link', error),
+                );
               }
-            },100)
+              return;
+            }
+
+            setSectionHeight(parsedHeight);
           }}
           originWhitelist={['*']}
           scalesPageToFit={Platform.OS === 'ios'}

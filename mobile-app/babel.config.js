@@ -1,20 +1,15 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
+  presets: ["module:@react-native/babel-preset"],
   plugins: [
     [
-      'module-resolver',
+      "module-resolver",
       {
         alias: {
-          '@': './src',
+          "@": "./src",
         },
-        extensions: ['.js', '.json'],
-        root: ['./src'],
+        extensions: [".js", ".json", ".ts", ".tsx"],
+        root: ["./src"],
       },
     ],
-    'inline-dotenv',
-    '@babel/plugin-transform-class-static-block',
-    '@babel/plugin-transform-export-namespace-from',
-    'react-native-worklets/plugin', // need to be the last plugin
   ],
-  presets: ['module:@react-native/babel-preset'],
 };

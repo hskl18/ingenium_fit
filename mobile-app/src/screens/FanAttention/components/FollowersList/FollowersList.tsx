@@ -8,7 +8,7 @@ import {
 import {Image, ImageURISource, StyleSheet, View} from 'react-native';
 import {Avatar, Button, Text, TouchableRipple} from 'react-native-paper';
 import {Pressable} from 'react-native-gesture-handler';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 import {Paths} from '@/navigation/paths.ts';
 import {RootScreenProps} from '@/navigation/types.ts';

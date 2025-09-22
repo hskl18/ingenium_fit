@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import {
   Image,
   ImageURISource,
+  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -61,22 +62,26 @@ export default function CarouselDetail({
           }, 100);
            true;
         `}
-          onMessage={(event) => {
-            console.log('event', event);
-            setTimeout(()=>{
-              const data = event.nativeEvent.data;
+        onMessage={(event) => {
+          const payload = event?.nativeEvent?.data;
+          if (!payload) {
+            return;
+          }
 
-              // Handle the scrollHeight response
-              if (!isNaN(parseInt(data))) {
-                // If "data" is a number, we can use that the set the height of the webview dynamically
-                setSectionHeight(parseInt(data));
-              } else {
-                // Open the embedded web browser if the user clicks a link instead of reloading content within
-                // the webview itself
-              }
-            },100)
+          const parsedHeight = Number.parseInt(payload, 10);
 
-          }}
+          if (Number.isNaN(parsedHeight)) {
+            const maybeUrl = payload.trim();
+            if (maybeUrl.startsWith('http')) {
+              Linking.openURL(maybeUrl).catch((error) =>
+                console.warn('Failed to open carousel link', error),
+              );
+            }
+            return;
+          }
+
+          setSectionHeight(parsedHeight);
+        }}
           originWhitelist={['*']}
           scalesPageToFit={Platform.OS === 'ios'}
           scrollEnabled={false}

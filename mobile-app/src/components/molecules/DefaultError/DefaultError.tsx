@@ -1,5 +1,5 @@
 import { useErrorBoundary } from 'react-error-boundary';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';

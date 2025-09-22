@@ -7,11 +7,12 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import {
   Dimensions,
   Image,
   ImageURISource,
+  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -243,19 +244,25 @@ export default function RehabilitationCenterDetail({
           console.log('loading…');
         }}
         onMessage={(event) => {
-          console.log('event', event);
-          setTimeout(() => {
-            const data = event.nativeEvent.data;
+          const payload = event?.nativeEvent?.data;
+          if (!payload) {
+            return;
+          }
 
-            // Handle the scrollHeight response
-            if (isNaN(Number.parseInt(data))) {
-              // Open the embedded web browser if the user clicks a link instead of reloading content within
-              // the webview itself
-            } else {
-              // If "data" is a number, we can use that the set the height of the webview dynamically
-              setSectionHeight(Number.parseInt(data));
+          const parsedHeight = Number.parseInt(payload, 10);
+
+          if (Number.isNaN(parsedHeight)) {
+            // Non-numeric payloads are link clicks; treat them as external URLs.
+            const maybeUrl = payload.trim();
+            if (maybeUrl.startsWith('http')) {
+              Linking.openURL(maybeUrl).catch((error) =>
+                console.warn('Failed to open link from webview payload', error),
+              );
             }
-          }, 100);
+            return;
+          }
+
+          setSectionHeight(parsedHeight);
         }}
         originWhitelist={['*']}
         overScrollMode="never"

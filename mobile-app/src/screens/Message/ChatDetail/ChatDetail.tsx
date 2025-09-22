@@ -53,7 +53,7 @@ import {
   renderCustomView,
 } from './components/MessageContainer';
 import { SafeScreen } from '@/components/templates';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import Toast from 'react-native-root-toast';
 import AWSHelper from '@/utils/upload.ts';
 const { width } = Dimensions.get('window');

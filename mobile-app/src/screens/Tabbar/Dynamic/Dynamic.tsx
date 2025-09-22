@@ -7,7 +7,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import {
   Image,
   ImageURISource,
@@ -186,26 +186,48 @@ export default function Dynamic({
             },
           ]}
         >
-          <View style={styles.titleWrapper}>
-            <Text style={styles.titleText}>{t('common.activity')}</Text>
-            <Pressable
+          <View style={styles.heroWrapper}>
+            <Text style={styles.heroBadge}>{t('common.community_badge')}</Text>
+            <Text style={styles.titleText}>
+              {t('common.community_feed_title')}
+            </Text>
+            <Text
+              style={{ ...styles.heroSubtitle, color: colors.gray500 }}
+            >
+              {t('common.community_feed_subtitle')}
+            </Text>
+            <Button
+              accessibilityLabel={t('common.share_progress')}
+              contentStyle={styles.publishButtonContent}
+              icon={() => (
+                <Image
+                  alt="publish-icon"
+                  source={EditIcon as ImageURISource}
+                  style={styles.publishButtonIcon}
+                />
+              )}
+              labelStyle={styles.publishButtonLabel}
+              mode="contained"
               onPress={() => {
                 navigation.navigate(Paths.DynamicPublish);
               }}
+              style={styles.publishButton}
+              uppercase={false}
             >
-              <Image
-                alt="edit-icon"
-                source={EditIcon as ImageURISource}
-                style={styles.editIcon}
-              />
-            </Pressable>
+              {t('common.share_progress')}
+            </Button>
           </View>
           {categoryList.length > 0 ? (
-            <TabMenu
-              tabs={categoryList}
-              tabIndex={selectedIndex}
-              setTabIndex={setSelectedIndex}
-            />
+            <>
+              <Text style={{ ...styles.topicIntro, color: colors.gray500 }}>
+                {t('common.community_topics_intro')}
+              </Text>
+              <TabMenu
+                tabs={categoryList}
+                tabIndex={selectedIndex}
+                setTabIndex={setSelectedIndex}
+              />
+            </>
           ) : undefined}
         </View>
         <View style={styles.container}>
@@ -213,7 +235,7 @@ export default function Dynamic({
             <>
               <View style={styles.friendUpdatesTitleWrapper}>
                 <Text style={styles.friendUpdatesTitle}>
-                  {t('common.friend_updates')}
+                  {t('common.peer_spotlights')}
                 </Text>
                 <Button
                   mode="text"
@@ -309,10 +331,6 @@ export default function Dynamic({
 
 const styles = StyleSheet.create({
   container: { paddingTop: 38, paddingHorizontal: 20 },
-  editIcon: {
-    height: 44,
-    width: 44,
-  },
   filterIcon: {
     height: 16,
     width: 16,
@@ -327,23 +345,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#E3EFF8',
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
-    paddingBottom: 18,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
   },
   safeScreen: {
     flex: 1,
+  },
+  heroWrapper: {
+    paddingTop: 12,
+  },
+  heroBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(0, 119, 210, 0.14)',
+    borderRadius: 999,
+    color: '#0B3A64',
+    fontSize: 12,
+    fontWeight: '600',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   titleText: {
     fontSize: 28,
     fontWeight: 'bold',
     lineHeight: 28,
+    marginTop: 16,
+    color: '#0B2340',
   },
-  titleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-    marginTop: 13,
-    paddingHorizontal: 20,
+  heroSubtitle: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 10,
+  },
+  publishButton: {
+    alignSelf: 'flex-start',
+    borderRadius: 12,
+    marginTop: 18,
+  },
+  publishButtonContent: {
+    paddingHorizontal: 18,
+    paddingVertical: 4,
+  },
+  publishButtonLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+  publishButtonIcon: {
+    height: 18,
+    marginRight: 4,
+    width: 18,
   },
   updates: {
     columnGap: 15,
@@ -365,5 +415,11 @@ const styles = StyleSheet.create({
   updatesTitleWrapperLeft: {
     flexDirection: 'row',
     gap: 30,
+  },
+  topicIntro: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 16,
+    marginTop: 24,
   },
 });

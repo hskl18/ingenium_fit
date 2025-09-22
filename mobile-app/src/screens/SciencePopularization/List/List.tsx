@@ -1,6 +1,6 @@
 import { LegendList } from '@legendapp/list';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { StyleSheet, View } from 'react-native';
 
 import { Paths } from '@/navigation/paths.ts';

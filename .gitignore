@@ -393,9 +393,6 @@ application-*.properties
 # Redis dump file
 dump.rdb
 
-# Elasticsearch
-data/
-
 # Generated files
 generated/
 auto-generated/

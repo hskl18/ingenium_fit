@@ -14,7 +14,7 @@ import HomeIcon from '@/assets/tabbar/38.png';
 import DynamicFIcon from '@/assets/tabbar/39.png';
 import ProfileIcon from '@/assets/tabbar/40.png';
 import ProfileFIcon from '@/assets/tabbar/68.png';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 const Tab = createBottomTabNavigator();
 

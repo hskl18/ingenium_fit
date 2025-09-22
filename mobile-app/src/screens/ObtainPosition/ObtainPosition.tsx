@@ -2,7 +2,7 @@ import type { RootScreenProps } from '@/navigation/types.ts';
 
 import Geolocation from '@react-native-community/geolocation';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import {
   PermissionsAndroid,
   Platform,

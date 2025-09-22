@@ -7,7 +7,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import {
   Dimensions,
   Image,
@@ -16,7 +16,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
@@ -38,6 +37,9 @@ import MessageIcon from '@/assets/images/18.png';
 import SearchIcon from '@/assets/images/19.png';
 
 import {
+  navigatorQuickActions,
+  navigatorSpotlights,
+  navigatorWorkflow,
   pasadenaCarousels,
   pasadenaCategories,
   pasadenaCommunityHighlights,
@@ -321,12 +323,19 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     queryKey: [Paths.Home, 'refresh', 'rehabilitationCenterList', location],
   });
 
+  const openExternalLink = (url?: string) => {
+    if (!url) {
+      return;
+    }
+    Linking.openURL(url).catch((error) =>
+      console.warn('Failed to open link', error),
+    );
+  };
+
   const handleCarouselClick = (item: any) => {
     console.log('item', item);
     if (item?.linkUrl) {
-      Linking.openURL(item.linkUrl).catch((error) =>
-        console.warn('Failed to open link', error),
-      );
+      openExternalLink(item.linkUrl);
       return;
     }
     // 类型：1-图文介绍 2-科普文章 3-动态 4-个人中心页面
@@ -464,12 +473,140 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
               />
             </Pressable>
           </View>
-          <Text style={{ ...styles.heroTagline, color: colors.gray800 }}>
-            Discover adaptive sports meetups, coaching, and wellness tools across
-            Pasadena.
+          <Text style={styles.heroBadge}>
+            {t('common.adaptive_sport_navigator')}
           </Text>
+          <Text style={{ ...styles.heroTagline, color: colors.gray800 }}>
+            {t('common.hero_tagline')}
+          </Text>
+          <Text style={{ ...styles.heroDescription, color: colors.gray500 }}>
+            {t('common.hero_description')}
+          </Text>
+          <Button
+            mode="contained"
+            uppercase={false}
+            onPress={() => {
+              openExternalLink(navigatorQuickActions[0]?.linkUrl);
+            }}
+            style={styles.navigatorButton}
+            contentStyle={styles.navigatorButtonContent}
+            labelStyle={styles.navigatorButtonLabel}
+          >
+            {t('common.start_navigator_call')}
+          </Button>
         </View>
         <View style={styles.container}>
+          <View style={styles.quickActionsSection}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{t('common.quick_actions')}</Text>
+              <Text
+                style={{ ...styles.sectionCaption, color: colors.gray500 }}
+              >
+                {t('common.quick_actions_subtitle')}
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.quickActions}
+            >
+              {navigatorQuickActions.map((action) => (
+                <Pressable
+                  key={action.id}
+                  accessibilityRole="button"
+                  onPress={() => {
+                    openExternalLink(action.linkUrl);
+                  }}
+                  style={styles.quickActionCard}
+                >
+                  <Image
+                    source={{
+                      uri: action.icon,
+                    }}
+                    style={styles.quickActionImage}
+                  />
+                  <View style={styles.quickActionContent}>
+                    <Text style={styles.quickActionTitle}>{action.title}</Text>
+                    <Text
+                      numberOfLines={3}
+                      style={{
+                        ...styles.quickActionDescription,
+                        color: colors.gray500,
+                      }}
+                    >
+                      {action.description}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.workflowSection}>
+            <Text style={styles.sectionTitle}>{t('common.navigator_workflow')}</Text>
+            <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
+              {t('common.navigator_workflow_subtitle')}
+            </Text>
+            <View style={styles.workflowSteps}>
+              {navigatorWorkflow.map((step, index) => (
+                <View key={step.id} style={styles.workflowCard}>
+                  <View style={styles.workflowBadge}>
+                    <Text style={styles.workflowBadgeText}>{index + 1}</Text>
+                  </View>
+                  <View style={styles.workflowContent}>
+                    <Text style={styles.workflowTitle}>{step.title}</Text>
+                    <Text
+                      style={{
+                        ...styles.workflowDescription,
+                        color: colors.gray500,
+                      }}
+                    >
+                      {step.description}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.spotlightSection}>
+            <Text style={styles.sectionTitle}>
+              {t('common.transit_equipment_spotlights')}
+            </Text>
+            <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
+              {t('common.transit_equipment_spotlights_subtitle')}
+            </Text>
+            {navigatorSpotlights.map((spotlight) => (
+              <Pressable
+                key={spotlight.id}
+                accessibilityRole="button"
+                onPress={() => {
+                  openExternalLink(spotlight.linkUrl);
+                }}
+                style={styles.spotlightCard}
+              >
+                <Image
+                  source={{
+                    uri: spotlight.image,
+                  }}
+                  style={styles.spotlightImage}
+                />
+                <View style={styles.spotlightContent}>
+                  <Text style={styles.spotlightBadge}>{spotlight.badge}</Text>
+                  <Text style={styles.spotlightTitle}>{spotlight.title}</Text>
+                  <Text
+                    style={{
+                      ...styles.spotlightDescription,
+                      color: colors.gray500,
+                    }}
+                  >
+                    {spotlight.description}
+                  </Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+
           <View style={styles.categoriesWrapper}>
             <Text style={styles.friendUpdatesTitle}>
               {t('common.popular_categories')}
@@ -656,6 +793,167 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 10,
+    marginTop: 8,
+  },
+  heroBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(0, 119, 210, 0.12)',
+    borderRadius: 999,
+    color: '#0077D2',
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 24,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  heroDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 10,
+  },
+  navigatorButton: {
+    alignSelf: 'flex-start',
+    borderRadius: 12,
+    marginTop: 16,
+  },
+  navigatorButtonContent: {
+    paddingHorizontal: 24,
+    paddingVertical: 6,
+  },
+  navigatorButtonLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  quickActionsSection: {
+    marginTop: 32,
+  },
+  sectionHeader: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  sectionCaption: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 6,
+  },
+  quickActions: {
+    columnGap: 16,
+    paddingRight: 20,
+  },
+  quickActionCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    width: 220,
+    shadowColor: '#001C40',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 2,
+  },
+  quickActionImage: {
+    borderRadius: 14,
+    height: 100,
+    width: '100%',
+  },
+  quickActionContent: {
+    marginTop: 12,
+  },
+  quickActionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  quickActionDescription: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 6,
+  },
+  workflowSection: {
+    marginTop: 40,
+  },
+  workflowSteps: {
+    marginTop: 20,
+    rowGap: 16,
+  },
+  workflowCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    flexDirection: 'row',
+    gap: 16,
+    padding: 16,
+    shadowColor: '#001C40',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  workflowBadge: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 119, 210, 0.12)',
+    borderRadius: 999,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  workflowBadgeText: {
+    color: '#0077D2',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  workflowContent: {
+    flex: 1,
+  },
+  workflowTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  workflowDescription: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 8,
+  },
+  spotlightSection: {
+    marginTop: 40,
+  },
+  spotlightCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    marginTop: 20,
+    overflow: 'hidden',
+    shadowColor: '#001C40',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 2,
+  },
+  spotlightImage: {
+    height: 150,
+    width: '100%',
+  },
+  spotlightContent: {
+    padding: 16,
+  },
+  spotlightBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(0, 119, 210, 0.12)',
+    borderRadius: 999,
+    color: '#0077D2',
+    fontSize: 12,
+    fontWeight: '700',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  spotlightTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 12,
+  },
+  spotlightDescription: {
+    fontSize: 13,
+    lineHeight: 20,
     marginTop: 8,
   },
   categories: {

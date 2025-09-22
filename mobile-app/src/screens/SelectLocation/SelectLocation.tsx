@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { StyleSheet, View } from 'react-native';
 import GooglePlacesTextInput from 'react-native-google-places-textinput';
 import MapView, { Marker } from 'react-native-maps';

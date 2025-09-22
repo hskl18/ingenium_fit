@@ -1,6 +1,6 @@
 import { Image, ImageURISource, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 import NothingIcon from '@/assets/images/nothing.png';
 import { useTheme } from '@/theme';

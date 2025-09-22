@@ -43,7 +43,7 @@ import {
   Tabbar,
   VerificationCode,
 } from '@/screens';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

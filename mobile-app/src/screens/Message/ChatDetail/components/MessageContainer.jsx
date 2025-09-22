@@ -8,7 +8,7 @@ import {
   MessageText,
 } from 'react-native-gifted-chat';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 export const renderAvatar = (props) => (
   <Avatar

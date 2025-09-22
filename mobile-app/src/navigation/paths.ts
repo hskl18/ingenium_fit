@@ -32,6 +32,7 @@ export const enum Paths {
   RehabilitationCenterList = 'rehabilitation-center-list',
   SciencePopularizationDetail = 'science-popularization-detail',
   SciencePopularizationList = 'science-popularization-list',
+  Showcase = 'showcase',
   Search = 'search',
   SelectLocation = 'select-location',
   Settings = 'settings',

@@ -33,7 +33,7 @@ import { getLoginUser, getLoginUserProfile } from '@/services';
 import { useUserStore } from '@/store';
 import { Agreements } from '@/common/agreement.ts';
 import { useFocusEffect } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 type Menu = {
   code: string;

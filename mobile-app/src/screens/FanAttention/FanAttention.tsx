@@ -7,7 +7,7 @@ import { Paths } from '@/navigation/paths.ts';
 
 import FollowersList from '@/screens/FanAttention/components/FollowersList/FollowersList.tsx';
 import FollowingList from '@/screens/FanAttention/components/FollowingList/FollowingList.tsx';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 const Tab = createMaterialTopTabNavigator();
 

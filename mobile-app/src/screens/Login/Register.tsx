@@ -6,7 +6,7 @@ import { usePreventRemove } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { OTPInput, type SlotProps } from 'input-otp-native';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import {
   BackHandler,
   ScrollView,

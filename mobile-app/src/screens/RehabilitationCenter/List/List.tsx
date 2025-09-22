@@ -1,7 +1,7 @@
 import { LegendList } from '@legendapp/list';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { Image, ImageURISource, StyleSheet, View } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
 import { Button, Text, TextInput } from 'react-native-paper';
@@ -26,7 +26,7 @@ export default function RehabilitationCenterList({
   navigation,
 }: RootScreenProps<Paths.RehabilitationCenterList>) {
   const { t } = useTranslation();
-  const { backgrounds } = useTheme();
+  const { backgrounds, colors } = useTheme();
   const queryClient = useQueryClient();
   const location = useLocationStore((state) => state.location);
 
@@ -121,6 +121,16 @@ export default function RehabilitationCenterList({
   const renderListHeader = () => {
     return (
       <View>
+        <View style={styles.heroWrapper}>
+          <Text style={styles.heroTitle}>
+            {t('common.care_network_title')}
+          </Text>
+          <Text
+            style={{ ...styles.heroSubtitle, color: colors.gray500 }}
+          >
+            {t('common.care_network_description')}
+          </Text>
+        </View>
         <View style={styles.searchWrapper}>
           <TextInput
             maxLength={255}
@@ -200,6 +210,20 @@ export default function RehabilitationCenterList({
 }
 
 const styles = StyleSheet.create({
+  heroWrapper: {
+    gap: 12,
+    paddingBottom: 24,
+    paddingTop: 6,
+  },
+  heroTitle: {
+    color: '#0B2340',
+    fontSize: 26,
+    fontWeight: '700',
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
   button: {
     alignItems: 'center',
     borderRadius: 13,
@@ -214,6 +238,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     paddingVertical: 18,
+    marginTop: 4,
   },
   buttonGroupIcon: {
     height: 14,
@@ -238,6 +263,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 12,
+    marginTop: 12,
   },
   textInputOutline: {
     borderRadius: 12,

@@ -2,7 +2,7 @@ import type { RootScreenProps } from '@/navigation/types.ts';
 
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 

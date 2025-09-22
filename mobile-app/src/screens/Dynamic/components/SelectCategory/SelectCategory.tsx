@@ -9,7 +9,7 @@ import { useTheme } from '@/theme';
 
 import { dynamicsCategoryList } from '@/services';
 import Empty from '@/components/common/Empty/Empty.tsx';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 export default function SelectCategory({ ref, onChange }) {
   const { t } = useTranslation();

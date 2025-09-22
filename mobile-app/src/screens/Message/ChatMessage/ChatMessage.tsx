@@ -15,7 +15,7 @@ import { leaveWordList } from '@/services';
 import Empty from '@/components/common/Empty/Empty.tsx';
 import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 export default function ChatMessage({
   navigation,

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {Button, Modal, Portal, Text} from 'react-native-paper';
 import Toast from "react-native-root-toast";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 import {Paths} from "@/navigation/paths.ts";
 import {useTheme} from '@/theme';

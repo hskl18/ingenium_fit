@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image, ImageURISource, StyleSheet, View } from 'react-native';
 import { Avatar, Divider, Text } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 import { useTheme } from '@/theme';
 

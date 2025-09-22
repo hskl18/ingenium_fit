@@ -1,6 +1,6 @@
 import type { RootScreenProps } from '@/navigation/types.ts';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 

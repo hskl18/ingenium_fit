@@ -1,20 +1,10 @@
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-// 引入语言包
-import En from 'dayjs/locale/en';
-import ZhCn from 'dayjs/locale/zh-cn';
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
-dayjs.extend(customParseFormat);
-dayjs.extend(isSameOrAfter);
-
-function setDayjsLocale() {
-  // const localeLanguages = uni.getLocale()
-  // console.log('localeLanguages', localeLanguages)
-  // localeLanguages === 'zh-Hans' && dayjs.locale(ZhCn)
-  // localeLanguages === 'en' && dayjs.locale(En)
-}
-
-export { setDayjsLocale };
 export { dayjs };

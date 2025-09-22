@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import VideoPlayer from 'react-native-media-console';
 import { Avatar, Card, Text } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { useViewability, useViewabilityAmount } from '@legendapp/list';
 import { Paths } from '@/navigation/paths.ts';
 import { useTheme } from '@/theme';

@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import InstitutionList from '@/screens/Collection/components/InstitutionList/InstitutionList.tsx';
 import SciencePopularizationList from '@/screens/Collection/components/SciencePopularizationList/SciencePopularizationList.tsx';
 import UpdatesList from '@/screens/Collection/components/UpdatesList/UpdatesList.tsx';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 
 const Tab = createMaterialTopTabNavigator();
 

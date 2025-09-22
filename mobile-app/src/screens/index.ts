@@ -34,3 +34,4 @@ export { default as RehabilitationCenterEvaluate } from '@/screens/Rehabilitatio
 export { default as RehabilitationCenterList } from '@/screens/RehabilitationCenter/List/List';
 export { default as SciencePopularizationDetail } from '@/screens/SciencePopularization/Detail/Detail';
 export { default as SciencePopularizationList } from '@/screens/SciencePopularization/List/List';
+export { default as Showcase } from '@/screens/Showcase/Showcase';

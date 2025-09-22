@@ -11,7 +11,7 @@ import { useI18n } from '@/hooks';
 import { SupportedLanguages } from '@/hooks/language/schema.ts';
 import { useTheme } from '@/theme';
 import { useQueryClient } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { storage } from '@/App.tsx';
 import { Configs } from '@/common/configs.ts';
 

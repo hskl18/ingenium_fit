@@ -2,7 +2,7 @@ import type { RootScreenProps } from '@/navigation/types.ts';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
