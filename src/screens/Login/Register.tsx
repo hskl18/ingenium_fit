@@ -6,6 +6,7 @@ import { usePreventRemove } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import { OTPInput, type SlotProps } from "input-otp-native";
 import { useEffect, useRef, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   BackHandler,
   ScrollView,
@@ -501,10 +502,14 @@ export default function Register({
 
         <View style={styles.linkContainer}>
           <IconButton
-            icon={isAgree ? "radiobox-marked" : "radiobox-blank"}
-            iconColor={isAgree ? colors.primary : "#999"}
+            icon={() => (
+              <MaterialIcons
+                name={isAgree ? "check-box" : "check-box-outline-blank"}
+                size={20}
+                color={isAgree ? colors.primary : "#999"}
+              />
+            )}
             onPress={handleToggleAgree}
-            size={20}
           />
           <Text>
             I agree

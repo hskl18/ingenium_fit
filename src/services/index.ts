@@ -1,23 +1,24 @@
 // Export all mock API services for frontend-only demo
-export * from './mock';
-export * from './types';
+export * from "./mock";
+export * from "./types";
 
 // Re-export commonly used functions with original names for backward compatibility
-import { authApi } from './mock/auth';
-import { uploadApi } from './mock/upload';
-import { commonApi } from './mock/common';
-import { userApi } from './mock/user';
-import { postsApi } from './mock/posts';
-import { rehabilitationApi } from './mock/rehabilitation';
-import { messagesApi } from './mock/messages';
+// Auth temporarily disabled for demo-only frontend
+// import { authApi } from './mock/auth';
+import { uploadApi } from "./mock/upload";
+import { commonApi } from "./mock/common";
+import { userApi } from "./mock/user";
+import { postsApi } from "./mock/posts";
+import { rehabilitationApi } from "./mock/rehabilitation";
+import { messagesApi } from "./mock/messages";
 
 // Auth functions
-export const login = authApi.login;
-export const register = authApi.register;
-export const logout = authApi.logout;
-export const forgotPassword = authApi.forgotPassword;
-export const changePassword = authApi.changePassword;
-export const logOff = authApi.deleteAccount;
+// export const login = authApi.login;
+// export const register = authApi.register;
+// export const logout = authApi.logout;
+// export const forgotPassword = authApi.forgotPassword;
+// export const changePassword = authApi.changePassword;
+// export const logOff = authApi.deleteAccount;
 
 // Upload functions
 export const uploadFile = uploadApi.uploadFile;

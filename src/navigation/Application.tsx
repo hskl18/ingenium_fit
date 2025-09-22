@@ -127,49 +127,7 @@ function ApplicationNavigator() {
             }}
           />
 
-          {/* 登录 */}
-          <Stack.Group screenOptions={{}}>
-            <Stack.Screen
-              component={LoginForgetPassword}
-              name={Paths.LoginForgetPassword}
-              options={{
-                headerShadowVisible: false,
-                headerStyle: {
-                  ...backgrounds.gray1600,
-                },
-                headerTitle: "",
-              }}
-            />
-            <Stack.Screen
-              component={Login}
-              name={Paths.Login}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              component={Register}
-              name={Paths.Register}
-              options={{
-                headerShadowVisible: false,
-                headerStyle: {
-                  ...backgrounds.gray1600,
-                },
-                headerTitle: "",
-              }}
-            />
-            <Stack.Screen
-              component={VerificationCode}
-              name={Paths.VerificationCode}
-              options={{
-                headerShadowVisible: false,
-                headerStyle: {
-                  ...backgrounds.gray1600,
-                },
-                headerTitle: "",
-              }}
-            />
-          </Stack.Group>
+          {/* Auth screens removed for demo */}
 
           {/* 康复中心 */}
           <Stack.Group screenOptions={{}}>

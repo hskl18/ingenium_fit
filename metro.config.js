@@ -14,10 +14,4 @@ config.transformer.babelTransformerPath = require.resolve(
 // Add platform-specific extensions
 config.resolver.platforms = ["native", "web", "ios", "android"];
 
-// Add resolver for assets to handle require.context issues
-config.resolver.resolverMainFields = ["react-native", "browser", "main"];
-config.resolver.alias = {
-  "@/assets": "./src/assets",
-};
-
 module.exports = config;

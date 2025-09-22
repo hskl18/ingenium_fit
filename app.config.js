@@ -28,7 +28,6 @@ export default {
       bundler: "metro",
     },
     plugins: [
-      "expo-router",
       [
         "react-native-bootsplash",
         {
@@ -40,6 +39,5 @@ export default {
       ],
     ],
     scheme: "ingenium-fit",
-    newArchEnabled: true,
   },
 };

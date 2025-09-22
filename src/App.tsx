@@ -1,5 +1,13 @@
+import React from "react";
 import "react-native-gesture-handler";
-import "react-native-get-random-values";
+// Conditionally import polyfills for native platforms only
+if (typeof global !== "undefined" && !global.crypto) {
+  try {
+    require("react-native-get-random-values");
+  } catch (error) {
+    console.warn("Crypto polyfill not available in Expo Go");
+  }
+}
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { StatusBar, Platform } from "react-native";
@@ -22,7 +30,6 @@ import {
 } from "react-native-safe-area-context";
 
 import { useI18n } from "@/hooks";
-import ApplicationNavigator from "@/navigation/Application";
 import { ThemeProvider } from "@/theme";
 import "@/translations";
 
@@ -39,6 +46,8 @@ if (Platform.OS !== "web") {
     console.warn("KeyboardProvider not available in Expo Go");
   }
 }
+
+import ApplicationNavigator from "@/navigation/Application";
 export const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {
@@ -54,10 +63,37 @@ function App() {
   const { toggleLanguage } = useI18n();
   useEffect(() => {
     const language = storage.getString(Configs.Language);
-    console.log("Language", language);
+    console.log("Language", language || "en-EN (default)");
     if (language) {
       toggleLanguage(language);
+    } else {
+      // Set default language if none is stored
+      toggleLanguage("en-EN");
+      storage.set(Configs.Language, "en-EN");
     }
+
+    // Set demo location for the app
+    storage.set(
+      Configs.Location,
+      JSON.stringify({
+        city: "Pasadena, CA",
+        coords: { latitude: 34.1478, longitude: -118.1445 },
+      })
+    );
+
+    // Set demo token to bypass auth
+    storage.set(Configs.Token, "demo-token");
+
+    // Set demo user info
+    storage.set(
+      "userInfo",
+      JSON.stringify({
+        id: "demo-user",
+        nickName: "Demo User",
+        avatar:
+          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      })
+    );
   }, []);
   useEffect(() => {
     const init = async () => {

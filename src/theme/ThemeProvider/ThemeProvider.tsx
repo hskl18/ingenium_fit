@@ -1,49 +1,48 @@
 import type {
   FulfilledThemeConfiguration,
   Variant,
-} from '@/theme/types/config';
-import type { ComponentTheme, Theme } from '@/theme/types/theme';
-import type { PropsWithChildren } from 'react';
-import type { MMKV } from 'react-native-mmkv';
+} from "@/theme/types/config";
+import type { ComponentTheme, Theme } from "@/theme/types/theme";
+import type { PropsWithChildren } from "react";
 
 import {
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
-} from '@react-navigation/native';
-import merge from 'deepmerge';
+} from "@react-navigation/native";
+import merge from "deepmerge";
 import {
   createContext,
   useCallback,
   useEffect,
   useMemo,
   useState,
-} from 'react';
-import { Appearance, type ColorSchemeName } from 'react-native';
+} from "react";
+import { Appearance, type ColorSchemeName } from "react-native";
 import {
   adaptNavigationTheme,
   MD3DarkTheme,
   MD3LightTheme,
-} from 'react-native-paper';
+} from "react-native-paper";
 
 import {
   generateBackgrounds,
   staticBackgroundStyles,
-} from '@/theme/backgrounds';
+} from "@/theme/backgrounds";
 import {
   generateBorderColors,
   generateBorderRadius,
   generateBorderWidths,
   staticBorderStyles,
-} from '@/theme/borders';
-import componentsGenerator from '@/theme/components';
+} from "@/theme/borders";
+import componentsGenerator from "@/theme/components";
 import {
   generateFontColors,
   generateFontSizes,
   staticFontStyles,
-} from '@/theme/fonts';
-import { generateGutters, staticGutterStyles } from '@/theme/gutters';
-import layout from '@/theme/layout';
-import generateConfig from '@/theme/ThemeProvider/generateConfig';
+} from "@/theme/fonts";
+import { generateGutters, staticGutterStyles } from "@/theme/gutters";
+import layout from "@/theme/layout";
+import generateConfig from "@/theme/ThemeProvider/generateConfig";
 
 type Context = {
   changeTheme: (variant: Variant) => void;
@@ -51,8 +50,15 @@ type Context = {
 
 export const ThemeContext = createContext<Context | undefined>(undefined);
 
+type StorageLike = {
+  getString: (key: string) => string | null | undefined;
+  set: (key: string, value: string) => void;
+  setString?: (key: string, value: string) => void;
+  delete: (key: string) => void;
+};
+
 type Properties = PropsWithChildren<{
-  readonly storage: MMKV;
+  readonly storage: StorageLike;
 }>;
 
 const { DarkTheme, LightTheme } = adaptNavigationTheme({
@@ -82,9 +88,9 @@ function ThemeProvider({ children = false, storage }: Properties) {
   const changeTheme = useCallback(
     (nextVariant: Variant) => {
       setVariant(nextVariant);
-      storage.set('theme', nextVariant as string);
+      storage.set("theme", nextVariant as string);
     },
-    [storage],
+    [storage]
   );
 
   // Flatten config with current variant
@@ -124,7 +130,7 @@ function ThemeProvider({ children = false, storage }: Properties) {
   }, [fullConfig]);
 
   const navigationTheme = useMemo(() => {
-    if (variant === 'dark') {
+    if (variant === "dark") {
       return {
         ...CombinedDarkTheme,
         colors: {
@@ -141,8 +147,8 @@ function ThemeProvider({ children = false, storage }: Properties) {
       colors: {
         ...fullConfig.navigationColors,
         ...CombinedDefaultTheme.colors,
-        primary: '#0077D2',
-        tertiary: '#00A654',
+        primary: "#0077D2",
+        tertiary: "#00A654",
       },
       dark: false,
     };

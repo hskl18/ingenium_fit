@@ -1,13 +1,13 @@
-import type { RootScreenProps } from '@/navigation/types.ts';
+import type { RootScreenProps } from "@/navigation/types.ts";
 
-import { LegendList } from '@legendapp/list';
+import { LegendList } from "@legendapp/list";
 import {
   useInfiniteQuery,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from '@/hooks';
+} from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "@/hooks";
 import {
   Dimensions,
   Image,
@@ -17,24 +17,25 @@ import {
   StatusBar,
   StyleSheet,
   View,
-} from 'react-native';
-import { Pressable } from 'react-native-gesture-handler';
-import { Avatar, Button, Text, TextInput } from 'react-native-paper';
-import { useSharedValue } from 'react-native-reanimated';
-import Carousel, { Pagination } from 'react-native-reanimated-carousel';
-import { useShallow } from 'zustand/react/shallow';
+} from "react-native";
+import { Pressable } from "react-native-gesture-handler";
+import { Avatar, Button, Text, TextInput } from "react-native-paper";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel, { Pagination } from "react-native-reanimated-carousel";
+import { useShallow } from "zustand/react/shallow";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
+import { Analytics } from "@/utils";
 
-import Empty from '@/components/common/Empty/Empty.tsx';
-import InstitutionItem from '@/components/common/InstitutionItem/InstitutionItem.tsx';
-import { SafeScreen } from '@/components/templates';
-import FriendUpdatesItem from '@/screens/Tabbar/Dynamic/components/FriendUpdatesItem/FriendUpdatesItem.tsx';
+import Empty from "@/components/common/Empty/Empty.tsx";
+import InstitutionItem from "@/components/common/InstitutionItem/InstitutionItem.tsx";
+import { SafeScreen, SurveyPrompt } from "@/components/templates";
+import FriendUpdatesItem from "@/screens/Tabbar/Dynamic/components/FriendUpdatesItem/FriendUpdatesItem.tsx";
 
-import ArrowIcon from '@/assets/images/17.png';
-import MessageIcon from '@/assets/images/18.png';
-import SearchIcon from '@/assets/images/19.png';
+import ArrowIcon from "@/assets/images/17.png";
+import MessageIcon from "@/assets/images/18.png";
+import SearchIcon from "@/assets/images/19.png";
 
 import {
   navigatorQuickActions,
@@ -45,7 +46,7 @@ import {
   pasadenaCommunityHighlights,
   pasadenaKnowledgeSpotlights,
   pasadenaRehabCenters,
-} from '@/data/pasadenaContent.ts';
+} from "@/data/pasadenaContent.ts";
 
 import {
   carouselList,
@@ -57,30 +58,30 @@ import {
   rehabilitationCenterList,
   scienceCategoryList,
   scienceList,
-} from '@/services';
-import { useLocationStore, useUserStore } from '@/store';
-import { useFocusEffect } from '@react-navigation/native';
-import SciencePopularizationItem from '@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+} from "@/services";
+import { useLocationStore, useUserStore } from "@/store";
+import { useFocusEffect } from "@react-navigation/native";
+import SciencePopularizationItem from "@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const NON_LATIN_REGEX = /[^\x00-\x7F]/;
 
 export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
-  const [searchKey, setSearchKey] = useState('');
+  const [searchKey, setSearchKey] = useState("");
   const [categoryList, setCategoryList] = useState(pasadenaCategories);
   const [recommendedPosts, setRecommendedPosts] = useState(
-    pasadenaCommunityHighlights,
+    pasadenaCommunityHighlights
   );
   const [recommendedSciences, setRecommendedSciences] = useState(
-    pasadenaKnowledgeSpotlights,
+    pasadenaKnowledgeSpotlights
   );
   const [carousels, setCarouses] = useState(pasadenaCarousels);
   const [message, setMessage] = useState({});
   const [leaveWord, setLeaveWord] = useState({});
   const progress = useSharedValue<number>(0);
   const [userInfo, setUserInfo] = useUserStore(
-    useShallow((state) => [state.userInfo, state.setUserInfo]),
+    useShallow((state) => [state.userInfo, state.setUserInfo])
   );
   const location = useLocationStore((state) => state.location);
 
@@ -89,34 +90,35 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
   useFocusEffect(
     React.useCallback(() => {
+      Analytics.screen("Home");
       queryClient.refetchQueries({
-        queryKey: [Paths.Home, 'refresh'],
-        type: 'active',
+        queryKey: [Paths.Home, "refresh"],
+        type: "active",
       });
       // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [])
   );
 
   const { data: messageData, isSuccess: messageIsSuccess } = useQuery({
     queryFn: getUnReadNumAndLatest,
-    queryKey: [Paths.Home, 'refresh', 'getUnReadNumAndLatest'],
+    queryKey: [Paths.Home, "refresh", "getUnReadNumAndLatest"],
   });
 
   const { data: leaveWordData, isSuccess: leaveWordIsSuccess } = useQuery({
     queryFn: getLeaveWordUnReadNumAndLatest,
-    queryKey: [Paths.Home, 'refresh', 'getLeaveWordUnReadNumAndLatest'],
+    queryKey: [Paths.Home, "refresh", "getLeaveWordUnReadNumAndLatest"],
   });
 
   useEffect(() => {
-    console.log('messageData', messageData);
+    console.log("messageData", messageData);
     if (messageIsSuccess) {
       setMessage(messageData.data || {});
     }
   }, [setMessage, messageData, messageIsSuccess]);
 
   useEffect(() => {
-    console.log('leaveWordData', leaveWordData);
+    console.log("leaveWordData", leaveWordData);
     if (leaveWordIsSuccess) {
       setLeaveWord(leaveWordData.data || {});
     }
@@ -138,17 +140,19 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
         whetherRecommend: 1,
       });
     },
-    queryKey: [Paths.Home, 'refresh', 'scienceList'],
+    queryKey: [Paths.Home, "refresh", "scienceList"],
   });
 
   useEffect(() => {
-    console.log('recommendedSciencesData', recommendedSciencesData);
+    console.log("recommendedSciencesData", recommendedSciencesData);
 
     if (recommendedSciencesIsSuccess) {
       const rows = recommendedSciencesData?.rows || [];
       const englishRows = rows.filter(
         (item) =>
-          item?.title && typeof item.title === 'string' && !NON_LATIN_REGEX.test(item.title),
+          item?.title &&
+          typeof item.title === "string" &&
+          !NON_LATIN_REGEX.test(item.title)
       );
 
       if (englishRows.length > 0) {
@@ -177,28 +181,28 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     isSuccess: recommendedPostsIsSuccess,
     isError: recommendedPostsIsError,
   } = useQuery({
-      queryFn: () => {
-        return postList({
-          // 是否推荐：1-是 2-否,
-          page: 1,
-          pageSize: 6,
-          whetherRecommend: 1,
-        });
-      },
-      queryKey: [Paths.Home, 'refresh', 'postList'],
-    });
+    queryFn: () => {
+      return postList({
+        // 是否推荐：1-是 2-否,
+        page: 1,
+        pageSize: 6,
+        whetherRecommend: 1,
+      });
+    },
+    queryKey: [Paths.Home, "refresh", "postList"],
+  });
 
   useEffect(() => {
     if (recommendedPostsIsSuccess) {
       const rows = recommendedPostsData?.rows || [];
       const englishRows = rows.filter((item) => {
         const isContentEnglish =
-          item?.content && typeof item.content === 'string'
+          item?.content && typeof item.content === "string"
             ? !NON_LATIN_REGEX.test(item.content)
             : false;
         const hasMedia = Boolean(item?.pictures || item?.videos);
         const isAuthorEnglish =
-          item?.user?.nickName && typeof item.user.nickName === 'string'
+          item?.user?.nickName && typeof item.user.nickName === "string"
             ? !NON_LATIN_REGEX.test(item.user.nickName)
             : true;
         return isContentEnglish && hasMedia && isAuthorEnglish;
@@ -224,7 +228,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
   const { data: userInfoData, isSuccess: userInfoIsSuccess } = useQuery({
     queryFn: getLoginUser,
-    queryKey: [Paths.Home, 'getLoginUser'],
+    queryKey: [Paths.Home, "getLoginUser"],
   });
 
   useEffect(() => {
@@ -243,13 +247,15 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     isError: carouselInfoIsError,
   } = useQuery({
     queryFn: carouselList,
-    queryKey: [Paths.Home, 'refresh', 'carouselList'],
+    queryKey: [Paths.Home, "refresh", "carouselList"],
   });
 
   useEffect(() => {
-    console.log('carouselInfoData', carouselInfoData);
+    console.log("carouselInfoData", carouselInfoData);
     if (carouselInfoIsSuccess) {
-      const items = (carouselInfoData?.data || []).filter((item) => item?.image);
+      const items = (carouselInfoData?.data || []).filter(
+        (item) => item?.image
+      );
       if (items.length > 0) {
         setCarouses(items);
       } else {
@@ -274,13 +280,13 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     isError: scienceCategoryIsError,
   } = useQuery({
     queryFn: scienceCategoryList,
-    queryKey: [Paths.Home, 'refresh', 'scienceCategoryList'],
+    queryKey: [Paths.Home, "refresh", "scienceCategoryList"],
   });
 
   useEffect(() => {
     if (scienceCategoryIsSuccess) {
       const categories = (scienceCategoryData?.data || []).filter(
-        (item) => item?.name && !NON_LATIN_REGEX.test(item.name) && item?.icon,
+        (item) => item?.name && !NON_LATIN_REGEX.test(item.name) && item?.icon
       );
       if (categories.length > 0) {
         setCategoryList(categories);
@@ -319,7 +325,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
         ...(location?.coords || {}),
       });
     },
-    queryKey: [Paths.Home, 'refresh', 'rehabilitationCenterList', location],
+    queryKey: [Paths.Home, "refresh", "rehabilitationCenterList", location],
   });
 
   const openExternalLink = (url?: string) => {
@@ -327,12 +333,12 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
       return;
     }
     Linking.openURL(url).catch((error) =>
-      console.warn('Failed to open link', error),
+      console.warn("Failed to open link", error)
     );
   };
 
   const handleCarouselClick = (item: any) => {
-    console.log('item', item);
+    console.log("item", item);
     if (item?.linkUrl) {
       openExternalLink(item.linkUrl);
       return;
@@ -376,18 +382,18 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   };
 
   const renderListHeader = () => {
-    const displayCity = location?.city || 'Pasadena, CA';
+    const displayCity = location?.city || "Pasadena, CA";
     return (
       <>
         <StatusBar
           backgroundColor={navigationTheme.colors.background}
-          barStyle={variant === 'dark' ? 'light-content' : 'dark-content'}
+          barStyle={variant === "dark" ? "light-content" : "dark-content"}
         />
         <View
           style={[
             styles.header,
             {
-              paddingTop:insets.top || StatusBar.currentHeight,
+              paddingTop: insets.top || StatusBar.currentHeight,
             },
           ]}
         >
@@ -450,7 +456,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
               }}
               outlineColor="transparent"
               outlineStyle={styles.textInputOutline}
-              placeholder={t('common.search_for_service')}
+              placeholder={t("common.search_for_service")}
               style={[{ flex: 1, height: 44 }, backgrounds.blue8]}
               underlineColor="transparent"
               value={searchKey}
@@ -461,25 +467,25 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                   searchKey,
                 });
                 setTimeout(() => {
-                  setSearchKey('');
+                  setSearchKey("");
                 }, 100);
               }}
             >
               <Image
-                alt={t('common.avatar')}
+                alt={t("common.avatar")}
                 source={SearchIcon as ImageURISource}
                 style={styles.searchIcon}
               />
             </Pressable>
           </View>
           <Text style={styles.heroBadge}>
-            {t('common.adaptive_sport_navigator')}
+            {t("common.adaptive_sport_navigator")}
           </Text>
           <Text style={{ ...styles.heroTagline, color: colors.gray800 }}>
-            {t('common.hero_tagline')}
+            {t("common.hero_tagline")}
           </Text>
           <Text style={{ ...styles.heroDescription, color: colors.gray500 }}>
-            {t('common.hero_description')}
+            {t("common.hero_description")}
           </Text>
           <Button
             mode="contained"
@@ -491,17 +497,17 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
             contentStyle={styles.navigatorButtonContent}
             labelStyle={styles.navigatorButtonLabel}
           >
-            {t('common.start_navigator_call')}
+            {t("common.start_navigator_call")}
           </Button>
         </View>
         <View style={styles.container}>
           <View style={styles.quickActionsSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('common.quick_actions')}</Text>
-              <Text
-                style={{ ...styles.sectionCaption, color: colors.gray500 }}
-              >
-                {t('common.quick_actions_subtitle')}
+              <Text style={styles.sectionTitle}>
+                {t("common.quick_actions")}
+              </Text>
+              <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
+                {t("common.quick_actions_subtitle")}
               </Text>
             </View>
             <ScrollView
@@ -542,9 +548,11 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
           </View>
 
           <View style={styles.workflowSection}>
-            <Text style={styles.sectionTitle}>{t('common.navigator_workflow')}</Text>
+            <Text style={styles.sectionTitle}>
+              {t("common.navigator_workflow")}
+            </Text>
             <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-              {t('common.navigator_workflow_subtitle')}
+              {t("common.navigator_workflow_subtitle")}
             </Text>
             <View style={styles.workflowSteps}>
               {navigatorWorkflow.map((step, index) => (
@@ -570,10 +578,10 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
           <View style={styles.spotlightSection}>
             <Text style={styles.sectionTitle}>
-              {t('common.transit_equipment_spotlights')}
+              {t("common.transit_equipment_spotlights")}
             </Text>
             <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-              {t('common.transit_equipment_spotlights_subtitle')}
+              {t("common.transit_equipment_spotlights_subtitle")}
             </Text>
             {navigatorSpotlights.map((spotlight) => (
               <Pressable
@@ -608,7 +616,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
           <View style={styles.categoriesWrapper}>
             <Text style={styles.friendUpdatesTitle}>
-              {t('common.popular_categories')}
+              {t("common.popular_categories")}
             </Text>
           </View>
           <ScrollView
@@ -661,16 +669,16 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                     />
                   </Pressable>
                 )}
-                width={Dimensions.get('window').width - 40}
+                width={Dimensions.get("window").width - 40}
               />
               <Pagination.Basic
                 progress={progress}
                 data={carousels}
                 activeDotStyle={{
-                  backgroundColor: '#0A8BCD',
+                  backgroundColor: "#0A8BCD",
                 }}
                 dotStyle={{
-                  backgroundColor: 'rgba(0,0,0,0.24)',
+                  backgroundColor: "rgba(0,0,0,0.24)",
                   width: 16,
                   height: 3,
                   borderRadius: 2.5,
@@ -683,7 +691,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
             <>
               <View style={styles.friendUpdatesTitleWrapper}>
                 <Text style={styles.friendUpdatesTitle}>
-                  {t('common.recommended_science')}
+                  {t("common.recommended_science")}
                 </Text>
                 <Button
                   mode="text"
@@ -695,7 +703,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                   }}
                   textColor={navigationTheme.colors.primary}
                 >
-                  {t('common.view_all')}
+                  {t("common.view_all")}
                 </Button>
               </View>
               <ScrollView
@@ -714,7 +722,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
             <>
               <View style={styles.friendUpdatesTitleWrapper}>
                 <Text style={styles.friendUpdatesTitle}>
-                  {t('common.recommended_posts')}
+                  {t("common.recommended_posts")}
                 </Text>
                 <Button
                   mode="text"
@@ -726,7 +734,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                   }}
                   textColor={navigationTheme.colors.primary}
                 >
-                  {t('common.view_all')}
+                  {t("common.view_all")}
                 </Button>
               </View>
               <ScrollView
@@ -743,7 +751,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
           <View style={styles.friendUpdatesTitleWrapper}>
             <Text style={styles.friendUpdatesTitle}>
-              {t('common.rehabilitation_center')}
+              {t("common.rehabilitation_center")}
             </Text>
             <Button
               mode="text"
@@ -752,7 +760,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
               }}
               textColor={navigationTheme.colors.primary}
             >
-              {t('common.view_all')}
+              {t("common.view_all")}
             </Button>
           </View>
         </View>
@@ -768,13 +776,29 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   }
   const centersToRender = dataList.length > 0 ? dataList : pasadenaRehabCenters;
 
+  const [showSurvey, setShowSurvey] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setShowSurvey(true), 3500);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
-    <ScrollView style={[styles.scrollView, backgrounds.gray1600]}>
-      <SafeScreen edges={[]} style={[styles.safeScreen, backgrounds.gray1600]}>
-        {renderListHeader()}
-        {centersToRender.map((item, index) => renderItem({ index, item }))}
-      </SafeScreen>
-    </ScrollView>
+    <>
+      <ScrollView style={[styles.scrollView, backgrounds.gray1600]}>
+        <SafeScreen
+          edges={[]}
+          style={[styles.safeScreen, backgrounds.gray1600]}
+        >
+          {renderListHeader()}
+          {centersToRender.map((item, index) => renderItem({ index, item }))}
+        </SafeScreen>
+      </ScrollView>
+      <SurveyPrompt
+        visible={showSurvey}
+        onDismiss={() => setShowSurvey(false)}
+      />
+    </>
   );
 }
 
@@ -789,18 +813,18 @@ const styles = StyleSheet.create({
     width: 28,
   },
   avatarWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 10,
     marginTop: 8,
   },
   heroBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0, 119, 210, 0.12)',
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(0, 119, 210, 0.12)",
     borderRadius: 999,
-    color: '#0077D2',
+    color: "#0077D2",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 24,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -811,7 +835,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   navigatorButton: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     borderRadius: 12,
     marginTop: 16,
   },
@@ -821,7 +845,7 @@ const styles = StyleSheet.create({
   },
   navigatorButtonLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   quickActionsSection: {
     marginTop: 32,
@@ -831,7 +855,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   sectionCaption: {
     fontSize: 13,
@@ -843,11 +867,11 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   quickActionCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 18,
     padding: 16,
     width: 220,
-    shadowColor: '#001C40',
+    shadowColor: "#001C40",
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 8 },
     shadowRadius: 16,
@@ -856,14 +880,14 @@ const styles = StyleSheet.create({
   quickActionImage: {
     borderRadius: 14,
     height: 100,
-    width: '100%',
+    width: "100%",
   },
   quickActionContent: {
     marginTop: 12,
   },
   quickActionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   quickActionDescription: {
     fontSize: 13,
@@ -878,36 +902,36 @@ const styles = StyleSheet.create({
     rowGap: 16,
   },
   workflowCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 16,
     padding: 16,
-    shadowColor: '#001C40',
+    shadowColor: "#001C40",
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 6 },
     shadowRadius: 12,
     elevation: 2,
   },
   workflowBadge: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 119, 210, 0.12)',
+    alignItems: "center",
+    backgroundColor: "rgba(0, 119, 210, 0.12)",
     borderRadius: 999,
     height: 40,
-    justifyContent: 'center',
+    justifyContent: "center",
     width: 40,
   },
   workflowBadgeText: {
-    color: '#0077D2',
+    color: "#0077D2",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   workflowContent: {
     flex: 1,
   },
   workflowTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   workflowDescription: {
     fontSize: 13,
@@ -918,11 +942,11 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   spotlightCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 18,
     marginTop: 20,
-    overflow: 'hidden',
-    shadowColor: '#001C40',
+    overflow: "hidden",
+    shadowColor: "#001C40",
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 8 },
     shadowRadius: 16,
@@ -930,24 +954,24 @@ const styles = StyleSheet.create({
   },
   spotlightImage: {
     height: 150,
-    width: '100%',
+    width: "100%",
   },
   spotlightContent: {
     padding: 16,
   },
   spotlightBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0, 119, 210, 0.12)',
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(0, 119, 210, 0.12)",
     borderRadius: 999,
-    color: '#0077D2',
+    color: "#0077D2",
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
   spotlightTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 12,
   },
   spotlightDescription: {
@@ -963,7 +987,7 @@ const styles = StyleSheet.create({
     marginTop: 38,
   },
   category: {
-    alignItems: 'center',
+    alignItems: "center",
     width: 71,
   },
   categoryImage: {
@@ -974,22 +998,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 12,
     marginTop: 13,
-    textAlign: 'center',
+    textAlign: "center",
   },
   container: { paddingHorizontal: 20 },
   friendUpdatesTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   friendUpdatesTitleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
     marginTop: 38,
   },
   header: {
-    backgroundColor: '#E6F1FF',
+    backgroundColor: "#E6F1FF",
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
     paddingBottom: 18,
@@ -1006,7 +1030,7 @@ const styles = StyleSheet.create({
   },
   nameText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     lineHeight: 18,
   },
   safeScreen: {
@@ -1021,34 +1045,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 12,
     marginTop: 26,
   },
   swiperImage: {
     borderRadius: 18,
     height: 154,
-    width: '100%',
+    width: "100%",
   },
   indicatorWrapper: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 9,
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 6,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   swiperWrapper: {
     marginTop: 38,
-    position: 'relative',
+    position: "relative",
   },
   textInputOutline: {
     borderRadius: 12,
   },
   titleLeft: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 5,
   },
   titleText: {
@@ -1057,9 +1081,9 @@ const styles = StyleSheet.create({
     lineHeight: 15,
   },
   titleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 14,
   },
   updates: {
@@ -1069,17 +1093,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   readFlag: {
-    backgroundColor: '#F2262F',
-    borderRadius: '50%',
+    backgroundColor: "#F2262F",
+    borderRadius: "50%",
     height: 8,
-    position: 'absolute',
+    position: "absolute",
     right: 10,
     top: 10,
     width: 8,
   },
   updatesTitleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 30,
     marginBottom: 18,
     marginTop: 38,

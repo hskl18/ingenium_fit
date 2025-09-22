@@ -1,4 +1,4 @@
-import type { IResponseData } from '../types';
+import type { IResponseData } from "../types";
 
 // Mock delay to simulate network requests
 const mockDelay = (ms: number = 600) =>
@@ -20,22 +20,22 @@ export const commonApi = {
     return {
       results: [
         {
-          formatted_address: 'Pasadena, CA, USA',
+          formatted_address: "Pasadena, CA, USA",
           address_components: [
             {
-              long_name: 'Pasadena',
-              short_name: 'Pasadena',
-              types: ['locality'],
+              long_name: "Pasadena",
+              short_name: "Pasadena",
+              types: ["locality"],
             },
             {
-              long_name: 'California',
-              short_name: 'CA',
-              types: ['administrative_area_level_1'],
+              long_name: "California",
+              short_name: "CA",
+              types: ["administrative_area_level_1"],
             },
             {
-              long_name: 'United States',
-              short_name: 'US',
-              types: ['country'],
+              long_name: "United States",
+              short_name: "US",
+              types: ["country"],
             },
           ],
           geometry: {
@@ -43,7 +43,7 @@ export const commonApi = {
           },
         },
       ],
-      status: 'OK',
+      status: "OK",
     };
   },
 
@@ -53,7 +53,7 @@ export const commonApi = {
 
     return {
       success: true,
-      message: 'Verification code sent to email successfully',
+      message: "Verification code sent to email successfully",
     };
   },
 
@@ -62,7 +62,7 @@ export const commonApi = {
 
     return {
       success: true,
-      message: 'Verification code sent to phone successfully',
+      message: "Verification code sent to phone successfully",
     };
   },
 
@@ -73,14 +73,14 @@ export const commonApi = {
     return {
       success: true,
       data: [
-        'adaptive sports',
-        'wheelchair basketball',
-        'inclusive fitness',
-        'rehabilitation center',
-        'physical therapy',
-        'mobility equipment',
-        'accessible gym',
-        'adaptive training',
+        "adaptive sports",
+        "wheelchair basketball",
+        "inclusive fitness",
+        "rehabilitation center",
+        "physical therapy",
+        "mobility equipment",
+        "accessible gym",
+        "adaptive training",
       ],
     };
   },
@@ -93,22 +93,22 @@ export const commonApi = {
       success: true,
       data: [
         {
-          id: '1',
-          title: 'Welcome to Adaptive Sports Navigator',
-          image: 'https://via.placeholder.com/800x400?text=Welcome+Banner',
-          link: '/showcase',
+          id: "1",
+          title: "Welcome to Adaptive Sports Navigator",
+          image: "https://via.placeholder.com/800x400?text=Welcome+Banner",
+          link: "/showcase",
         },
         {
-          id: '2',
-          title: 'Find Your Local Rehabilitation Center',
-          image: 'https://via.placeholder.com/800x400?text=Rehab+Centers',
-          link: '/rehabilitation',
+          id: "2",
+          title: "Find Your Local Rehabilitation Center",
+          image: "https://via.placeholder.com/800x400?text=Rehab+Centers",
+          link: "/rehabilitation",
         },
         {
-          id: '3',
-          title: 'Connect with Sport Navigators',
-          image: 'https://via.placeholder.com/800x400?text=Navigators',
-          link: '/navigators',
+          id: "3",
+          title: "Connect with Sport Navigators",
+          image: "https://via.placeholder.com/800x400?text=Navigators",
+          link: "/navigators",
         },
       ],
     };
@@ -121,8 +121,8 @@ export const commonApi = {
       success: true,
       data: {
         id: data.id,
-        title: 'Carousel Item Detail',
-        description: 'Detailed information about this carousel item.',
+        title: "Carousel Item Detail",
+        description: "Detailed information about this carousel item.",
         image: `https://via.placeholder.com/800x600?text=Detail+${data.id}`,
       },
     };
@@ -141,7 +141,7 @@ export const commonApi = {
         avatar: `https://via.placeholder.com/40?text=C${i + 1}`,
       },
       createdAt: new Date(
-        Date.now() - Math.random() * 24 * 60 * 60 * 1000,
+        Date.now() - Math.random() * 24 * 60 * 60 * 1000
       ).toISOString(),
       likesCount: Math.floor(Math.random() * 20),
       isLiked: Math.random() > 0.5,
@@ -164,7 +164,7 @@ export const commonApi = {
 
     return {
       success: true,
-      message: 'Comment added successfully',
+      message: "Comment added successfully",
       data: {
         id: `comment-${Date.now()}`,
         content: data.content,
@@ -178,7 +178,7 @@ export const commonApi = {
 
     return {
       success: true,
-      message: 'Reply added successfully',
+      message: "Reply added successfully",
       data: {
         id: `reply-${Date.now()}`,
         content: data.content,
@@ -194,8 +194,8 @@ export const commonApi = {
     return {
       success: true,
       message: data.isFavorited
-        ? 'Removed from favorites'
-        : 'Added to favorites',
+        ? "Removed from favorites"
+        : "Added to favorites",
       data: {
         isFavorited: !data.isFavorited,
       },
@@ -208,10 +208,10 @@ export const commonApi = {
     const favorites = Array.from({ length: 8 }, (_, i) => ({
       id: `favorite-${i + 1}`,
       title: `Favorite Item ${i + 1}`,
-      type: ['post', 'center', 'doctor'][Math.floor(Math.random() * 3)],
+      type: ["post", "center", "doctor"][Math.floor(Math.random() * 3)],
       image: `https://via.placeholder.com/200x150?text=Fav+${i + 1}`,
       createdAt: new Date(
-        Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
+        Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
       ).toISOString(),
     }));
 
@@ -233,28 +233,28 @@ export const commonApi = {
 
     const faqs = [
       {
-        id: '1',
-        question: 'How do I find adaptive sports programs near me?',
+        id: "1",
+        question: "How do I find adaptive sports programs near me?",
         answer:
-          'Use our program finder to filter by location, sport type, and accessibility features. You can also connect with a sport navigator for personalized recommendations.',
+          "Use our program finder to filter by location, sport type, and accessibility features. You can also connect with a sport navigator for personalized recommendations.",
       },
       {
-        id: '2',
-        question: 'What equipment do I need to get started?',
+        id: "2",
+        question: "What equipment do I need to get started?",
         answer:
-          'Equipment needs vary by sport and individual requirements. Our equipment guide and navigator consultations can help you find the right gear and funding options.',
+          "Equipment needs vary by sport and individual requirements. Our equipment guide and navigator consultations can help you find the right gear and funding options.",
       },
       {
-        id: '3',
-        question: 'How do I connect with other adaptive athletes?',
+        id: "3",
+        question: "How do I connect with other adaptive athletes?",
         answer:
-          'Join our community feed to share experiences, ask questions, and connect with athletes in your area. You can also attend local events and workshops.',
+          "Join our community feed to share experiences, ask questions, and connect with athletes in your area. You can also attend local events and workshops.",
       },
       {
-        id: '4',
-        question: 'Are the rehabilitation centers vetted?',
+        id: "4",
+        question: "Are the rehabilitation centers vetted?",
         answer:
-          'Yes, all centers in our network are reviewed by adaptive athletes and sport navigators. You can read reviews and ratings from the community.',
+          "Yes, all centers in our network are reviewed by adaptive athletes and sport navigators. You can read reviews and ratings from the community.",
       },
     ];
 
@@ -275,26 +275,38 @@ export const commonApi = {
     await mockDelay();
 
     const agreements = {
-      'user-terms': {
-        title: 'User Agreement',
-        content: 'This is the user agreement content...',
+      "user-terms": {
+        title: "User Agreement",
+        content: "This is the user agreement content...",
       },
-      'privacy-policy': {
-        title: 'Privacy Policy',
-        content: 'This is the privacy policy content...',
+      "privacy-policy": {
+        title: "Privacy Policy",
+        content: "This is the privacy policy content...",
       },
-      'platform-agreement': {
-        title: 'Platform Agreement',
-        content: 'This is the platform agreement content...',
+      "platform-agreement": {
+        title: "Platform Agreement",
+        content: "This is the platform agreement content...",
       },
     };
 
     return {
       success: true,
       data: agreements[data.code as keyof typeof agreements] || {
-        title: 'Agreement',
-        content: 'Agreement content not found.',
+        title: "Agreement",
+        content: "Agreement content not found.",
       },
+    };
+  },
+  // Analytics (no-op sink for demo)
+  trackEvent: async (
+    event: string,
+    props?: Record<string, unknown>
+  ): Promise<IResponseData> => {
+    await mockDelay(50);
+    return {
+      success: true,
+      message: "tracked",
+      data: { event, props },
     };
   },
 };

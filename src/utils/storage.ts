@@ -1,16 +1,17 @@
-import { storage } from './mmkv-instance';
+import { storage } from "@/storage";
 
 // Simple storage utilities for demo app
 export const StorageUtils = {
   setItem: (key: string, value: any): void => {
-    const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+    const stringValue =
+      typeof value === "string" ? value : JSON.stringify(value);
     storage.set(key, stringValue);
   },
 
   getItem: <T = string>(key: string): T | null => {
     const value = storage.getString(key);
     if (value === undefined) return null;
-    
+
     try {
       return JSON.parse(value) as T;
     } catch {

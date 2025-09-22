@@ -79,6 +79,7 @@ export type RootStackParamList = {
 
   [Paths.Settings]: undefined;
   [Paths.Startup]: undefined;
+  [Paths.Research]: undefined;
   [Paths.SystemMessage]: undefined;
   [Paths.SystemMessageDetail]: {
     id: string;

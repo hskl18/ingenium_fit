@@ -13,6 +13,7 @@ import {
 
 import { Paths } from "@/navigation/paths";
 import { useTheme } from "@/theme";
+import { Analytics } from "@/utils";
 
 import { AssetByVariant } from "@/components/atoms";
 import { SafeScreen } from "@/components/templates";
@@ -31,30 +32,13 @@ function Startup({ navigation }: RootScreenProps<Paths.Startup>) {
   });
 
   useEffect(() => {
+    Analytics.screen("Startup");
     if (isSuccess) {
-      const token = storage.getString(Configs.Token);
-      if (token) {
-        const keys = storage.getAllKeys();
-        console.log("keys", keys);
-        const location = storage.getString(Configs.Location);
-        console.log("location", location);
-        if (!location) {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: Paths.ObtainPosition }],
-          });
-        } else {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: Paths.Tabbar }],
-          });
-        }
-      } else {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: Paths.Login }],
-        });
-      }
+      // Demo mode - bypass authentication and go directly to main app
+      navigation.reset({
+        index: 0,
+        routes: [{ name: Paths.Tabbar }],
+      });
     }
   }, [isSuccess, navigation]);
 
@@ -77,7 +61,9 @@ function Startup({ navigation }: RootScreenProps<Paths.Startup>) {
           <ActivityIndicator size="large" style={[gutters.marginVertical_24]} />
         ) : undefined}
         {isError ? (
-          <Text style={[fonts.size_16, fonts.red500]}>{"An error occurred"}</Text>
+          <Text style={[fonts.size_16, fonts.red500]}>
+            {"An error occurred"}
+          </Text>
         ) : undefined}
       </View>
     </SafeScreen>
