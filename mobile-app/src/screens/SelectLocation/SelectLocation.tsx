@@ -11,7 +11,7 @@ import { useTheme } from '@/theme';
 
 import { storage } from '@/App.tsx';
 import { Configs } from '@/common/configs.ts';
-import { useLocationStore } from '@/store';
+import { useLocationStore, FALLBACK_LOCATION } from '@/store';
 export default function SelectLocation({
   route,
   navigation,
@@ -74,10 +74,7 @@ export default function SelectLocation({
         ref={map}
         initialCamera={{
           center: {
-            ...(location?.coords || {
-              latitude: 40.7128, // 纽约
-              longitude: -74.006,
-            }),
+            ...(location?.coords || FALLBACK_LOCATION.coords),
           },
           pitch: 45,
           heading: 90,
@@ -91,11 +88,8 @@ export default function SelectLocation({
         {location?.coords ? (
           <Marker
             draggable
-            region={{
-              ...(location?.coords || {}),
-            }}
             coordinate={{
-              ...(location?.coords || {}),
+              ...(location?.coords || FALLBACK_LOCATION.coords),
             }}
             onDragEnd={(event: any) => {
               console.log('drag', event);

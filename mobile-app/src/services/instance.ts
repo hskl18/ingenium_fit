@@ -12,8 +12,7 @@ import { navigateLogin } from '@/RootNavigation.ts';
 // const prefixUrl = `http://192.168.0.156:8080/`;
 const prefixUrl = `http://47.239.182.229:81/prod-api/`;
 
-const LocaleLanguage = {
-  'zh-Hans': 'zh_CN',
+const LocaleLanguage: Record<string, string> = {
   'en-EN': 'en_US',
 };
 const original = ky.create({
@@ -27,7 +26,7 @@ const original = ky.create({
         //   request.url = prefixUrl + request.url
         // }
         request.headers.set('Authorization', `Bearer ${token}`);
-        request.headers.set('lang', LocaleLanguage[i18n.language]);
+        request.headers.set('lang', LocaleLanguage[i18n.language] ?? 'en_US');
       },
     ],
     afterResponse: [

@@ -1,1 +1,0 @@
-import{d as s,a,i as t,o as r,j as e,a7 as n,p as o}from"./index-D9qffpGI.js";const i=s({__name:"status-bar",setup(s){const i=a();return(s,a)=>{const p=e;return r(),t(p,{class:"w-750rpx shrink-0",style:n([{height:o(i).statusBarHeight+"px"}])},null,8,["style"])}}});export{i as _};

@@ -12,6 +12,7 @@ import {
   Dimensions,
   Image,
   ImageURISource,
+  Linking,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -37,6 +38,14 @@ import MessageIcon from '@/assets/images/18.png';
 import SearchIcon from '@/assets/images/19.png';
 
 import {
+  pasadenaCarousels,
+  pasadenaCategories,
+  pasadenaCommunityHighlights,
+  pasadenaKnowledgeSpotlights,
+  pasadenaRehabCenters,
+} from '@/data/pasadenaContent.ts';
+
+import {
   carouselList,
   getLeaveWordUnReadNumAndLatest,
   getLoginUser,
@@ -52,13 +61,19 @@ import { useFocusEffect } from '@react-navigation/native';
 import SciencePopularizationItem from '@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+const NON_LATIN_REGEX = /[^\x00-\x7F]/;
+
 export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
   const [searchKey, setSearchKey] = useState('');
-  const [categoryList, setCategoryList] = useState([]);
-  const [recommendedPosts, setRecommendedPosts] = useState([]);
-  const [recommendedSciences, setRecommendedSciences] = useState([]);
-  const [carousels, setCarouses] = useState([]);
+  const [categoryList, setCategoryList] = useState(pasadenaCategories);
+  const [recommendedPosts, setRecommendedPosts] = useState(
+    pasadenaCommunityHighlights,
+  );
+  const [recommendedSciences, setRecommendedSciences] = useState(
+    pasadenaKnowledgeSpotlights,
+  );
+  const [carousels, setCarouses] = useState(pasadenaCarousels);
   const [message, setMessage] = useState({});
   const [leaveWord, setLeaveWord] = useState({});
   const { t } = useTranslation();
@@ -112,6 +127,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   const {
     data: recommendedSciencesData,
     isSuccess: recommendedSciencesIsSuccess,
+    isError: recommendedSciencesIsError,
   } = useQuery({
     queryFn: () => {
       return scienceList({
@@ -128,7 +144,17 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     console.log('recommendedSciencesData', recommendedSciencesData);
 
     if (recommendedSciencesIsSuccess) {
-      setRecommendedSciences(recommendedSciencesData?.rows || []);
+      const rows = recommendedSciencesData?.rows || [];
+      const englishRows = rows.filter(
+        (item) =>
+          item?.title && typeof item.title === 'string' && !NON_LATIN_REGEX.test(item.title),
+      );
+
+      if (englishRows.length > 0) {
+        setRecommendedSciences(englishRows);
+      } else {
+        setRecommendedSciences(pasadenaKnowledgeSpotlights);
+      }
     }
   }, [
     setRecommendedSciences,
@@ -136,11 +162,20 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     recommendedSciencesIsSuccess,
   ]);
 
+  useEffect(() => {
+    if (recommendedSciencesIsError) {
+      setRecommendedSciences(pasadenaKnowledgeSpotlights);
+    }
+  }, [recommendedSciencesIsError]);
+
   /**
    * 推荐帖子
    */
-  const { data: recommendedPostsData, isSuccess: recommendedPostsIsSuccess } =
-    useQuery({
+  const {
+    data: recommendedPostsData,
+    isSuccess: recommendedPostsIsSuccess,
+    isError: recommendedPostsIsError,
+  } = useQuery({
       queryFn: () => {
         return postList({
           // 是否推荐：1-是 2-否,
@@ -154,9 +189,33 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
   useEffect(() => {
     if (recommendedPostsIsSuccess) {
-      setRecommendedPosts(recommendedPostsData?.rows || []);
+      const rows = recommendedPostsData?.rows || [];
+      const englishRows = rows.filter((item) => {
+        const isContentEnglish =
+          item?.content && typeof item.content === 'string'
+            ? !NON_LATIN_REGEX.test(item.content)
+            : false;
+        const hasMedia = Boolean(item?.pictures || item?.videos);
+        const isAuthorEnglish =
+          item?.user?.nickName && typeof item.user.nickName === 'string'
+            ? !NON_LATIN_REGEX.test(item.user.nickName)
+            : true;
+        return isContentEnglish && hasMedia && isAuthorEnglish;
+      });
+
+      if (englishRows.length > 0) {
+        setRecommendedPosts(englishRows);
+      } else {
+        setRecommendedPosts(pasadenaCommunityHighlights);
+      }
     }
   }, [setRecommendedPosts, recommendedPostsData, recommendedPostsIsSuccess]);
+
+  useEffect(() => {
+    if (recommendedPostsIsError) {
+      setRecommendedPosts(pasadenaCommunityHighlights);
+    }
+  }, [recommendedPostsIsError]);
 
   /**
    * 登录用户信息
@@ -177,35 +236,64 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
    * 轮播图列表
    */
 
-  const { data: carouselInfoData, isSuccess: carouselInfoIsSuccess } = useQuery(
-    {
-      queryFn: carouselList,
-      queryKey: [Paths.Home, 'refresh', 'carouselList'],
-    },
-  );
+  const {
+    data: carouselInfoData,
+    isSuccess: carouselInfoIsSuccess,
+    isError: carouselInfoIsError,
+  } = useQuery({
+    queryFn: carouselList,
+    queryKey: [Paths.Home, 'refresh', 'carouselList'],
+  });
 
   useEffect(() => {
     console.log('carouselInfoData', carouselInfoData);
     if (carouselInfoIsSuccess) {
-      setCarouses(carouselInfoData?.data || []);
+      const items = (carouselInfoData?.data || []).filter((item) => item?.image);
+      if (items.length > 0) {
+        setCarouses(items);
+      } else {
+        setCarouses(pasadenaCarousels);
+      }
     }
   }, [setCarouses, carouselInfoData, carouselInfoIsSuccess]);
+
+  useEffect(() => {
+    if (carouselInfoIsError) {
+      setCarouses(pasadenaCarousels);
+    }
+  }, [carouselInfoIsError]);
 
   /**
    * 科普分类列表
    */
 
-  const { data: scienceCategoryData, isSuccess: scienceCategoryIsSuccess } =
-    useQuery({
-      queryFn: scienceCategoryList,
-      queryKey: [Paths.Home, 'refresh', 'scienceCategoryList'],
-    });
+  const {
+    data: scienceCategoryData,
+    isSuccess: scienceCategoryIsSuccess,
+    isError: scienceCategoryIsError,
+  } = useQuery({
+    queryFn: scienceCategoryList,
+    queryKey: [Paths.Home, 'refresh', 'scienceCategoryList'],
+  });
 
   useEffect(() => {
     if (scienceCategoryIsSuccess) {
-      setCategoryList(scienceCategoryData?.data || []);
+      const categories = (scienceCategoryData?.data || []).filter(
+        (item) => item?.name && !NON_LATIN_REGEX.test(item.name) && item?.icon,
+      );
+      if (categories.length > 0) {
+        setCategoryList(categories);
+      } else {
+        setCategoryList(pasadenaCategories);
+      }
     }
   }, [setCategoryList, scienceCategoryData, scienceCategoryIsSuccess]);
+
+  useEffect(() => {
+    if (scienceCategoryIsError) {
+      setCategoryList(pasadenaCategories);
+    }
+  }, [scienceCategoryIsError]);
 
   /**
    * 康复中心
@@ -235,6 +323,12 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
   const handleCarouselClick = (item: any) => {
     console.log('item', item);
+    if (item?.linkUrl) {
+      Linking.openURL(item.linkUrl).catch((error) =>
+        console.warn('Failed to open link', error),
+      );
+      return;
+    }
     // 类型：1-图文介绍 2-科普文章 3-动态 4-个人中心页面
     switch (+item.type) {
       case 1: {
@@ -274,6 +368,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   };
 
   const renderListHeader = () => {
+    const displayCity = location?.city || 'Pasadena, CA';
     return (
       <>
         <StatusBar
@@ -303,7 +398,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                   color: navigationTheme.colors.primary,
                 }}
               >
-                {location.city}
+                {displayCity}
               </Text>
               <Image
                 alt="arrow-icon"
@@ -369,6 +464,10 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
               />
             </Pressable>
           </View>
+          <Text style={{ ...styles.heroTagline, color: colors.gray800 }}>
+            Discover adaptive sports meetups, coaching, and wellness tools across
+            Pasadena.
+          </Text>
         </View>
         <View style={styles.container}>
           <View style={styles.categoriesWrapper}>
@@ -531,11 +630,13 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   if (data?.pages) {
     dataList = data.pages.flatMap((item) => item?.rows || []);
   }
+  const centersToRender = dataList.length > 0 ? dataList : pasadenaRehabCenters;
+
   return (
     <ScrollView style={[styles.scrollView, backgrounds.gray1600]}>
       <SafeScreen edges={[]} style={[styles.safeScreen, backgrounds.gray1600]}>
         {renderListHeader()}
-        {dataList.map((item, index) => renderItem({ index, item }))}
+        {centersToRender.map((item, index) => renderItem({ index, item }))}
       </SafeScreen>
     </ScrollView>
   );
@@ -591,11 +692,16 @@ const styles = StyleSheet.create({
     marginTop: 38,
   },
   header: {
-    backgroundColor: '#E3EFF8',
+    backgroundColor: '#E6F1FF',
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
     paddingBottom: 18,
     paddingHorizontal: 20,
+  },
+  heroTagline: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 16,
   },
   messageIcon: {
     height: 40,

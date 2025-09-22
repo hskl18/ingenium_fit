@@ -1,2 +1,0 @@
-patchedDependencies:
-  http-deceiver@1.2.7: patches/http-deceiver@1.2.7.patch

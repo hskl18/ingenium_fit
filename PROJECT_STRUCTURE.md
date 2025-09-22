@@ -1,181 +1,44 @@
-# Ingenium Fit - Project Structure
+# Ingenium Fit – Project Overview
 
-## 📁 Root Directory Structure
+The repository focuses on the original Ingenium Fit mobile experience. Admin and backend services were removed to keep the footprint light while you iterate on the React Native app.
 
+## Directory Layout
 ```
 ingenium_fit/
-├── 📱 mobile-app/                    # React Native Mobile Application
-│   ├── src/                          # Source code
-│   ├── ios/                          # iOS native code
-│   ├── android/                      # Android native code
-│   ├── package.json                  # Dependencies and scripts
-│   └── .env.example                  # Environment variables template
-│
-├── 🖥️  admin-dashboard/              # Web Admin Dashboard
-│   ├── src/                          # React source code
-│   ├── config/                       # Build and routing configuration
-│   ├── public/                       # Static assets
-│   ├── package.json                  # Dependencies and scripts
-│   └── .env.example                  # Environment variables template
-│
-├── 🔧 backend-services/              # Spring Boot Backend Services
-│   ├── ruoyi-admin/                  # Main admin service
-│   ├── ruoyi-system/                 # System management module
-│   ├── ruoyi-framework/              # Framework components
-│   ├── ruoyi-common/                 # Common utilities
-│   ├── ruoyi-generator/              # Code generator
-│   ├── ruoyi-quartz/                 # Scheduler service
-│   ├── sql/                          # Database scripts
-│   └── pom.xml                       # Maven configuration
-│
-├── 📄 README.md                      # Main project documentation
-├── 📄 PROJECT_STRUCTURE.md           # This file - project organization
-├── 📄 technical-documentation.docx   # Technical specifications
-└── 📄 .gitignore                     # Git ignore rules
+├── mobile-app/               # React Native project with iOS & Android targets
+├── README.md                 # High-level repo guide
+├── PROJECT_STRUCTURE.md      # This file
+└── technical-documentation.docx
 ```
 
-## 🎯 Component Descriptions
+## Mobile App Highlights
+- **Framework**: React Native 0.81 + TypeScript
+- **Feature Set**: Home feed, dynamic tab, personal profile, chat, rehab centre catalogue, localisation, theming, etc.
+- **State & Data**: React Query, Zustand, and a services layer for remote APIs.
+- **Startup Flow**: Boot splash, onboarding, authentication, and tab navigation modeled after the original product.
 
-### 📱 Mobile App (`mobile-app/`)
-
-**Technology**: React Native 0.76.5 + TypeScript
-**Purpose**: Patient-facing mobile application for rehabilitation programs
-
-**Key Features**:
-
-- Patient registration and authentication
-- Personalized therapy programs
-- Progress tracking and analytics
-- Community features (posts, comments, likes)
-- In-app messaging with healthcare providers
-- Offline content caching
-- Multi-language support (English/Chinese)
-
-**Main Directories**:
-
-- `src/components/` - Reusable UI components
-- `src/screens/` - Application screens
-- `src/services/` - API integration
-- `src/store/` - State management (Zustand)
-- `src/utils/` - Helper functions
-- `ios/` - iOS native modules and configuration
-- `android/` - Android native modules and configuration
-
-### 🖥️ Admin Dashboard (`admin-dashboard/`)
-
-**Technology**: React 18 + Ant Design Pro + TypeScript
-**Purpose**: Healthcare provider admin interface
-
-**Key Features**:
-
-- Content management system (CMS)
-- User administration and role management
-- Analytics dashboard with real-time metrics
-- System configuration and settings
-- Report generation and export
-- Rich text editor for content creation
-
-**Main Directories**:
-
-- `src/pages/` - Dashboard pages and components
-- `src/services/` - API service definitions
-- `src/components/` - Shared UI components
-- `config/` - Build and routing configuration
-- `public/` - Static assets and icons
-
-### 🔧 Backend Services (`backend-services/`)
-
-**Technology**: Spring Boot 3.4.1 + Java 21 + MySQL
-**Purpose**: RESTful API services and business logic
-
-**Key Modules**:
-
-- `ruoyi-admin/` - Main application entry point and admin controllers
-- `ruoyi-system/` - System management (users, roles, permissions)
-- `ruoyi-framework/` - Security, caching, and framework configuration
-- `ruoyi-common/` - Shared utilities and domain objects
-- `ruoyi-generator/` - Code generation tools
-- `ruoyi-quartz/` - Background job scheduling
-
-**Database Schema**:
-
-- Admin users and permissions (`sys_*` tables)
-- Mobile app users and content (`t_*` tables)
-- Audit logging and system configuration
-- Quartz scheduler tables
-
-## 🔄 Data Flow Between Components
-
+## Source Folder Outline (`mobile-app/src`)
 ```
-┌─────────────────┐    HTTP/REST API    ┌─────────────────┐
-│   Mobile App    │ ←─────────────────→ │ Backend Services│
-│  (React Native) │                     │  (Spring Boot)  │
-└─────────────────┘                     └─────────────────┘
-                                                 │
-                                                 │ JDBC
-                                                 ▼
-┌─────────────────┐    HTTP/REST API    ┌─────────────────┐
-│ Admin Dashboard │ ←─────────────────→ │   MySQL DB      │
-│    (React)      │                     │   (Healthcare   │
-└─────────────────┘                     │     Schema)     │
-                                        └─────────────────┘
+components/         # Shared UI atoms and molecules
+hooks/              # Custom hooks (network, location, theme helpers)
+navigation/         # React Navigation stacks & tab configs
+screens/            # Feature screens (Home, Dynamic, Message, Profile, Rehab Centre...)
+services/           # API clients and request helpers
+store/              # Zustand stores for session, search, etc.
+theme/              # Design tokens, theming utilities, assets
+translations/       # i18n resources (en-EN, zh-Hans)
+utils/              # Cross-cutting helpers (upload, formatters)
 ```
 
-## 🚀 Development Workflow
+## Recommended Workflow
+1. Run `yarn install` (or `pnpm install`) inside `mobile-app/`.
+2. Execute `npx pod-install` for iOS native dependencies.
+3. Use `yarn start` + `yarn ios` (or Android equivalents) to preview changes.
+4. Keep feature updates scoped to existing screens unless you plan a larger navigation refactor.
 
-### Starting the Full Stack
+## Next Steps & Customisation
+- Update copy and assets inside the relevant screen folders to match new branding.
+- Extend Zustand stores or React Query hooks if you need additional client-side data.
+- When integrating a backend again, reuse the existing services layer and environment files.
 
-1. **Database**: Start MySQL service
-2. **Backend**: Build and run Spring Boot services
-3. **Admin Dashboard**: Start React development server
-4. **Mobile App**: Start Metro bundler and iOS/Android simulator
-
-### File Naming Conventions
-
-- **Folders**: kebab-case (e.g., `mobile-app`, `admin-dashboard`)
-- **React Components**: PascalCase (e.g., `UserProfile.tsx`)
-- **Java Classes**: PascalCase (e.g., `UserController.java`)
-- **Database Tables**: snake_case with prefixes (e.g., `sys_user`, `t_user`)
-- **API Endpoints**: REST conventions (e.g., `/api/users`, `/app/content`)
-
-### Environment Configuration
-
-Each component has its own environment configuration:
-
-- `mobile-app/.env` - AWS S3, API endpoints
-- `admin-dashboard/.env` - AWS S3, build settings
-- `backend-services/application.yml` - Database, Redis, security settings
-
-## 📦 Deployment Structure
-
-### Development
-
-- All services run locally on different ports
-- Hot reloading enabled for frontend applications
-- Database runs locally with development data
-
-### Production (Future)
-
-- Containerized deployment with Docker
-- Load balancing for backend services
-- CDN for static assets
-- Managed database service
-- CI/CD pipeline with automated testing
-
-## 🔧 Build Artifacts
-
-### Mobile App
-
-- iOS: `.ipa` file for App Store distribution
-- Android: `.apk` or `.aab` file for Google Play
-
-### Admin Dashboard
-
-- Static files: HTML, CSS, JS bundles
-- Deployable to any web server or CDN
-
-### Backend Services
-
-- JAR files: Self-contained Spring Boot applications
-- Docker images: For containerized deployment
-- Database migrations: SQL scripts for schema updates
+This structure mirrors the app in your screenshot, so you can continue iterating on UI/UX without rebuilding the foundation.

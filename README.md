@@ -1,73 +1,42 @@
 # Ingenium Fit
 
-A full-stack rehabilitation platform with a React Native patient app, React admin portal, and Spring Boot backend.
+This repo now carries the full Ingenium Fit React Native application with the original multi-tab experience (home, dynamic feed, profile, messaging, etc.). Use it as the baseline to iterate on visual tweaks while keeping all existing flows intact.
 
 ## Repository Layout
-- `mobile-app/` – React Native iOS/Android client
-- `admin-dashboard/` – Ant Design Pro web console
-- `backend-services/` – Spring Boot services and SQL assets
+- `mobile-app/` – React Native iOS/Android project (screens, navigation, services, stores, theming)
+- `technical-documentation.docx` – reference specs from the earlier full-stack effort
 
 ## Prerequisites
-- Common: Node.js ≥ 20, pnpm 9, Git
-- Mobile: Xcode 15+, CocoaPods (`sudo gem install cocoapods`)
-- Web: Node.js ≥ 18 (matches Ant Design tooling)
-- Backend: JDK 17 (`brew install openjdk@17`), Maven 3.9+, MySQL 8, Redis 7+
+- Node.js 20+
+- Watchman (macOS)
+- Xcode 15 with Command Line Tools
+- CocoaPods (`sudo gem install cocoapods`)
+- Android Studio (only if you plan to ship Android builds)
 
-## Backend (Spring Boot)
-1. Export the JDK path before running Maven:
-   ```bash
-   export JAVA_HOME=/opt/homebrew/opt/openjdk@17
-   ```
-2. Provision the database:
-   ```bash
-   mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS db_mgkf DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-   mysql -u root -p db_mgkf < backend-services/sql/ry_react.sql
-   mysql -u root -p db_mgkf < backend-services/sql/quartz.sql
-   # Optional sample data
-   mysql -u root -p db_mgkf < backend-services/sql/20250908.sql
-   ```
-3. Confirm `backend-services/ruoyi-admin/src/main/resources/application-druid.yml` points at your MySQL instance and that Redis host is `localhost` in `application.yml`.
-4. From `backend-services/`, install all modules locally:
-   ```bash
-   JAVA_HOME=$JAVA_HOME mvn -pl ruoyi-admin -am clean install -DskipTests -Dmaven.repo.local=./.m2
-   ```
-5. Start Redis (`brew services start redis`) and verify with `redis-cli ping`.
-6. Launch the API:
-   ```bash
-   JAVA_HOME=$JAVA_HOME mvn -pl ruoyi-admin spring-boot:run -Dmaven.repo.local=./.m2
-   ```
-   The server listens on `http://localhost:8080/prod-api`. Logs write to `backend-services/logs/`.
-
-## Mobile App (React Native)
-1. Install dependencies:
+## Getting Started
+1. Install JavaScript dependencies (choose one package manager):
    ```bash
    cd mobile-app
-   pnpm install --no-frozen-lockfile
-   pnpm pod-install
+   yarn install        # or: pnpm install --no-frozen-lockfile
    ```
-2. Copy `.env` → `.env.local` and update `API_URL` to `http://localhost:8080/prod-api`.
-3. Run Metro and the simulator:
+2. Install native iOS pods:
    ```bash
-   pnpm start
-   pnpm ios -- --simulator "iPhone 17 Pro"
+   npx pod-install
    ```
-   Use Xcode (`ios/kangfu_app.xcworkspace`) if you prefer a GUI build.
-
-## Web Admin (React)
-1. Install and start:
+3. Start Metro and run the app:
    ```bash
-   cd admin-dashboard
-   pnpm install
-   pnpm dev
+   yarn start
+   yarn ios            # or open ios/kangfu_app.xcworkspace in Xcode
    ```
-2. Update `config/proxy.ts` to proxy `/api`, `/app`, and `/mgkf` to `http://localhost:8080` so the dashboard hits your local backend.
 
-## Handy Commands
-- Rebuild backend without tests: `JAVA_HOME=$JAVA_HOME mvn -pl ruoyi-admin -am clean install -DskipTests`
-- Stop Redis: `brew services stop redis`
-- Reset Metro cache: `pnpm start --reset-cache`
+## Key Source Areas (mobile-app/src)
+- `screens/` – feature screens such as `Tabbar/Home`, `Dynamic`, `Message`, etc.
+- `navigation/` – React Navigation configuration for stacks and tabs.
+- `components/` – reusable UI pieces.
+- `store/`, `services/`, `hooks/` – state management, API wrappers, and utilities.
+- `theme/`, `translations/` – styling tokens and i18n resources.
 
-## Troubleshooting
-- **Pods missing**: run `pnpm pod-install` inside `mobile-app/ios`.
-- **Backend fails with Redis errors**: ensure Redis is running locally and `application.yml` points to `localhost`.
-- **Metro export warnings**: Metro config enables package exports; restart Metro (`pnpm start --reset-cache`) if warnings persist.
+## Working Tips
+- The UI and data models are already wired; prefer updating copy/assets/layouts instead of ripping out modules.
+- Keep text edits in English unless you intend to expand the translations in `src/translations/`.
+- Use `yarn lint` and `yarn test` to stay aligned with the existing tooling before committing changes.
