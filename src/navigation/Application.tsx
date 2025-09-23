@@ -43,14 +43,12 @@ import {
   Tabbar,
   VerificationCode,
 } from "@/screens";
-import { useTranslation } from "@/hooks";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function ApplicationNavigator() {
   const { backgrounds, navigationTheme } = useTheme();
-  const { t } = useTranslation();
   return (
     <PaperProvider theme={navigationTheme}>
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
@@ -91,7 +89,7 @@ function ApplicationNavigator() {
               headerStyle: {
                 ...backgrounds.gray1600,
               },
-              headerTitle: t("title.message_notifications"),
+              headerTitle: "Message notifications",
             }}
           />
           <Stack.Screen
@@ -123,7 +121,7 @@ function ApplicationNavigator() {
               headerStyle: {
                 ...backgrounds.gray1600,
               },
-              headerTitle: t("title.select_location"),
+              headerTitle: "Select location",
             }}
           />
 
@@ -139,7 +137,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.rehabilitation_center"),
+                headerTitle: "Rehabilitation centers",
               }}
             />
             <Stack.Screen
@@ -168,7 +166,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.evaluate_physician"),
+                headerTitle: "Evaluate physician",
               }}
             />
             <Stack.Screen
@@ -179,7 +177,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.evaluate"),
+                headerTitle: "Evaluate",
               }}
             />
           </Stack.Group>
@@ -217,7 +215,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.chat_message"),
+                headerTitle: "Chat",
               }}
             />
             <Stack.Screen
@@ -241,7 +239,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.system_message"),
+                headerTitle: "System message",
               }}
             />
             <Stack.Screen
@@ -252,7 +250,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.detail"),
+                headerTitle: "Detail",
               }}
             />
 
@@ -264,7 +262,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.detail"),
+                headerTitle: "Detail",
               }}
             />
           </Stack.Group>
@@ -280,7 +278,7 @@ function ApplicationNavigator() {
                 headerStyle: {
                   ...backgrounds.gray1600,
                 },
-                headerTitle: t("title.publish"),
+                headerTitle: "Publish",
               }}
             />
             <Stack.Screen
@@ -318,7 +316,7 @@ function ApplicationNavigator() {
               component={MyUpdates}
               name={Paths.MyUpdates}
               options={{
-                headerTitle: t("title.my_updates"),
+                headerTitle: "My updates",
               }}
             />
             <Stack.Screen
@@ -326,63 +324,63 @@ function ApplicationNavigator() {
               name={Paths.PersonalInformation}
               options={{
                 animation: "fade_from_bottom",
-                headerTitle: t("title.personal_information"),
+                headerTitle: "Personal information",
               }}
             />
             <Stack.Screen
               component={FAQ}
               name={Paths.FAQ}
               options={{
-                headerTitle: t("title.faq"),
+                headerTitle: "FAQ",
               }}
             />
             <Stack.Screen
               component={Settings}
               name={Paths.Settings}
               options={{
-                headerTitle: t("title.settings"),
+                headerTitle: "Settings",
               }}
             />
             <Stack.Screen
               component={ChangePassword}
               name={Paths.ChangePassword}
               options={{
-                headerTitle: t("title.change_password"),
+                headerTitle: "Change password",
               }}
             />
             <Stack.Screen
               component={ForgotPassword}
               name={Paths.ForgotPassword}
               options={{
-                headerTitle: t("title.forgot_password"),
+                headerTitle: "Forgot password",
               }}
             />
             <Stack.Screen
               component={Collection}
               name={Paths.Collection}
               options={{
-                headerTitle: t("title.collection"),
+                headerTitle: "Collection",
               }}
             />
             <Stack.Screen
               component={FanAttention}
               name={Paths.FanAttention}
               options={{
-                headerTitle: t("title.fans_follow"),
+                headerTitle: "Fans & following",
               }}
             />
             <Stack.Screen
               component={Nickname}
               name={Paths.Nickname}
               options={{
-                headerTitle: t("title.nickname"),
+                headerTitle: "Nickname",
               }}
             />
             <Stack.Screen
               component={Introduction}
               name={Paths.Introduction}
               options={{
-                headerTitle: t("title.introduction"),
+                headerTitle: "Introduction",
               }}
             />
           </Stack.Group>

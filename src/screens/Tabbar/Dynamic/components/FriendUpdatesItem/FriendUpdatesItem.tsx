@@ -14,6 +14,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { ImageWithFallback } from "@/components/atoms";
 // Conditionally import VideoPlayer
 let VideoPlayer: any = null;
 try {
@@ -32,6 +33,7 @@ import LikeIcon from "@/assets/images/52.png";
 import LikeFIcon from "@/assets/images/53.png";
 
 import { dayjs } from "@/plugins/day.ts";
+import { normalizeImageUrl } from "@/utils/image";
 
 export default function FriendUpdatesItem({ item }) {
   const { colors } = useTheme();
@@ -71,10 +73,8 @@ export default function FriendUpdatesItem({ item }) {
               containerStyle={styles.coverImage}
             />
           ) : (
-            <Image
-              source={{
-                uri: pictures[0],
-              }}
+            <ImageWithFallback
+              uri={normalizeImageUrl(pictures[0])}
               style={styles.coverImage}
             />
           )}
@@ -97,10 +97,8 @@ export default function FriendUpdatesItem({ item }) {
           </Text>
           <View style={styles.toolWrapper}>
             <View style={styles.toolLeft}>
-              <Image
-                source={{
-                  uri: item.user?.avatar,
-                }}
+              <ImageWithFallback
+                uri={normalizeImageUrl(item.user?.avatar)}
                 style={styles.avatar}
               />
               <Text style={{ ...styles.nameText, color: colors.gray800 }}>

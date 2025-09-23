@@ -1,48 +1,48 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useTranslation } from '@/hooks';
-import { Image, ImageURISource, StyleSheet, View } from 'react-native';
-import { Pressable } from 'react-native-gesture-handler';
-import { Button, Text, TextInput } from 'react-native-paper';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Image, ImageURISource, StyleSheet, View } from "react-native";
+import { Pressable } from "react-native-gesture-handler";
+import { Button, Text, TextInput } from "react-native-paper";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import InstitutionItem from '@/components/common/InstitutionItem/InstitutionItem.tsx';
-import { SafeScreen } from '@/components/templates';
-import RehabilitationCenterFilter from '@/screens/RehabilitationCenter/List/components/RehabilitationCenterFilter/RehabilitationCenterFilter.tsx';
-import RehabilitationCenterSort from '@/screens/RehabilitationCenter/List/components/RehabilitationCenterSort/RehabilitationCenterSort.tsx';
+import InstitutionItem from "@/components/common/InstitutionItem/InstitutionItem.tsx";
+import { SafeScreen } from "@/components/templates";
+import RehabilitationCenterFilter from "@/screens/RehabilitationCenter/List/components/RehabilitationCenterFilter/RehabilitationCenterFilter.tsx";
+import RehabilitationCenterSort from "@/screens/RehabilitationCenter/List/components/RehabilitationCenterSort/RehabilitationCenterSort.tsx";
 
-import SearchIcon from '@/assets/images/19.png';
-import FilterIcon from '@/assets/images/604.png';
-import SortIcon from '@/assets/images/606.png';
-import { rehabilitationCenterList } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
-import { useLocationStore } from '@/store';
+import SearchIcon from "@/assets/images/19.png";
+import FilterIcon from "@/assets/images/604.png";
+import SortIcon from "@/assets/images/606.png";
+import { rehabilitationCenterList } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
+import { useLocationStore } from "@/store";
 
 export default function RehabilitationCenterList({
   navigation,
-}: RootScreenProps<Paths.RehabilitationCenterList>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterList>) {
+  const { backgrounds, colors } = useTheme();
   const queryClient = useQueryClient();
   const location = useLocationStore((state) => state.location);
 
   const [visibleSort, setVisibleSort] = useState(false);
   const [visibleFilter, setVisibleFilter] = useState(false);
   // 排序方式：1-默认排序(默认) 2-距离排序 3-星级排序
-  const [sortBy, setSortBy] = useState('1');
+  const [sortBy, setSortBy] = useState("1");
   const [score, setScore] = useState({
-    id: '',
-    minScore: '',
-    maxScore: '',
+    id: "",
+    minScore: "",
+    maxScore: "",
   });
   const [distance, setDistance] = useState({
-    id: '',
-    maxDistance: '',
-    minDistance: '',
+    id: "",
+    maxDistance: "",
+    minDistance: "",
   });
-  const [searchKey, setSearchKey] = useState('');
+  const [searchKey, setSearchKey] = useState("");
 
   const showSortModal = () => {
     setVisibleSort(true);
@@ -87,17 +87,17 @@ export default function RehabilitationCenterList({
     },
     queryKey: [
       Paths.RehabilitationCenterList,
-      'rehabilitationCenterList',
+      "rehabilitationCenterList",
       sortBy,
       score,
       distance,
-      location
+      location,
     ],
   });
 
   const handleSearch = () => {
     queryClient.invalidateQueries({
-      queryKey: [Paths.RehabilitationCenterList, 'rehabilitationCenterList'],
+      queryKey: [Paths.RehabilitationCenterList, "rehabilitationCenterList"],
     });
   };
 
@@ -120,13 +120,9 @@ export default function RehabilitationCenterList({
     return (
       <View>
         <View style={styles.heroWrapper}>
-          <Text style={styles.heroTitle}>
-            {t('common.care_network_title')}
-          </Text>
-          <Text
-            style={{ ...styles.heroSubtitle, color: colors.gray500 }}
-          >
-            {t('common.care_network_description')}
+          <Text style={styles.heroTitle}>{"Your care network"}</Text>
+          <Text style={{ ...styles.heroSubtitle, color: colors.gray500 }}>
+            {"Find centers and professionals near you."}
           </Text>
         </View>
         <View style={styles.searchWrapper}>
@@ -140,7 +136,7 @@ export default function RehabilitationCenterList({
             }}
             outlineColor="transparent"
             outlineStyle={styles.textInputOutline}
-            placeholder={t('common.search_for_service')}
+            placeholder={"Search for services"}
             style={[{ flex: 1, height: 44 }, backgrounds.gray1550]}
             underlineColor="transparent"
             value={searchKey}
@@ -156,14 +152,14 @@ export default function RehabilitationCenterList({
 
         <View style={styles.buttonGroup}>
           <Pressable style={styles.button} onPress={showFilterModal}>
-            <Text>{t('common.filter')}</Text>
+            <Text>{"Filter"}</Text>
             <Image
               source={FilterIcon as ImageURISource}
               style={styles.buttonGroupIcon}
             />
           </Pressable>
           <Pressable style={styles.button} onPress={showSortModal}>
-            <Text>{t('common.sort')}</Text>
+            <Text>{"Sort"}</Text>
             <Image
               source={SortIcon as ImageURISource}
               style={styles.buttonGroupIcon}
@@ -176,7 +172,7 @@ export default function RehabilitationCenterList({
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
@@ -214,26 +210,26 @@ const styles = StyleSheet.create({
     paddingTop: 6,
   },
   heroTitle: {
-    color: '#0B2340',
+    color: "#0B2340",
     fontSize: 26,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   heroSubtitle: {
     fontSize: 14,
     lineHeight: 20,
   },
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 13,
-    borderStyle: 'solid',
+    borderStyle: "solid",
     borderWidth: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 4,
     height: 26,
     paddingHorizontal: 15,
   },
   buttonGroup: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     paddingVertical: 18,
     marginTop: 4,
@@ -244,7 +240,7 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   container: {
     paddingHorizontal: 20,
@@ -258,8 +254,8 @@ const styles = StyleSheet.create({
     width: 44,
   },
   searchWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 12,
     marginTop: 12,
   },
@@ -267,11 +263,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   titleContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   titleText: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

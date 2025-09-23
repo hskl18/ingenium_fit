@@ -1,36 +1,37 @@
-import type { RootScreenProps } from '@/navigation/types.ts';
+import type { RootScreenProps } from "@/navigation/types.ts";
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from '@/hooks';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
   ScrollView,
   StyleSheet,
   View,
-} from 'react-native';
-import { Button, Text, TouchableRipple } from 'react-native-paper';
-import { Pressable } from 'react-native-gesture-handler';
+} from "react-native";
+import { Button, Text, TouchableRipple } from "react-native-paper";
+import { Pressable } from "react-native-gesture-handler";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import { SafeScreen } from '@/components/templates';
+import { SafeScreen } from "@/components/templates";
 
-import SystemIcon from '@/assets/images/257.png';
-import MessageIcon from '@/assets/images/258.png';
+import SystemIcon from "@/assets/images/257.png";
+import MessageIcon from "@/assets/images/258.png";
 import {
   getLeaveWordUnReadNumAndLatest,
   getUnReadNumAndLatest,
-} from '@/services';
-import { dayjs } from '@/plugins/day.ts';
-import { useFocusEffect } from '@react-navigation/native';
+} from "@/services";
+import { dayjs } from "@/plugins/day.ts";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Message({
   navigation,
 }: RootScreenProps<Paths.Message>) {
-  const { backgrounds, colors } = useTheme();  const [message, setMessage] = useState({});
+  const { backgrounds, colors } = useTheme();
+  const [message, setMessage] = useState({});
   const [leaveWord, setLeaveWord] = useState({});
 
   const queryClient = useQueryClient();
@@ -39,21 +40,21 @@ export default function Message({
     React.useCallback(() => {
       queryClient.refetchQueries({
         queryKey: [Paths.Message],
-        type: 'active',
+        type: "active",
       });
       // Do something when the screen is focused
       return () => {};
-    }, [queryClient]),
+    }, [queryClient])
   );
 
   const { data: messageData, isSuccess: messageIsSuccess } = useQuery({
     queryFn: getUnReadNumAndLatest,
-    queryKey: [Paths.Message, 'getUnReadNumAndLatest'],
+    queryKey: [Paths.Message, "getUnReadNumAndLatest"],
   });
 
   const { data: leaveWordData, isSuccess: leaveWordIsSuccess } = useQuery({
     queryFn: getLeaveWordUnReadNumAndLatest,
-    queryKey: [Paths.Message, 'getLeaveWordUnReadNumAndLatest'],
+    queryKey: [Paths.Message, "getLeaveWordUnReadNumAndLatest"],
   });
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export default function Message({
   }, [setMessage, messageData, messageIsSuccess]);
 
   useEffect(() => {
-    console.log('leaveWordData', leaveWordData);
+    console.log("leaveWordData", leaveWordData);
     if (leaveWordIsSuccess) {
       setLeaveWord(leaveWordData.data || {});
     }
@@ -75,7 +76,7 @@ export default function Message({
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.scrollView, backgrounds.gray1550]}
     >
       <View style={styles.container}>
@@ -108,11 +109,11 @@ export default function Message({
             </View>
             <View style={styles.content}>
               <View style={styles.titleWrapper}>
-                <Text style={styles.titleText}>{t('common.chat_message')}</Text>
+                <Text style={styles.titleText}>{"Chat"}</Text>
                 <Text style={{ ...styles.dateText, color: colors.gray800 }}>
                   {leaveWord.latestLeaveWordSub?.createTime
                     ? dayjs(leaveWord.latestLeaveWordSub?.createTime).format(
-                        'YYYY-MM-DD HH:mm',
+                        "YYYY-MM-DD HH:mm"
                       )
                     : leaveWord.latestLeaveWordSub?.createTime}
                 </Text>
@@ -133,7 +134,7 @@ export default function Message({
                       numberOfLines={1}
                       style={{ ...styles.messageText, color: colors.gray800 }}
                     >
-                      {t('common.image_message')}
+                      {"Image"}
                     </Text>
                   ) : undefined}
                   {+leaveWord.latestLeaveWordSub?.messageType === 3 ? (
@@ -141,7 +142,7 @@ export default function Message({
                       numberOfLines={1}
                       style={{ ...styles.messageText, color: colors.gray800 }}
                     >
-                      {t('common.voice_message')}
+                      {"Voice"}
                     </Text>
                   ) : undefined}
                 </>
@@ -184,11 +185,11 @@ export default function Message({
             </View>
             <View style={styles.content}>
               <View style={styles.titleWrapper}>
-                <Text style={styles.titleText}>{t('common.system_message')}</Text>
+                <Text style={styles.titleText}>{"System"}</Text>
                 <Text style={{ ...styles.dateText, color: colors.gray800 }}>
                   {message.latestUserMessage?.createTime
                     ? dayjs(message.latestUserMessage?.createTime).format(
-                        'YYYY-MM-DD HH:mm',
+                        "YYYY-MM-DD HH:mm"
                       )
                     : message.latestUserMessage?.createTime}
                 </Text>
@@ -217,8 +218,8 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   messageInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 9,
   },
   message: {
@@ -231,12 +232,12 @@ const styles = StyleSheet.create({
     width: 50,
   },
   messageNum: {
-    alignItems: 'center',
-    backgroundColor: '#F2262F',
+    alignItems: "center",
+    backgroundColor: "#F2262F",
     borderRadius: 20,
     height: 14,
-    justifyContent: 'center',
-    position: 'absolute',
+    justifyContent: "center",
+    position: "absolute",
     right: 0,
     top: 0,
     width: 13,
@@ -259,16 +260,16 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   titleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   toolWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 12,
   },
 });

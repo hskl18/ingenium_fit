@@ -18,15 +18,9 @@ export default function Collection() {
         },
       }}
     >
-      <Tab.Screen
-        component={InstitutionList}
-        name={t("common.rehabilitation_centre")}
-      />
-      <Tab.Screen
-        component={SciencePopularizationList}
-        name={t("common.science_popularization")}
-      />
-      <Tab.Screen component={UpdatesList} name={t("common.updates")} />
+      <Tab.Screen component={InstitutionList} name={"Rehabilitation centers"} />
+      <Tab.Screen component={SciencePopularizationList} name={"Knowledge"} />
+      <Tab.Screen component={UpdatesList} name={"Updates"} />
     </Tab.Navigator>
   );
 }

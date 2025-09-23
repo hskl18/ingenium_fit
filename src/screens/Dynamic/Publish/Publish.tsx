@@ -45,7 +45,8 @@ import AWSHelper from "@/services/mock/upload";
 
 export default function DynamicPublish({
   navigation,
-}: RootScreenProps<Paths.DynamicPublish>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.DynamicPublish>) {
+  const { backgrounds, colors } = useTheme();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [pictures, setPictures] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
@@ -63,8 +64,8 @@ export default function DynamicPublish({
   const FormSchema = z.object({
     dynamicsPostCategoryId: z
       .string()
-      .min(1, { message: t("message.classification") }),
-    content: z.string().min(1, { message: t("message.content") }),
+      .min(1, { message: "Please select a classification" }),
+    content: z.string().min(1, { message: "Please enter content" }),
   });
 
   const checkForm = (): boolean => {
@@ -98,7 +99,7 @@ export default function DynamicPublish({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        Toast.show(t("common.publish_success"), {
+        Toast.show("Published", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -195,7 +196,7 @@ export default function DynamicPublish({
       return;
     }
     if (!pictures.length && !videos.length) {
-      Toast.show(t("message.image_or_video"), {
+      Toast.show("Please upload at least one image or video", {
         animation: true,
         delay: 0,
         duration: 1000,
@@ -227,12 +228,10 @@ export default function DynamicPublish({
             }}
           >
             <View style={styles.classification}>
-              <Text style={styles.labelText}>
-                {t("dynamic.classification")}：
-              </Text>
+              <Text style={styles.labelText}>Classification：</Text>
               <View style={styles.classificationRight}>
                 <Text style={{ ...styles.selectText, color: colors.gray800 }}>
-                  {parameters.dynamicsPostCategory || t("common.select")}
+                  {parameters.dynamicsPostCategory || "Select"}
                 </Text>
                 <Image
                   source={ArrowIcon as ImageURISource}
@@ -250,7 +249,7 @@ export default function DynamicPublish({
               onChangeText={(text) => {
                 handleUpdateParameters(text, "content");
               }}
-              placeholder={t("input.please-input")}
+              placeholder={"Please input"}
               style={[styles.textInput, backgrounds.gray1550]}
               underlineColor="transparent"
               value={parameters.content}
@@ -263,11 +262,9 @@ export default function DynamicPublish({
           </View>
 
           <View style={styles.upload}>
-            <Text style={styles.labelText}>
-              {t("common.upload_pictures_videos")}
-            </Text>
+            <Text style={styles.labelText}>Upload pictures/videos</Text>
             <Text style={{ ...styles.uploadDescText, color: colors.gray800 }}>
-              {t("common.first_cover_default")}
+              {"First is cover by default"}
             </Text>
           </View>
           <View style={styles.segmentedControlContainer}>
@@ -278,7 +275,7 @@ export default function DynamicPublish({
               selectedIndex={selectedIndex}
               sliderStyle={styles.segmentedControlSlider}
               style={styles.segmentedControl}
-              values={[t("common.pictures"), t("common.videos")]}
+              values={["Pictures", "Videos"]}
             />
           </View>
           {selectedIndex === 0 ? (
@@ -350,9 +347,7 @@ export default function DynamicPublish({
           ) : undefined}
 
           <View style={[styles.released, backgrounds.gray1550]}>
-            <Text style={styles.labelText}>
-              {t("common.is_publicly_released")}
-            </Text>
+            <Text style={styles.labelText}>Publicly released</Text>
             <Switch
               onValueChange={(vlaue) => {
                 handleUpdateParameters(vlaue, "whetherPublic");
@@ -368,7 +363,7 @@ export default function DynamicPublish({
               mode="contained"
               onPress={handleSubmit}
             >
-              {t("common.release")}
+              {"Release"}
             </Button>
           </View>
         </View>

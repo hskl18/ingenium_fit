@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { useTranslation } from '@/hooks';
+import * as React from "react";
+// import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 import {
   Pressable,
   Image,
@@ -9,29 +9,42 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { Button, Text } from 'react-native-paper';
+} from "react-native";
+import { Button, Text } from "react-native-paper";
 
-import { useTheme } from '@/theme';
+import { useTheme } from "@/theme";
 
-import SortIcon from '@/assets/images/179.png';
-import SortFIcon from '@/assets/images/180.png';
-import CloseIcon from '@/assets/images/181.png';
+// import SortIcon from "@/assets/images/179.png";
+// import SortFIcon from "@/assets/images/180.png";
+import CloseIcon from "@/assets/images/181.png";
 
 const scoreList = [
   {
     id: 1,
-    label: '1-3',
+    label: "1-3",
     minScore: 1,
     maxScore: 3,
   },
   {
     id: 3,
-    label: '3-5',
+    label: "3-5",
     minScore: 3,
     maxScore: 5,
   },
 ];
+type ScoreState = {
+  id: string | number;
+  label?: string;
+  minScore?: string | number;
+  maxScore?: string | number;
+};
+type DistanceState = {
+  id: string | number;
+  label?: string;
+  minDistance?: string | number;
+  maxDistance?: string | number;
+};
+
 export default function RehabilitationCenterFilter({
   hideModal,
   setScore,
@@ -40,58 +53,61 @@ export default function RehabilitationCenterFilter({
   distance,
   visible,
 }: {
-  readonly distance: { id: string };
+  readonly distance: DistanceState;
   readonly hideModal: () => void;
-  readonly score: { id: string };
-  readonly setDistance: (distance: string) => void;
-  readonly setScore: (score: string) => void;
+  readonly score: ScoreState;
+  readonly setDistance: (distance: DistanceState) => void;
+  readonly setScore: (score: ScoreState) => void;
   readonly visible: boolean;
 }) {
-  const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
-  const [scopeScore, setScopeScore] = useState(score || {});
-  const [scopeDistance, setScopeDistance] = useState(distance || {});
+  const [scopeScore, setScopeScore] = useState<ScoreState>(
+    score || ({} as any)
+  );
+  const [scopeDistance, setScopeDistance] = useState<DistanceState>(
+    distance || ({} as any)
+  );
 
   const handleSubmit = () => {
     hideModal();
     setScore(scopeScore);
     setDistance(scopeDistance);
   };
-  const distanceList = [
+  const distanceList: DistanceState[] = [
     {
       id: 1,
-      label: t('common.within')+' 1km',
+      label: "Within 1km",
       maxDistance: 1,
-      minDistance: '',
+      minDistance: "",
     },
     {
       id: 2,
-      label: '1-3km',
+      label: "1-3km",
       maxDistance: 3,
       minDistance: 1,
     },
     {
       id: 3,
-      label: '3-5km',
+      label: "3-5km",
       maxDistance: 5,
       minDistance: 3,
     },
     {
       id: 4,
-      label: '5-10km',
+      label: "5-10km",
       maxDistance: 10,
       minDistance: 5,
     },
     {
       id: 5,
-      label: '10-15km',
+      label: "10-15km",
       maxDistance: 15,
       minDistance: 10,
     },
     {
       id: 6,
-      label: t('common.over')+ ' 15km',
-      maxDistance: '',
+      label: "Over 15km",
+      maxDistance: "",
       minDistance: 15,
     },
   ];
@@ -108,7 +124,7 @@ export default function RehabilitationCenterFilter({
         <TouchableOpacity onPress={hideModal} style={{ flex: 1 }} />
         <View style={[styles.container, backgrounds.gray1600]}>
           <View style={styles.titleWrapper}>
-            <Text style={styles.titleText}>{t('common.filter_by')}</Text>
+            <Text style={styles.titleText}>{"Filter by"}</Text>
             <Pressable style={styles.closeIcon} onPress={hideModal}>
               <Image
                 source={CloseIcon as ImageURISource}
@@ -117,9 +133,7 @@ export default function RehabilitationCenterFilter({
             </Pressable>
           </View>
           <View style={styles.scoreWrapper}>
-            <Text style={styles.titleText}>
-              {t('common.rating')}
-            </Text>
+            <Text style={styles.titleText}>{"Rating"}</Text>
             <View style={styles.scoreInnerWrapper}>
               {scoreList.map((item, i) => (
                 <Pressable
@@ -132,7 +146,6 @@ export default function RehabilitationCenterFilter({
                     scopeScore.id === item.id
                       ? {
                           backgroundColor: colors.primary,
-                          color: colors.gray1600,
                         }
                       : {},
                   ]}
@@ -155,7 +168,7 @@ export default function RehabilitationCenterFilter({
           </View>
 
           <View style={styles.distanceWrapper}>
-            <Text style={styles.titleText}>{t('common.distance')}</Text>
+            <Text style={styles.titleText}>{"Distance"}</Text>
             <View style={styles.distanceInnerWrapper}>
               {distanceList.map((item, i) => (
                 <Pressable
@@ -195,7 +208,7 @@ export default function RehabilitationCenterFilter({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t('common.confirm')}
+            {"Confirm"}
           </Button>
         </View>
       </View>
@@ -205,13 +218,13 @@ export default function RehabilitationCenterFilter({
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     height: 49,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   buttonText: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   closeIcon: {
     height: 14,
@@ -224,15 +237,15 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   containerStyle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     flex: 1,
   },
   score: {
-    alignItems: 'center',
-    borderColor: 'rgba(0, 0, 0, 0.5)',
+    alignItems: "center",
+    borderColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: 10,
     borderWidth: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     height: 32,
     paddingHorizontal: 14,
@@ -240,14 +253,14 @@ const styles = StyleSheet.create({
   scoreInnerWrapper: {
     marginTop: 15,
     gap: 12,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   distanceInnerWrapper: {
     marginTop: 15,
     gap: 12,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   scoreText: {
     fontSize: 15,
@@ -263,11 +276,11 @@ const styles = StyleSheet.create({
   titleText: {
     flexShrink: 1,
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   titleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

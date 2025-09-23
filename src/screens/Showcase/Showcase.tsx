@@ -21,9 +21,9 @@ function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>{t("common.showcase_title")}</Text>
+        <Text style={styles.title}>{"Showcase"}</Text>
         <Text style={{ ...styles.subtitle, color: colors.gray500 }}>
-          {t("common.showcase_subtitle")}
+          {"Highlights and examples"}
         </Text>
 
         <View style={styles.ctaWrapper}>
@@ -34,17 +34,17 @@ function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
                 style={styles.cardCover}
               />
               <Card.Content>
-                <Text style={styles.cardTitle}>{t(card.titleKey)}</Text>
+                <Text style={styles.cardTitle}>{card.titleKey}</Text>
                 <Text
                   style={{ ...styles.cardDescription, color: colors.gray500 }}
                 >
-                  {t(card.descriptionKey)}
+                  {card.descriptionKey}
                 </Text>
                 {card.badgeKeys ? (
                   <View style={styles.badgeRow}>
                     {card.badgeKeys.map((badge) => (
                       <Text key={badge} style={styles.badge}>
-                        {t(badge)}
+                        {badge}
                       </Text>
                     ))}
                   </View>
@@ -56,9 +56,9 @@ function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
 
         {showcaseSections.map((section) => (
           <View key={section.id} style={styles.sectionWrapper}>
-            <Text style={styles.sectionTitle}>{t(section.titleKey)}</Text>
+            <Text style={styles.sectionTitle}>{section.titleKey}</Text>
             <Text style={{ ...styles.sectionSubtitle, color: colors.gray500 }}>
-              {t(section.subtitleKey)}
+              {section.subtitleKey}
             </Text>
             <View style={styles.cardList}>
               {section.cards.map((card) => (
@@ -68,20 +68,20 @@ function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
                     style={styles.cardCover}
                   />
                   <Card.Content>
-                    <Text style={styles.cardTitle}>{t(card.titleKey)}</Text>
+                    <Text style={styles.cardTitle}>{card.titleKey}</Text>
                     <Text
                       style={{
                         ...styles.cardDescription,
                         color: colors.gray500,
                       }}
                     >
-                      {t(card.descriptionKey)}
+                      {card.descriptionKey}
                     </Text>
                     {card.badgeKeys ? (
                       <View style={styles.badgeRow}>
                         {card.badgeKeys.map((badge) => (
                           <Text key={badge} style={styles.badge}>
-                            {t(badge)}
+                            {badge}
                           </Text>
                         ))}
                       </View>
@@ -100,7 +100,7 @@ function Showcase({ navigation }: RootScreenProps<Paths.Showcase>) {
           }}
           style={styles.backButton}
         >
-          {t("common.showcase_cta")}
+          {"Learn more"}
         </Button>
       </ScrollView>
     </SafeScreen>

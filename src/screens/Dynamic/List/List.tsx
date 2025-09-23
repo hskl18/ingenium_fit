@@ -1,17 +1,17 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useLayoutEffect, useState } from 'react';
-import { useTranslation } from '@/hooks';
-import { StyleSheet, View } from 'react-native';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useLayoutEffect } from "react";
+// import { useTranslation } from '@/hooks';
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import DynamicItem from '@/components/common/DynamicItem/DynamicItem.tsx';
-import { SafeScreen } from '@/components/templates';
+import DynamicItem from "@/components/common/DynamicItem/DynamicItem.tsx";
+import { SafeScreen } from "@/components/templates";
 
-import { postList } from '@/services';
+import { postList } from "@/services";
 import Empty from "@/components/common/Empty/Empty.tsx";
 
 export default function DynamicList({
@@ -23,71 +23,68 @@ export default function DynamicList({
   const queryClient = useQueryClient();
 
   useLayoutEffect(() => {
-    let headerTitle = '';
+    let headerTitle = "";
     if (whetherRecommend) {
-      headerTitle = t('title.recommended_posts');
+      headerTitle = "Recommended posts";
     }
 
     if (selectType && +selectType === 1) {
-      headerTitle = t('title.friend_updates');
+      headerTitle = "Friend updates";
     }
     navigation.setOptions({
       headerTitle: headerTitle,
     });
   }, [navigation]);
-  const {
-    isPending,
-    data,
-    isFetching,
-    isSuccess,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage } = useInfiniteQuery<
+    any,
+    Error,
+    any,
+    any,
+    number
+  >({
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      console.log(lastPage, allPages);
+    getNextPageParam: (lastPage: any, allPages: any, lastPageParam: number) => {
+      if (__DEV__) console.log(lastPage, allPages);
       if (!lastPage?.rows || lastPage.rows?.length < 10) {
         return undefined;
       }
       return lastPageParam + 1;
     },
-    queryFn: (pageParam) => {
+    queryFn: (pageParam: any) => {
       return postList({
-        // 查询类型：1-Friend Updates朋友动态  2-Recently最近的
         selectType,
         whetherRecommend,
         page: pageParam.pageParam,
       });
     },
-    queryKey: [Paths.DynamicList,'postList', selectType, whetherRecommend],
+    queryKey: [Paths.DynamicList, "postList", selectType, whetherRecommend],
   });
 
-  console.log(hasNextPage, data);
+  if (__DEV__) console.log("dynamicListData", data);
 
-  const onRefresh = ()=> {
+  const onRefresh = () => {
     queryClient.refetchQueries({
-      queryKey: [Paths.DynamicList, 'postList'],
-      type: 'active',
+      queryKey: [Paths.DynamicList, "postList"],
+      type: "active",
     });
-  }
+  };
 
-  let dataList = [];
+  let dataList: any[] = [];
   if (data?.pages) {
-    dataList = data?.pages.flatMap((item) => item?.rows);
+    dataList = data.pages.flatMap((item: any) => item?.rows);
   }
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item, index }: { item: any; index: number }) => {
     return (
       <View key={item.id} style={{ marginTop: index > 0 ? 20 : 0 }}>
-        <DynamicItem item={item} onRefresh={onRefresh}/>
+        <DynamicItem item={item} onRefresh={onRefresh} />
       </View>
     );
   };
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
@@ -95,8 +92,8 @@ export default function DynamicList({
         data={dataList}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<Empty/>}
-        onEndReached={fetchNextPage}
+        ListEmptyComponent={<Empty />}
+        onEndReached={() => fetchNextPage()}
       />
     </SafeScreen>
   );

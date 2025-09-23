@@ -35,7 +35,8 @@ import AWSHelper from "@/services/mock/upload";
 export default function RehabilitationCenterEvaluate({
   navigation,
   route,
-}: RootScreenProps<Paths.RehabilitationCenterEvaluate>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterEvaluate>) {
+  const { backgrounds, colors } = useTheme();
   const { id, name, coverImage } = route.params;
 
   console.log("id", id);
@@ -45,12 +46,11 @@ export default function RehabilitationCenterEvaluate({
     images: "",
     star: 5,
     objectId: id,
-    // 评论对象：1-动态帖子 2-科普 3-康复中心 4-医师
     objectType: 3,
   });
 
   const FormSchema = z.object({
-    content: z.string().min(1, { message: t("message.evaluate") }),
+    content: z.string().min(1, { message: "Please enter your evaluation" }),
   });
 
   const checkForm = (): boolean => {
@@ -84,7 +84,7 @@ export default function RehabilitationCenterEvaluate({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        Toast.show(t("common.evaluation_submit_success"), {
+        Toast.show("Submitted", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -197,7 +197,7 @@ export default function RehabilitationCenterEvaluate({
               onChangeText={(text) => {
                 handleUpdateParameters(text, "content");
               }}
-              placeholder={t("common.please_enter_text_review")}
+              placeholder={"Please enter text review"}
               style={[styles.textInput, backgrounds.gray1550]}
               underlineColor="transparent"
               value={parameters.content}
@@ -245,7 +245,7 @@ export default function RehabilitationCenterEvaluate({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t("common.submit")}
+            {"Submit"}
           </Button>
         </View>
       </SafeScreen>

@@ -1,36 +1,37 @@
-import type { RootScreenProps } from '@/navigation/types.ts';
+import type { RootScreenProps } from "@/navigation/types.ts";
 
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { Image, ImageURISource, StyleSheet, View } from 'react-native';
-import { Avatar, Text, TouchableRipple } from 'react-native-paper';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { Image, ImageURISource, StyleSheet, View } from "react-native";
+import { Avatar, Text, TouchableRipple } from "react-native-paper";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import { SafeScreen } from '@/components/templates';
-import { dayjs } from '@/plugins/day.ts';
+import { SafeScreen } from "@/components/templates";
+import { dayjs } from "@/plugins/day.ts";
 
-import { leaveWordList } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
-import { useFocusEffect } from '@react-navigation/native';
-import React from 'react';
-import { useTranslation } from '@/hooks';
+import { leaveWordList } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
+import { useFocusEffect } from "@react-navigation/native";
+import React from "react";
+import { useTranslation } from "@/hooks";
 
 export default function ChatMessage({
   navigation,
-}: RootScreenProps<Paths.ChatMessage>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.ChatMessage>) {
+  const { backgrounds, colors } = useTheme();
   const queryClient = useQueryClient();
 
   useFocusEffect(
     React.useCallback(() => {
       queryClient.refetchQueries({
-        queryKey: [Paths.ChatMessage, 'leaveWordList'],
-        type: 'active',
+        queryKey: [Paths.ChatMessage, "leaveWordList"],
+        type: "active",
       });
       // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [])
   );
   const {
     isPending,
@@ -55,7 +56,7 @@ export default function ChatMessage({
         pageSize: 20,
       });
     },
-    queryKey: [Paths.ChatMessage, 'leaveWordList'],
+    queryKey: [Paths.ChatMessage, "leaveWordList"],
   });
 
   let dataList = [];
@@ -108,7 +109,7 @@ export default function ChatMessage({
               <Text style={{ ...styles.dateText, color: colors.gray800 }}>
                 {item.latestLeaveWordSub?.createTime
                   ? dayjs(item.latestLeaveWordSub?.createTime).format(
-                      'YYYY-MM-DD HH:mm',
+                      "YYYY-MM-DD HH:mm"
                     )
                   : item.latestLeaveWordSub?.createTime}
               </Text>
@@ -128,7 +129,7 @@ export default function ChatMessage({
                     numberOfLines={1}
                     style={{ ...styles.messageText, color: colors.gray800 }}
                   >
-                    {t('common.image_message')}
+                    {"Image"}
                   </Text>
                 ) : undefined}
                 {+item.latestLeaveWordSub?.messageType === 3 ? (
@@ -136,7 +137,7 @@ export default function ChatMessage({
                     numberOfLines={1}
                     style={{ ...styles.messageText, color: colors.gray800 }}
                   >
-                    {t('common.voice_message')}
+                    {"Voice"}
                   </Text>
                 ) : undefined}
               </>
@@ -149,7 +150,7 @@ export default function ChatMessage({
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1550]}
     >
       <LegendList
@@ -177,9 +178,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   message: {
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 18,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 9,
     paddingHorizontal: 15,
     paddingVertical: 18,
@@ -189,12 +190,12 @@ const styles = StyleSheet.create({
     width: 53,
   },
   messageNum: {
-    alignItems: 'center',
-    backgroundColor: '#F2262F',
+    alignItems: "center",
+    backgroundColor: "#F2262F",
     borderRadius: 20,
     height: 14,
-    justifyContent: 'center',
-    position: 'absolute',
+    justifyContent: "center",
+    position: "absolute",
     right: 0,
     top: 0,
     width: 13,
@@ -217,8 +218,8 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   phoneWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 1,
     marginTop: 12,
   },
@@ -227,16 +228,16 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   titleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   toolWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 12,
   },
 });

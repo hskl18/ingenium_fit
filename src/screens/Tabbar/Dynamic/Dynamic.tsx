@@ -1,13 +1,13 @@
-import type { RootScreenProps } from '@/navigation/types.ts';
-import { LegendList } from '@legendapp/list';
+import type { RootScreenProps } from "@/navigation/types.ts";
+import { LegendList } from "@legendapp/list";
 import {
   keepPreviousData,
   useInfiniteQuery,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from '@/hooks';
+} from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
@@ -16,34 +16,37 @@ import {
   StatusBar,
   StyleSheet,
   View,
-} from 'react-native';
-import { Button, Text } from 'react-native-paper';
+} from "react-native";
+import { Button, Text } from "react-native-paper";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import DynamicItem from '@/components/common/DynamicItem/DynamicItem.tsx';
-import Empty from '@/components/common/Empty/Empty.tsx';
-import { SafeScreen } from '@/components/templates';
-import DynamicSort from '@/screens/Tabbar/Dynamic/components/DynamicSort/DynamicSort.tsx';
-import FriendUpdatesItem from '@/screens/Tabbar/Dynamic/components/FriendUpdatesItem/FriendUpdatesItem.tsx';
+import DynamicItem from "@/components/common/DynamicItem/DynamicItem.tsx";
+import Empty from "@/components/common/Empty/Empty.tsx";
+import { SafeScreen } from "@/components/templates";
+import DynamicSort from "@/screens/Tabbar/Dynamic/components/DynamicSort/DynamicSort.tsx";
+import FriendUpdatesItem from "@/screens/Tabbar/Dynamic/components/FriendUpdatesItem/FriendUpdatesItem.tsx";
 
-import FilterIcon from '@/assets/images/51.png';
-import EditIcon from '@/assets/images/54.png';
-import { dynamicsCategoryList, postList } from '@/services';
-import TabMenu from '@/components/common/TabMenu/TabMenu.tsx';
-import { useFocusEffect } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import FilterIcon from "@/assets/images/51.png";
+import EditIcon from "@/assets/images/54.png";
+import { dynamicsCategoryList, postList } from "@/services";
+import TabMenu from "@/components/common/TabMenu/TabMenu.tsx";
+import { useFocusEffect } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Dynamic({
   navigation,
 }: RootScreenProps<Paths.Dynamic>) {
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
-  const [selectType, setSelectType] = useState(undefined);
-  const [whetherRecommend, setWhetherRecommend] = useState(1);
-  const [categoryList, setCategoryList] = useState([]);
+  const { t } = useTranslation();
+  const [selectType, setSelectType] = useState<number>(1);
+  const [whetherRecommend, setWhetherRecommend] = useState<number | undefined>(
+    1
+  );
+  const [categoryList, setCategoryList] = useState<any[]>([]);
   const [visibleSort, setVisibleSort] = useState(false);
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const queryClient = useQueryClient();
 
@@ -60,22 +63,23 @@ export default function Dynamic({
     React.useCallback(() => {
       queryClient.refetchQueries({
         queryKey: [Paths.Dynamic],
-        type: 'active',
+        type: "active",
       });
       // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [])
   );
 
   const { data: categoryData, isSuccess: categoryIsSuccess } = useQuery({
     queryFn: dynamicsCategoryList,
-    queryKey: [Paths.Dynamic, 'dynamicsCategoryList'],
+    queryKey: [Paths.Dynamic, "dynamicsCategoryList"],
   });
 
   useEffect(() => {
-    console.log('categoryData', categoryData);
+    console.log("categoryData", categoryData);
     if (categoryIsSuccess) {
-      setCategoryList(categoryData.data || {});
+      const list = Array.isArray(categoryData?.data) ? categoryData.data : [];
+      setCategoryList(list);
     }
   }, [setCategoryList, categoryData, categoryIsSuccess]);
 
@@ -88,40 +92,39 @@ export default function Dynamic({
           selectType: 1,
         });
       },
-      queryKey: [Paths.Dynamic, 'Friend-Updates'],
+      queryKey: [Paths.Dynamic, "Friend-Updates"],
     });
-  const {
-    isPending,
-    data,
-    isFetching,
-    isSuccess,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 1,
     enabled: !!categoryList.length,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       console.log(lastPage, allPages);
-      if (!lastPage?.rows || lastPage.rows?.length < 10) {
+      const rows = (lastPage as any)?.rows;
+      const items = (lastPage as any)?.data?.items || (lastPage as any)?.items;
+      const length = Array.isArray(rows)
+        ? rows.length
+        : Array.isArray(items)
+          ? items.length
+          : 0;
+      if (!length || length < 10) {
         return undefined;
       }
       return lastPageParam + 1;
     },
     queryFn: (pageParam) => {
-      console.log('selectedIndex', selectedIndex);
+      console.log("selectedIndex", selectedIndex);
       return postList({
         sortBy,
         whetherRecommend,
         dynamicsPostCategoryId: categoryList[selectedIndex]?.id,
-        page: pageParam.pageParam,
+        page: (pageParam as any).pageParam,
         // 查询类型：1-Friend Updates朋友动态  2-Recently最近的
         selectType,
       });
     },
     queryKey: [
       Paths.Dynamic,
-      'postList',
+      "postList",
       categoryList,
       sortBy,
       whetherRecommend,
@@ -134,14 +137,14 @@ export default function Dynamic({
 
   const handleSetUpdatesType = (
     value: number,
-    flag: 'recommend' | 'recently',
+    flag: "recommend" | "recently"
   ) => {
-    if (flag === 'recommend') {
+    if (flag === "recommend") {
       setWhetherRecommend(1);
-      setSelectType(undefined);
+      setSelectType(1);
     }
 
-    if (flag === 'recently') {
+    if (flag === "recently") {
       setWhetherRecommend(undefined);
       setSelectType(2);
     }
@@ -149,20 +152,27 @@ export default function Dynamic({
 
   const onRefresh = () => {
     queryClient.refetchQueries({
-      queryKey: [Paths.Dynamic, 'postList'],
-      type: 'active',
+      queryKey: [Paths.Dynamic, "postList"],
+      type: "active",
     });
   };
 
-  let dataList = [];
+  let dataList: any[] = [];
   if (data?.pages) {
-    dataList = data?.pages.flatMap((item) => item?.rows);
+    dataList = (data.pages as any[]).flatMap((page) => {
+      const rows = (page as any)?.rows;
+      const items = (page as any)?.data?.items || (page as any)?.items;
+      if (Array.isArray(rows)) return rows;
+      if (Array.isArray(items)) return items;
+      return [];
+    });
   }
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item, index }: { item: any; index: number }) => {
+    if (!item) return null;
     return (
       <View
-        key={item.id}
+        key={item.id ?? index}
         style={{ marginHorizontal: 20, marginTop: index > 0 ? 20 : 0 }}
       >
         <DynamicItem item={item} onRefresh={onRefresh} />
@@ -175,28 +185,24 @@ export default function Dynamic({
       <>
         <StatusBar
           backgroundColor={navigationTheme.colors.background}
-          barStyle={variant === 'dark' ? 'light-content' : 'dark-content'}
+          barStyle={variant === "dark" ? "light-content" : "dark-content"}
         />
         <View
           style={[
             styles.header,
             {
-              paddingTop:insets.top || StatusBar.currentHeight,
+              paddingTop: insets.top || StatusBar.currentHeight,
             },
           ]}
         >
           <View style={styles.heroWrapper}>
-            <Text style={styles.heroBadge}>{t('common.community_badge')}</Text>
-            <Text style={styles.titleText}>
-              {t('common.community_feed_title')}
-            </Text>
-            <Text
-              style={{ ...styles.heroSubtitle, color: colors.gray500 }}
-            >
-              {t('common.community_feed_subtitle')}
+            <Text style={styles.heroBadge}>{"Community"}</Text>
+            <Text style={styles.titleText}>{"Community feed"}</Text>
+            <Text style={{ ...styles.heroSubtitle, color: colors.gray500 }}>
+              {"Share progress and learn from peers"}
             </Text>
             <Button
-              accessibilityLabel={t('common.share_progress')}
+              accessibilityLabel={"Share progress"}
               contentStyle={styles.publishButtonContent}
               icon={() => (
                 <Image
@@ -213,13 +219,13 @@ export default function Dynamic({
               style={styles.publishButton}
               uppercase={false}
             >
-              {t('common.share_progress')}
+              {"Share progress"}
             </Button>
           </View>
           {categoryList.length > 0 ? (
             <>
               <Text style={{ ...styles.topicIntro, color: colors.gray500 }}>
-                {t('common.community_topics_intro')}
+                {"Topics from the community"}
               </Text>
               <TabMenu
                 tabs={categoryList}
@@ -230,12 +236,11 @@ export default function Dynamic({
           ) : undefined}
         </View>
         <View style={styles.container}>
-          {friendUpdatesIsSuccess && friendUpdatesData.rows?.length > 0 ? (
+          {friendUpdatesIsSuccess &&
+          friendUpdatesData?.data?.items?.length > 0 ? (
             <>
               <View style={styles.friendUpdatesTitleWrapper}>
-                <Text style={styles.friendUpdatesTitle}>
-                  {t('common.peer_spotlights')}
-                </Text>
+                <Text style={styles.friendUpdatesTitle}>Peer spotlights</Text>
                 <Button
                   mode="text"
                   onPress={() => {
@@ -246,7 +251,7 @@ export default function Dynamic({
                   }}
                   textColor={navigationTheme.colors.primary}
                 >
-                  {t('common.view_all')}
+                  {"View all"}
                 </Button>
               </View>
               <ScrollView
@@ -254,7 +259,7 @@ export default function Dynamic({
                 horizontal
                 showsHorizontalScrollIndicator={false}
               >
-                {friendUpdatesData.rows.map((item) => (
+                {friendUpdatesData.data.items.map((item: any) => (
                   <View key={item.id}>
                     <FriendUpdatesItem item={item} />
                   </View>
@@ -269,15 +274,15 @@ export default function Dynamic({
                 style={{
                   ...styles.updatesTitle,
                   color:
-                    +whetherRecommend === 1
+                    +(whetherRecommend ?? 0) === 1
                       ? navigationTheme.colors.primary
                       : colors.gray800,
                 }}
                 onPress={() => {
-                  handleSetUpdatesType(1, 'recommend');
+                  handleSetUpdatesType(1, "recommend");
                 }}
               >
-                {t('common.recommend')}
+                {"Recommend"}
               </Text>
               <Text
                 style={{
@@ -288,10 +293,10 @@ export default function Dynamic({
                       : colors.gray800,
                 }}
                 onPress={() => {
-                  handleSetUpdatesType(1, 'recently');
+                  handleSetUpdatesType(1, "recently");
                 }}
               >
-                {t('common.recently')}
+                {"Recently"}
               </Text>
             </View>
             <Pressable onPress={showSortModal}>
@@ -315,8 +320,11 @@ export default function Dynamic({
         data={dataList}
         renderItem={renderItem}
         ListEmptyComponent={<Empty />}
-        keyExtractor={(item) => item.id}
-        onEndReached={fetchNextPage}
+        keyExtractor={(item: any, idx: number) => String(item?.id ?? idx)}
+        onEndReached={() => {
+          // LegendList expects a callback, not RN FlatList signature
+          fetchNextPage();
+        }}
       />
       <DynamicSort
         hideModal={hideSortModal}
@@ -335,13 +343,13 @@ const styles = StyleSheet.create({
     width: 16,
   },
   friendUpdatesTitleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   header: {
-    backgroundColor: '#E3EFF8',
+    backgroundColor: "#E3EFF8",
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
     paddingBottom: 24,
@@ -354,21 +362,21 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   heroBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0, 119, 210, 0.14)',
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(0, 119, 210, 0.14)",
     borderRadius: 999,
-    color: '#0B3A64',
+    color: "#0B3A64",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   titleText: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     lineHeight: 28,
     marginTop: 16,
-    color: '#0B2340',
+    color: "#0B2340",
   },
   heroSubtitle: {
     fontSize: 14,
@@ -376,7 +384,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   publishButton: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     borderRadius: 12,
     marginTop: 18,
   },
@@ -386,7 +394,7 @@ const styles = StyleSheet.create({
   },
   publishButtonLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: 4,
   },
   publishButtonIcon: {
@@ -400,19 +408,19 @@ const styles = StyleSheet.create({
   },
   friendUpdatesTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   updatesTitle: {
     fontSize: 20,
   },
   updatesTitleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 18,
   },
   updatesTitleWrapperLeft: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 30,
   },
   topicIntro: {

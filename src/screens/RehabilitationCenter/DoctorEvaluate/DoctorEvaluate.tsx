@@ -36,7 +36,8 @@ import AWSHelper from "@/services/mock/upload";
 export default function RehabilitationCenterDoctorEvaluate({
   navigation,
   route,
-}: RootScreenProps<Paths.RehabilitationCenterDoctorEvaluate>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterDoctorEvaluate>) {
+  const { backgrounds, colors } = useTheme();
   const { id, name, headImage } = route.params;
   const [images, setImages] = useState<string[]>([]);
   const [parameters, setParameters] = useState({
@@ -49,7 +50,7 @@ export default function RehabilitationCenterDoctorEvaluate({
   });
 
   const FormSchema = z.object({
-    content: z.string().min(1, { message: t("message.evaluate") }),
+    content: z.string().min(1, { message: "Please enter your evaluation" }),
   });
 
   const checkForm = (): boolean => {
@@ -83,7 +84,7 @@ export default function RehabilitationCenterDoctorEvaluate({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        Toast.show(t("common.evaluation_submit_success"), {
+        Toast.show("Submitted", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -177,7 +178,7 @@ export default function RehabilitationCenterDoctorEvaluate({
             <Text style={styles.titleText}>{name}</Text>
           </View>
           <View style={styles.starWrapper}>
-            <Text>{t("common.rating")}</Text>
+            <Text>{"Rating"}</Text>
             <Rating
               size={22}
               rating={parameters.star}
@@ -196,7 +197,7 @@ export default function RehabilitationCenterDoctorEvaluate({
               onChangeText={(text) => {
                 handleUpdateParameters(text, "content");
               }}
-              placeholder={t("common.please_enter_text_review")}
+              placeholder={"Please enter text review"}
               style={[styles.textInput, backgrounds.gray1550]}
               underlineColor="transparent"
               value={parameters.content}
@@ -244,7 +245,7 @@ export default function RehabilitationCenterDoctorEvaluate({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t("common.submit")}
+            {"Submit"}
           </Button>
         </View>
       </SafeScreen>

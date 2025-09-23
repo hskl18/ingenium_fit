@@ -47,7 +47,7 @@ export default function CancelAccount({
       hideModal();
       if (response.code === 200) {
         storage.delete(Configs.Token);
-        Toast.show(t("common.cancel_account_success"), {
+        Toast.show("Account cancelled", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -78,7 +78,7 @@ export default function CancelAccount({
         <View style={[styles.container, backgrounds.gray1600]}>
           <View style={styles.titleWrapper}>
             <Text style={styles.titleText}>
-              {t("common.cancel_account_risks")}
+              {"This action is permanent and cannot be undone."}
             </Text>
             <Pressable onPress={hideModal}>
               <Image
@@ -90,7 +90,7 @@ export default function CancelAccount({
           </View>
           <View style={[styles.content, backgrounds.gray1550]}>
             <Text style={{ ...styles.contentText, color: colors.gray800 }}>
-              {t("common.cancel_account_warning")}
+              {"You will lose access to your data."}
             </Text>
           </View>
         </View>
@@ -101,9 +101,7 @@ export default function CancelAccount({
           mode="text"
           onPress={handleSubmit}
         >
-          <Text style={styles.buttonText}>
-            {t("common.still_cancel_account")}
-          </Text>
+          <Text style={styles.buttonText}>{"Still cancel account"}</Text>
         </Button>
       </Modal>
     </Portal>

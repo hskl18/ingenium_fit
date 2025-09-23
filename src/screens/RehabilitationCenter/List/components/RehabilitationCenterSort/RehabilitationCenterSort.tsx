@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { useTranslation } from '@/hooks';
+import * as React from "react";
+// import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 import {
   Pressable,
   Image,
@@ -9,14 +9,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { Button, Text } from 'react-native-paper';
+} from "react-native";
+import { Button, Text } from "react-native-paper";
 
-import { useTheme } from '@/theme';
+import { useTheme } from "@/theme";
 
-import SortIcon from '@/assets/images/179.png';
-import SortFIcon from '@/assets/images/180.png';
-import CloseIcon from '@/assets/images/181.png';
+import SortIcon from "@/assets/images/179.png";
+import SortFIcon from "@/assets/images/180.png";
+import CloseIcon from "@/assets/images/181.png";
 
 export default function RehabilitationCenterSort({
   hideModal,
@@ -29,29 +29,29 @@ export default function RehabilitationCenterSort({
   readonly sortBy: string;
   readonly visible: boolean;
 }) {
-  const navigation = useNavigation();
-  const { backgrounds, colors } = useTheme();
+  // const navigation = useNavigation();
+  const { backgrounds } = useTheme();
 
   // 排序方式：1-默认排序(默认) 2-距离排序 3-星级排序
-  const [sort, setSort] = useState(sortBy || '');
+  const [sort, setSort] = useState(sortBy || "");
 
   const handleSubmit = () => {
     setSortBy(sort);
     hideModal();
   };
 
-  console.log('sort', sort);
+  console.log("sort", sort);
   const sortList = [
     {
-      label: t('common.default_collation'),
+      label: "Default",
       value: 1,
     },
     {
-      label: t('common.closest_distance'),
+      label: "Closest distance",
       value: 2,
     },
     {
-      label: t('common.highest_rating'),
+      label: "Highest rating",
       value: 3,
     },
   ];
@@ -67,7 +67,7 @@ export default function RehabilitationCenterSort({
         <TouchableOpacity onPress={hideModal} style={{ flex: 1 }} />
         <View style={[styles.container, backgrounds.gray1600]}>
           <View style={styles.titleWrapper}>
-            <Text style={styles.titleText}>{t('common.sort_by')}</Text>
+            <Text style={styles.titleText}>{"Sort by"}</Text>
             <Pressable style={styles.closeIcon} onPress={hideModal}>
               <Image
                 source={CloseIcon as ImageURISource}
@@ -81,7 +81,7 @@ export default function RehabilitationCenterSort({
               <Pressable
                 key={sortItem.value}
                 onPress={() => {
-                  setSort(sortItem.value);
+                  setSort(String(sortItem.value));
                 }}
                 style={styles.sort}
               >
@@ -108,7 +108,7 @@ export default function RehabilitationCenterSort({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t('common.confirm')}
+            {"Confirm"}
           </Button>
         </View>
       </View>
@@ -118,13 +118,13 @@ export default function RehabilitationCenterSort({
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     height: 49,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   buttonText: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   closeIcon: {
     height: 14,
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   containerStyle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     flex: 1,
   },
   sort: {
     paddingVertical: 9,
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 10,
   },
   sortIcon: {
@@ -161,11 +161,11 @@ const styles = StyleSheet.create({
   titleText: {
     flexShrink: 1,
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   titleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

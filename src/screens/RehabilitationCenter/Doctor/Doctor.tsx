@@ -1,13 +1,13 @@
-import { LegendList } from '@legendapp/list';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import { LegendList } from "@legendapp/list";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import {
   useInfiniteQuery,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from '@/hooks';
-import React from 'react';
+} from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "@/hooks";
+import React from "react";
 import {
   Dimensions,
   Image,
@@ -16,34 +16,36 @@ import {
   ScrollView,
   StyleSheet,
   View,
-} from 'react-native';
-import { Pressable } from 'react-native-gesture-handler';
-import { Avatar, Text } from 'react-native-paper';
-import { useSharedValue } from 'react-native-reanimated';
-import Carousel from 'react-native-reanimated-carousel';
+} from "react-native";
+import { ImageWithFallback } from "@/components/atoms";
+import { Pressable } from "react-native-gesture-handler";
+import { Avatar, Text } from "react-native-paper";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel from "react-native-reanimated-carousel";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import { SafeScreen } from '@/components/templates';
-import CommentItem from '@/screens/RehabilitationCenter/components/CommentItem/CommentItem.tsx';
+import { SafeScreen } from "@/components/templates";
+import CommentItem from "@/screens/RehabilitationCenter/components/CommentItem/CommentItem.tsx";
 
-import ProfessionalIcon from '@/assets/images/153.png';
-import PracticeScopeIcon from '@/assets/images/154.png';
-import EducationalBackgroundIcon from '@/assets/images/155.png';
-import WorkExperienceIcon from '@/assets/images/156.png';
-import BackIcon from '@/assets/images/222.png';
-import ScoreIcon from '@/assets/images/244.png';
-import FilterIcon from '@/assets/images/604.png';
-import { commentList, doctorDetail } from '@/services';
-import { useFocusEffect } from '@react-navigation/native';
-import GalleryPreview from 'react-native-gallery-preview';
+import ProfessionalIcon from "@/assets/images/153.png";
+import PracticeScopeIcon from "@/assets/images/154.png";
+import EducationalBackgroundIcon from "@/assets/images/155.png";
+import WorkExperienceIcon from "@/assets/images/156.png";
+import BackIcon from "@/assets/images/222.png";
+import ScoreIcon from "@/assets/images/244.png";
+import FilterIcon from "@/assets/images/604.png";
+import { commentList, doctorDetail } from "@/services";
+import { useFocusEffect } from "@react-navigation/native";
+import GalleryPreview from "react-native-gallery-preview";
 
 export function RehabilitationCenterDoctor({
   navigation,
   route,
-}: RootScreenProps<Paths.RehabilitationCenterDoctor>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterDoctor>) {
+  const { backgrounds, colors } = useTheme();
   const { id } = route.params;
   const progress = useSharedValue<number>(0);
   const [post, setPost] = useState({});
@@ -56,11 +58,10 @@ export function RehabilitationCenterDoctor({
     React.useCallback(() => {
       queryClient.refetchQueries({
         queryKey: [Paths.RehabilitationCenterDoctor],
-        type: 'active',
+        type: "active",
       });
-      // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [])
   );
 
   useEffect(() => {
@@ -90,12 +91,10 @@ export function RehabilitationCenterDoctor({
     queryFn: () => {
       return doctorDetail({ id });
     },
-    queryKey: [Paths.RehabilitationCenterDoctor, 'doctorDetail', id],
+    queryKey: [Paths.RehabilitationCenterDoctor, "doctorDetail", id],
   });
 
   useEffect(() => {
-    console.log('postData', postData);
-
     if (postDataIsSuccess) {
       setPost(postData.data || {});
     }
@@ -111,7 +110,7 @@ export function RehabilitationCenterDoctor({
     isSuccess,
   } = useInfiniteQuery({
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      console.log(lastPage, allPages);
+      if (__DEV__) console.log(lastPage, allPages);
       if (!lastPage?.rows || lastPage.rows?.length < 10) {
         return undefined;
       }
@@ -126,7 +125,7 @@ export function RehabilitationCenterDoctor({
         objectType: 4,
       });
     },
-    queryKey: [Paths.RehabilitationCenterDoctor, 'commentList', post],
+    queryKey: [Paths.RehabilitationCenterDoctor, "commentList", post],
   });
 
   const educationalBackgroundList = post.doctorEducationalBackgroundList || [];
@@ -140,7 +139,7 @@ export function RehabilitationCenterDoctor({
             style={styles.titleIcon}
           />
           <Text style={styles.titleText}>
-            {t('common.job_title')}：{post.positionTitle}
+            {"Job title"}：{post.positionTitle}
           </Text>
         </View>
         <View style={styles.titleWrapper}>
@@ -149,7 +148,7 @@ export function RehabilitationCenterDoctor({
             style={styles.titleIcon}
           />
           <Text style={styles.titleText}>
-            {t('common.practice_scope')}：{post.positionRange}
+            {"Practice scope"}：{post.positionRange}
           </Text>
         </View>
         {educationalBackgroundList.length > 0 ? (
@@ -159,9 +158,7 @@ export function RehabilitationCenterDoctor({
                 source={EducationalBackgroundIcon as ImageURISource}
                 style={styles.titleIcon}
               />
-              <Text style={styles.titleText}>
-                {t('common.education_background')}
-              </Text>
+              <Text style={styles.titleText}>{"Education background"}</Text>
             </View>
             {educationalBackgroundList.map((item, index) => (
               <View key={item.id} style={styles.educationalBackground}>
@@ -189,9 +186,7 @@ export function RehabilitationCenterDoctor({
                 source={WorkExperienceIcon as ImageURISource}
                 style={styles.titleIcon}
               />
-              <Text style={styles.titleText}>
-                {t('common.work_experience')}
-              </Text>
+              <Text style={styles.titleText}>{"Work experience"}</Text>
             </View>
             {workExperienceList.map((item, index) => (
               <View key={item.id} style={styles.workExperience}>
@@ -237,7 +232,7 @@ export function RehabilitationCenterDoctor({
           selectedIndex={selectedIndex}
           sliderStyle={styles.segmentedControlSlider}
           style={styles.segmentedControl}
-          values={[t('common.physician_resume'), t('common.evaluation')]}
+          values={["Physician resume", "Evaluation"]}
         />
       </View>
     );
@@ -252,10 +247,10 @@ export function RehabilitationCenterDoctor({
             </Text>
           </View>
           <View>
-            <Text>{t('common.very_good')}</Text>
+            <Text>{"Very good"}</Text>
             <Text>
-              {post.commentNum|| 0}
-              {t('common.reviews_count')}
+              {post.commentNum || 0}
+              {"Reviews count"}
             </Text>
           </View>
         </View>
@@ -278,7 +273,7 @@ export function RehabilitationCenterDoctor({
             source={FilterIcon as ImageURISource}
             style={styles.buttonIcon}
           />
-          <Text style={styles.buttonLabel}>{t('common.write_evaluation')}</Text>
+          <Text style={styles.buttonLabel}>{"Write evaluation"}</Text>
         </Pressable>
       </View>
     );
@@ -293,9 +288,9 @@ export function RehabilitationCenterDoctor({
   const images = useMemo(() => {
     let pictures = [];
     if (post.backgroundImages) {
-      pictures = post.backgroundImages?.split(',').map((img) => ({
+      pictures = post.backgroundImages?.split(",").map((img) => ({
         uri: img,
-        type: 'image',
+        type: "image",
       }));
     }
     return pictures;
@@ -307,10 +302,10 @@ export function RehabilitationCenterDoctor({
 
   const RenderListHeader = useMemo(() => {
     const postImages = post.backgroundImages
-      ? post.backgroundImages?.split(',')
+      ? post.backgroundImages?.split(",")
       : [];
 
-    const tags = post.tags ? post.tags?.split(',') : [];
+    const tags = post.tags ? post.tags?.split(",") : [];
 
     return (
       <View>
@@ -324,14 +319,10 @@ export function RehabilitationCenterDoctor({
                 handlePreview(item);
               }}
             >
-              <Image
-                key={item as string}
-                source={{ uri: item }}
-                style={styles.carouselImg}
-              />
+              <ImageWithFallback uri={item} style={styles.carouselImg} />
             </Pressable>
           )}
-          width={Dimensions.get('window').width}
+          width={Dimensions.get("window").width}
         />
         <View style={[styles.info, backgrounds.gray1600]}>
           <View style={styles.avatarWrapper}>
@@ -353,7 +344,7 @@ export function RehabilitationCenterDoctor({
               style={styles.scoreIcon}
             />
             <Text style={[styles.commentNumText, { color: colors.gray800 }]}>
-              ({post.commentNum|| 0})
+              ({post.commentNum || 0})
             </Text>
           </View>
 
@@ -376,7 +367,7 @@ export function RehabilitationCenterDoctor({
   return (
     <>
       <SafeScreen
-        edges={['bottom']}
+        edges={["bottom"]}
         style={[styles.safeScreen, backgrounds.gray1600]}
       >
         {selectedIndex === 0 ? (
@@ -415,22 +406,22 @@ export function RehabilitationCenterDoctor({
 
 const styles = StyleSheet.create({
   avatarWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: -64,
   },
   avatarInner: {
-    borderColor: '#FFFFFF',
-    borderStyle: 'solid',
+    borderColor: "#FFFFFF",
+    borderStyle: "solid",
     borderWidth: 2,
-    borderRadius: '50%',
+    borderRadius: "50%",
   },
   avatar: {},
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 15,
-    borderStyle: 'solid',
+    borderStyle: "solid",
     borderWidth: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 5,
     height: 30,
     paddingHorizontal: 11,
@@ -448,7 +439,7 @@ const styles = StyleSheet.create({
   },
   carouselImg: {
     height: 211,
-    width: '100%',
+    width: "100%",
   },
   commentIcon: {
     height: 18,
@@ -456,7 +447,7 @@ const styles = StyleSheet.create({
   },
   commentTitleText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   container: {},
   content: {
@@ -482,27 +473,27 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#E77626',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#E77626",
   },
   evaluationTitleLeft: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 10,
   },
   evaluationTitleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 18,
     marginBottom: 6,
     paddingHorizontal: 20,
   },
   headerBtnGroup: {
     paddingHorizontal: 10,
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 10,
   },
   headerBtnIcon: {
@@ -526,10 +517,10 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   locationWrapper: {
-    alignContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 15,
   },
   safeScreen: {},
@@ -560,8 +551,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   scoreWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 4,
     marginTop: 8,
   },
@@ -585,7 +576,7 @@ const styles = StyleSheet.create({
     width: 264,
   },
   segmentedControlContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 8,
     marginTop: 20,
   },
@@ -610,8 +601,8 @@ const styles = StyleSheet.create({
     width: 16,
   },
   titleWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     paddingVertical: 10,
   },
@@ -620,24 +611,24 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   toolWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 50,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginTop: 28,
   },
   userWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 7,
   },
   tag: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 119, 210, 0.1)',
+    alignItems: "center",
+    backgroundColor: "rgba(0, 119, 210, 0.1)",
     borderRadius: 4,
     height: 19,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 5,
   },
 
@@ -648,9 +639,9 @@ const styles = StyleSheet.create({
   },
   tagWrapper: {
     marginTop: 8,
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 5,
   },
 });

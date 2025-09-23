@@ -207,7 +207,7 @@ export default function Search({
                     setSearchKey(text);
                   }}
                   onSubmitEditing={handleSubmitEditing}
-                  placeholder={t("search.keyword_search")}
+                  placeholder={"Keyword search"}
                   underlineColor="transparent"
                   style={[styles.input]}
                   value={searchKey}
@@ -227,13 +227,13 @@ export default function Search({
           >
             <Tab.Screen
               component={InstitutionList}
-              name={t("common.rehabilitation_centre")}
+              name={"Rehabilitation centers"}
             />
             <Tab.Screen
               component={SciencePopularizationList}
-              name={t("common.science_popularization")}
+              name={"Knowledge"}
             />
-            <Tab.Screen component={UpdatesList} name={t("common.updates")} />
+            <Tab.Screen component={UpdatesList} name={"Updates"} />
           </Tab.Navigator>
         ) : (
           <ScrollView style={[styles.scrollView, backgrounds.gray1600]}>

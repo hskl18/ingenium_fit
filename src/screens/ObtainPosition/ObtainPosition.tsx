@@ -61,7 +61,8 @@ import Toast from "react-native-root-toast";
 
 export default function ObtainPosition({
   navigation,
-}: RootScreenProps<Paths.ObtainPosition>) {  const { backgrounds, colors, navigationTheme } = useTheme();
+}: RootScreenProps<Paths.ObtainPosition>) {
+  const { backgrounds, colors, navigationTheme } = useTheme();
 
   const setLocation = useLocationStore((state) => state.setLocation);
   // useEffect(() => {
@@ -95,7 +96,7 @@ export default function ObtainPosition({
 
   const handleDeniedPermissionModal = () => {
     Alert.alert(
-      t("common.permission_required"),
+      "Permission required",
       "We need access to your location to provide accurate results and personalized services. Please enable location permissions in your device settings.",
       [
         {
@@ -103,7 +104,7 @@ export default function ObtainPosition({
           style: "cancel",
         },
         {
-          text: t("common.open_settings"),
+          text: "Open settings",
           onPress: () => openSettings(),
         },
       ]
@@ -156,7 +157,7 @@ export default function ObtainPosition({
                   routes: [{ name: Paths.Tabbar }],
                 });
               } else {
-                Toast.show(t("message.obtain_address_information_failed"), {
+                Toast.show("Failed to obtain address information", {
                   animation: true,
                   delay: 0,
                   duration: 1000,
@@ -168,7 +169,7 @@ export default function ObtainPosition({
             })
             .catch((error) => {
               console.log(error);
-              Toast.show(t("message.obtain_address_information_failed"), {
+              Toast.show("Failed to obtain address information", {
                 animation: true,
                 delay: 0,
                 duration: 1000,

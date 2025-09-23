@@ -164,6 +164,9 @@ importers:
       react-native-svg:
         specifier: 15.12.1
         version: 15.12.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0))(react@19.1.0)
+      react-native-url-polyfill:
+        specifier: ^2.0.0
+        version: 2.0.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0))
       react-native-video:
         specifier: ^6.16.1
         version: 6.16.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0))(react@19.1.0)
@@ -3784,6 +3787,11 @@ packages:
       react: '>= 18.2.0'
       react-native: '*'
       react-native-pager-view: '>= 6.0.0'
+
+  react-native-url-polyfill@2.0.0:
+    resolution: {integrity: sha512-My330Do7/DvKnEvwQc0WdcBnFPploYKp9CYlefDXzIdEaA+PAhDYllkvGeEroEzvc4Kzzj2O4yVdz8v6fjRvhA==}
+    peerDependencies:
+      react-native: '*'
 
   react-native-video@6.16.1:
     resolution: {integrity: sha512-+G6tVVGbwFqNTyPivqb+PhQzWr5OudDQ1dgvBNyBRAgcS8rOcbwuS6oX+m8cxOsXHn1UT9ofQnjQEwkGOsvomg==}
@@ -8889,6 +8897,11 @@ snapshots:
       react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0)
       react-native-pager-view: 6.9.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0))(react@19.1.0)
       use-latest-callback: 0.2.4(react@19.1.0)
+
+  react-native-url-polyfill@2.0.0(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0)):
+    dependencies:
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0)
+      whatwg-url-without-unicode: 8.0.0-3
 
   react-native-video@6.16.1(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0))(react@19.1.0):
     dependencies:

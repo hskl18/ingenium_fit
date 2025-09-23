@@ -1,17 +1,18 @@
-import { useErrorBoundary } from 'react-error-boundary';
-import { useTranslation } from '@/hooks';
-import { Text, TouchableOpacity, View } from 'react-native';
+import * as React from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { Text, TouchableOpacity, View } from "react-native";
 
-import { useTheme } from '@/theme';
+import { useTheme } from "@/theme";
 
-import { IconByVariant } from '@/components/atoms';
+import { IconByVariant } from "@/components/atoms";
 
 type Properties = {
   readonly onReset?: () => void;
 };
 
 function DefaultErrorScreen({ onReset = undefined }: Properties) {
-  const { colors, fonts, gutters, layout } = useTheme();  const { resetBoundary } = useErrorBoundary();
+  const { colors, fonts, gutters, layout } = useTheme();
+  const { resetBoundary } = useErrorBoundary();
 
   return (
     <View
@@ -30,10 +31,10 @@ function DefaultErrorScreen({ onReset = undefined }: Properties) {
         width={42}
       />
       <Text style={[fonts.gray300, fonts.bold, fonts.size_16]}>
-        {t('error_boundary.title')}
+        Something went wrong
       </Text>
-      <Text style={[fonts.gray900, fonts.size_12, fonts.alignCenter]}>
-        {t('error_boundary.description')}
+      <Text style={[fonts.gray0, fonts.size_12, fonts.alignCenter]}>
+        An unexpected error occurred.
       </Text>
 
       {onReset ? (
@@ -43,9 +44,7 @@ function DefaultErrorScreen({ onReset = undefined }: Properties) {
             onReset();
           }}
         >
-          <Text style={[fonts.gray900, fonts.size_16]}>
-            {t('error_boundary.cta')}
-          </Text>
+          <Text style={[fonts.gray0, fonts.size_16]}>Try again</Text>
         </TouchableOpacity>
       ) : undefined}
     </View>

@@ -7,7 +7,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "@/hooks";
 import {
   Dimensions,
   Image,
@@ -26,11 +25,12 @@ import { useShallow } from "zustand/react/shallow";
 
 import { Paths } from "@/navigation/paths.ts";
 import { useTheme } from "@/theme";
+import { useTranslation } from "@/hooks";
 import { Analytics } from "@/utils";
 
 import Empty from "@/components/common/Empty/Empty.tsx";
 import InstitutionItem from "@/components/common/InstitutionItem/InstitutionItem.tsx";
-import { SafeScreen, SurveyPrompt } from "@/components/templates";
+import { SafeScreen } from "@/components/templates";
 import FriendUpdatesItem from "@/screens/Tabbar/Dynamic/components/FriendUpdatesItem/FriendUpdatesItem.tsx";
 
 import ArrowIcon from "@/assets/images/17.png";
@@ -63,11 +63,14 @@ import { useLocationStore, useUserStore } from "@/store";
 import { useFocusEffect } from "@react-navigation/native";
 import SciencePopularizationItem from "@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
+import { ImageWithFallback } from "@/components/atoms";
 
 const NON_LATIN_REGEX = /[^\x00-\x7F]/;
 
 export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
+  const { t } = useTranslation();
   const [searchKey, setSearchKey] = useState("");
   const [categoryList, setCategoryList] = useState(pasadenaCategories);
   const [recommendedPosts, setRecommendedPosts] = useState(
@@ -90,12 +93,11 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
   useFocusEffect(
     React.useCallback(() => {
-      Analytics.screen("Home");
+      if (__DEV__) Analytics.screen("Home");
       queryClient.refetchQueries({
         queryKey: [Paths.Home, "refresh"],
         type: "active",
       });
-      // Do something when the screen is focused
       return () => {};
     }, [])
   );
@@ -111,16 +113,15 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   });
 
   useEffect(() => {
-    console.log("messageData", messageData);
+    if (__DEV__) console.log("messageData", messageData);
     if (messageIsSuccess) {
       setMessage(messageData.data || {});
     }
   }, [setMessage, messageData, messageIsSuccess]);
 
   useEffect(() => {
-    console.log("leaveWordData", leaveWordData);
     if (leaveWordIsSuccess) {
-      setLeaveWord(leaveWordData.data || {});
+      setLeaveWord(leaveWordData?.data || {});
     }
   }, [setLeaveWord, leaveWordData, leaveWordIsSuccess]);
 
@@ -144,8 +145,6 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   });
 
   useEffect(() => {
-    console.log("recommendedSciencesData", recommendedSciencesData);
-
     if (recommendedSciencesIsSuccess) {
       const rows = recommendedSciencesData?.rows || [];
       const englishRows = rows.filter(
@@ -251,7 +250,6 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   });
 
   useEffect(() => {
-    console.log("carouselInfoData", carouselInfoData);
     if (carouselInfoIsSuccess) {
       const items = (carouselInfoData?.data || []).filter(
         (item) => item?.image
@@ -456,7 +454,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
               }}
               outlineColor="transparent"
               outlineStyle={styles.textInputOutline}
-              placeholder={t("common.search_for_service")}
+              placeholder={"Search for services"}
               style={[{ flex: 1, height: 44 }, backgrounds.blue8]}
               underlineColor="transparent"
               value={searchKey}
@@ -472,20 +470,18 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
               }}
             >
               <Image
-                alt={t("common.avatar")}
+                alt={"search"}
                 source={SearchIcon as ImageURISource}
                 style={styles.searchIcon}
               />
             </Pressable>
           </View>
-          <Text style={styles.heroBadge}>
-            {t("common.adaptive_sport_navigator")}
-          </Text>
+          <Text style={styles.heroBadge}>Adaptive Sport Navigator</Text>
           <Text style={{ ...styles.heroTagline, color: colors.gray800 }}>
-            {t("common.hero_tagline")}
+            Start your adaptive sports journey
           </Text>
           <Text style={{ ...styles.heroDescription, color: colors.gray500 }}>
-            {t("common.hero_description")}
+            Discover programs, plan transit, and get support.
           </Text>
           <Button
             mode="contained"
@@ -497,17 +493,15 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
             contentStyle={styles.navigatorButtonContent}
             labelStyle={styles.navigatorButtonLabel}
           >
-            {t("common.start_navigator_call")}
+            {"Start navigator call"}
           </Button>
         </View>
         <View style={styles.container}>
           <View style={styles.quickActionsSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>
-                {t("common.quick_actions")}
-              </Text>
+              <Text style={styles.sectionTitle}>Quick actions</Text>
               <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-                {t("common.quick_actions_subtitle")}
+                Jump into the most common tasks
               </Text>
             </View>
             <ScrollView
@@ -524,10 +518,8 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                   }}
                   style={styles.quickActionCard}
                 >
-                  <Image
-                    source={{
-                      uri: action.icon,
-                    }}
+                  <ImageWithFallback
+                    uri={action.icon}
                     style={styles.quickActionImage}
                   />
                   <View style={styles.quickActionContent}>
@@ -548,11 +540,9 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
           </View>
 
           <View style={styles.workflowSection}>
-            <Text style={styles.sectionTitle}>
-              {t("common.navigator_workflow")}
-            </Text>
+            <Text style={styles.sectionTitle}>Navigator workflow</Text>
             <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-              {t("common.navigator_workflow_subtitle")}
+              How it works from intake to activity
             </Text>
             <View style={styles.workflowSteps}>
               {navigatorWorkflow.map((step, index) => (
@@ -578,10 +568,10 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
           <View style={styles.spotlightSection}>
             <Text style={styles.sectionTitle}>
-              {t("common.transit_equipment_spotlights")}
+              Transit & equipment spotlights
             </Text>
             <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-              {t("common.transit_equipment_spotlights_subtitle")}
+              Highlights from the community
             </Text>
             {navigatorSpotlights.map((spotlight) => (
               <Pressable
@@ -592,10 +582,8 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                 }}
                 style={styles.spotlightCard}
               >
-                <Image
-                  source={{
-                    uri: spotlight.image,
-                  }}
+                <ImageWithFallback
+                  uri={spotlight.image}
                   style={styles.spotlightImage}
                 />
                 <View style={styles.spotlightContent}>
@@ -615,9 +603,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
           </View>
 
           <View style={styles.categoriesWrapper}>
-            <Text style={styles.friendUpdatesTitle}>
-              {t("common.popular_categories")}
-            </Text>
+            <Text style={styles.friendUpdatesTitle}>Popular categories</Text>
           </View>
           <ScrollView
             contentContainerStyle={styles.categories}
@@ -635,10 +621,8 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                 }}
                 style={styles.category}
               >
-                <Image
-                  source={{
-                    uri: item.icon,
-                  }}
+                <ImageWithFallback
+                  uri={item.icon}
                   style={styles.categoryImage}
                 />
                 <Text style={{ ...styles.categoryText, color: colors.gray800 }}>
@@ -661,10 +645,8 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                       handleCarouselClick(item);
                     }}
                   >
-                    <Image
-                      source={{
-                        uri: item.image,
-                      }}
+                    <ImageWithFallback
+                      uri={normalizeImageUrl(item.image)}
                       style={styles.swiperImage}
                     />
                   </Pressable>
@@ -691,7 +673,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
             <>
               <View style={styles.friendUpdatesTitleWrapper}>
                 <Text style={styles.friendUpdatesTitle}>
-                  {t("common.recommended_science")}
+                  {"Recommended knowledge"}
                 </Text>
                 <Button
                   mode="text"
@@ -703,7 +685,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                   }}
                   textColor={navigationTheme.colors.primary}
                 >
-                  {t("common.view_all")}
+                  {"View all"}
                 </Button>
               </View>
               <ScrollView
@@ -722,7 +704,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
             <>
               <View style={styles.friendUpdatesTitleWrapper}>
                 <Text style={styles.friendUpdatesTitle}>
-                  {t("common.recommended_posts")}
+                  {"Recommended posts"}
                 </Text>
                 <Button
                   mode="text"
@@ -734,7 +716,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                   }}
                   textColor={navigationTheme.colors.primary}
                 >
-                  {t("common.view_all")}
+                  {"View all"}
                 </Button>
               </View>
               <ScrollView
@@ -751,7 +733,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
           <View style={styles.friendUpdatesTitleWrapper}>
             <Text style={styles.friendUpdatesTitle}>
-              {t("common.rehabilitation_center")}
+              Rehabilitation centers
             </Text>
             <Button
               mode="text"
@@ -760,7 +742,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
               }}
               textColor={navigationTheme.colors.primary}
             >
-              {t("common.view_all")}
+              {"View all"}
             </Button>
           </View>
         </View>
@@ -776,29 +758,15 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   }
   const centersToRender = dataList.length > 0 ? dataList : pasadenaRehabCenters;
 
-  const [showSurvey, setShowSurvey] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setShowSurvey(true), 3500);
-    return () => clearTimeout(timeout);
-  }, []);
+  // Survey removed for demo
 
   return (
-    <>
-      <ScrollView style={[styles.scrollView, backgrounds.gray1600]}>
-        <SafeScreen
-          edges={[]}
-          style={[styles.safeScreen, backgrounds.gray1600]}
-        >
-          {renderListHeader()}
-          {centersToRender.map((item, index) => renderItem({ index, item }))}
-        </SafeScreen>
-      </ScrollView>
-      <SurveyPrompt
-        visible={showSurvey}
-        onDismiss={() => setShowSurvey(false)}
-      />
-    </>
+    <ScrollView style={[styles.scrollView, backgrounds.gray1600]}>
+      <SafeScreen edges={[]} style={[styles.safeScreen, backgrounds.gray1600]}>
+        {renderListHeader()}
+        {centersToRender.map((item, index) => renderItem({ index, item }))}
+      </SafeScreen>
+    </ScrollView>
   );
 }
 

@@ -1,24 +1,25 @@
-import type { RootScreenProps } from '@/navigation/types.ts';
+import type { RootScreenProps } from "@/navigation/types.ts";
 
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet } from 'react-native';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { StyleSheet } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
+import { Paths } from "@/navigation/paths.ts";
 
-import FollowersList from '@/screens/FanAttention/components/FollowersList/FollowersList.tsx';
-import FollowingList from '@/screens/FanAttention/components/FollowingList/FollowingList.tsx';
-import { useTranslation } from '@/hooks';
+import FollowersList from "@/screens/FanAttention/components/FollowersList/FollowersList.tsx";
+import FollowingList from "@/screens/FanAttention/components/FollowingList/FollowingList.tsx";
+import { useTranslation } from "@/hooks";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function FanAttention({
   route,
 }: RootScreenProps<Paths.FanAttention>) {
-  const { name } = route.params;  return (
+  const { name } = route.params;
+  return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: "#fff",
         },
       }}
       initialRouteName={name}
@@ -26,20 +27,16 @@ export default function FanAttention({
       <Tab.Screen
         component={FollowingList}
         name={Paths.FollowingList}
-        options={
-          {
-            title: t('title.following_list'),
-          }
-        }
+        options={{
+          title: "Following list",
+        }}
       />
       <Tab.Screen
         component={FollowersList}
         name={Paths.FollowersList}
-        options={
-          {
-            title: t('title.followers_list'),
-          }
-        }
+        options={{
+          title: "Followers list",
+        }}
       />
     </Tab.Navigator>
   );
@@ -50,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
 });

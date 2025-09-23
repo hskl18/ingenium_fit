@@ -1,18 +1,18 @@
-import React from 'react';
+import React from "react";
 
-import { StyleSheet, Image, View, Pressable } from 'react-native';
+import { StyleSheet, Image, View, Pressable } from "react-native";
 import {
   InputToolbar,
   Actions,
   Composer,
   Send,
-} from 'react-native-gifted-chat';
-import ImageIcon from '@/assets/images/235.png';
-import AudioIcon from '@/assets/images/234.png';
-import SendIcon from '@/assets/images/233.png';
-import { Text } from 'react-native-paper';
-import { useTheme } from '@/theme';
-import { useTranslation } from '@/hooks';
+} from "react-native-gifted-chat";
+import ImageIcon from "@/assets/images/235.png";
+import AudioIcon from "@/assets/images/234.png";
+import SendIcon from "@/assets/images/233.png";
+import { Text } from "react-native-paper";
+import { useTheme } from "@/theme";
+import { useTranslation } from "@/hooks";
 
 export const renderInputToolbar = (props) => {
   const { selectImage, visibleToolbar } = props;
@@ -21,10 +21,10 @@ export const renderInputToolbar = (props) => {
       <InputToolbar
         {...props}
         containerStyle={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: "#FFFFFF",
           paddingTop: 6,
         }}
-        primaryStyle={{ alignItems: 'center' }}
+        primaryStyle={{ alignItems: "center" }}
       />
       {/* 底部工具栏 */}
       {visibleToolbar ? (
@@ -44,8 +44,8 @@ export const renderActions = (props) => (
     containerStyle={{
       width: 44,
       height: 44,
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
       marginLeft: 4,
       marginRight: 4,
       marginBottom: 0,
@@ -58,11 +58,11 @@ export const renderComposer = (props) => (
   <Composer
     {...props}
     textInputStyle={{
-      color: '#222B45',
-      backgroundColor: '#F5F5F5',
+      color: "#222B45",
+      backgroundColor: "#F5F5F5",
       borderWidth: 1,
       borderRadius: 22,
-      borderColor: '#F5F5F5',
+      borderColor: "#F5F5F5",
       paddingTop: 8.5,
       paddingHorizontal: 12,
       marginLeft: 0,
@@ -70,7 +70,8 @@ export const renderComposer = (props) => (
   />
 );
 
-export const renderSend = (openToolbar) => {  const { backgrounds, colors } = useTheme();
+export const renderSend = (openToolbar) => {
+  const { backgrounds, colors } = useTheme();
   return (props) => (
     <View style={styles.sendContainer}>
       <Send
@@ -79,14 +80,14 @@ export const renderSend = (openToolbar) => {  const { backgrounds, colors } = us
         containerStyle={{
           width: 44,
           height: 44,
-          alignItems: 'center',
-          justifyContent: 'center',
+          alignItems: "center",
+          justifyContent: "center",
           marginHorizontal: 4,
         }}
       >
         <View style={[backgrounds.primary, styles.button]}>
           <Text style={[styles.buttonText, { color: colors.gray1600 }]}>
-            {t('common.send')}
+            {"Send"}
           </Text>
         </View>
       </Send>
@@ -99,8 +100,8 @@ export const renderSend = (openToolbar) => {  const { backgrounds, colors } = us
 
 const styles = StyleSheet.create({
   sendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     paddingHorizontal: 14,
   },
@@ -108,8 +109,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 34,
     borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
     fontSize: 15,
@@ -118,27 +119,26 @@ const styles = StyleSheet.create({
   iconButton: {
     width: 44,
     height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   bottomToolbar: {
     minHeight: 156,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderTopWidth: 0.5,
-    borderTopColor: '#E5E5E5',
+    borderTopColor: "#E5E5E5",
   },
-  toolbarButton: {
-  },
+  toolbarButton: {},
   imageIcon: {
     width: 65,
     height: 65,
   },
   toolbarText: {
     fontSize: 11,
-    color: '#666666',
+    color: "#666666",
     marginTop: 4,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

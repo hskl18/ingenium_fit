@@ -71,10 +71,12 @@ import { useKeyboardAnimation } from "react-native-keyboard-controller";
 import DeleteIcon from "@/assets/images/212.png";
 import GalleryPreview from "react-native-gallery-preview";
 import * as React from "react";
+import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
 export default function DynamicDetail({
   route,
 }: RootScreenProps<Paths.DynamicDetail>) {
-  const navigation = useNavigation();  const { backgrounds, colors } = useTheme();
+  const navigation = useNavigation();
+  const { backgrounds, colors } = useTheme();
   const { id } = route.params;
 
   const userInfo = useUserStore((state) => state.userInfo);
@@ -121,19 +123,14 @@ export default function DynamicDetail({
           ...post,
           whetherFollowByLoginUser: !post.whetherFollowByLoginUser,
         }));
-        Toast.show(
-          post.whetherFollowByLoginUser
-            ? t("common.unfollow_success")
-            : t("common.follow_success"),
-          {
-            animation: true,
-            delay: 0,
-            duration: 1000,
-            hideOnPress: true,
-            position: Toast.positions.CENTER,
-            shadow: true,
-          }
-        );
+        Toast.show(post.whetherFollowByLoginUser ? "Unfollowed" : "Followed", {
+          animation: true,
+          delay: 0,
+          duration: 1000,
+          hideOnPress: true,
+          position: Toast.positions.CENTER,
+          shadow: true,
+        });
       }
     },
   });
@@ -309,7 +306,7 @@ export default function DynamicDetail({
                             },
                           ]}
                         >
-                          {t("common.shield")}
+                          {"Block"}
                         </Text>
                       </ImageBackground>
                     </Pressable>
@@ -378,8 +375,8 @@ export default function DynamicDetail({
         }));
         Toast.show(
           post.whetherFavoriteByLoginUser
-            ? t("common.unfavorite_success")
-            : t("common.favorite_success"),
+            ? "Removed from favorites"
+            : "Added to favorites",
           {
             animation: true,
             delay: 0,
@@ -415,19 +412,14 @@ export default function DynamicDetail({
             : post.likesNum + 1,
           whetherGiveLikeByLoginUser: !post.whetherGiveLikeByLoginUser,
         }));
-        Toast.show(
-          post.whetherGiveLikeByLoginUser
-            ? t("common.unlike_success")
-            : t("common.like_success"),
-          {
-            animation: true,
-            delay: 0,
-            duration: 1000,
-            hideOnPress: true,
-            position: Toast.positions.CENTER,
-            shadow: true,
-          }
-        );
+        Toast.show(post.whetherGiveLikeByLoginUser ? "Unliked" : "Liked", {
+          animation: true,
+          delay: 0,
+          duration: 1000,
+          hideOnPress: true,
+          position: Toast.positions.CENTER,
+          shadow: true,
+        });
       }
     },
   });
@@ -452,7 +444,7 @@ export default function DynamicDetail({
           queryKey: [Paths.DynamicDetail, "commentList"],
           type: "active",
         });
-        Toast.show(t("common.send_success"), {
+        Toast.show("Sent", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -582,7 +574,8 @@ export default function DynamicDetail({
               >
                 <Image
                   key={item as string}
-                  source={{ uri: item.url }}
+                  source={{ uri: normalizeImageUrl(item.url) }}
+                  defaultSource={DEFAULT_PLACEHOLDER as unknown as number}
                   style={styles.carouselImg}
                 />
               </Pressable>
@@ -613,7 +606,7 @@ export default function DynamicDetail({
                   <Text
                     style={{ ...styles.buttonLabel, color: colors.primary }}
                   >
-                    {t("common.followed")}
+                    {"Following"}
                   </Text>
                 </Pressable>
               ) : (
@@ -628,7 +621,7 @@ export default function DynamicDetail({
                   <Text
                     style={{ ...styles.buttonLabel, color: colors.gray1600 }}
                   >
-                    {t("common.follow")}
+                    {"Follow"}
                   </Text>
                 </Pressable>
               )}
@@ -682,7 +675,7 @@ export default function DynamicDetail({
             style={styles.commentIcon}
           />
           <Text style={{ ...styles.commentTitleText }}>
-            {t("common.comment")}({post.commentNum || 0})
+            {"Comments"}({post.commentNum || 0})
           </Text>
         </View>
       </View>
@@ -711,7 +704,7 @@ export default function DynamicDetail({
           }}
           outlineColor="transparent"
           outlineStyle={styles.textInputOutline}
-          placeholder={t("common.civilized_comments")}
+          placeholder={"Write a comment..."}
           style={[styles.inputBar, backgrounds.gray1560]}
           underlineColor="transparent"
           value={commentContent}

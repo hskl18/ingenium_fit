@@ -1,23 +1,24 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useTranslation } from '@/hooks';
-import { StyleSheet, View } from 'react-native';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useTranslation } from "@/hooks";
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import SciencePopularizationItem from '@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx';
-import { SafeScreen } from '@/components/templates';
+import SciencePopularizationItem from "@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx";
+import { SafeScreen } from "@/components/templates";
 
-import { scienceList } from '@/services';
-import { useLayoutEffect } from 'react';
-import Empty from '@/components/common/Empty/Empty.tsx';
+import { scienceList } from "@/services";
+import { useLayoutEffect } from "react";
+import Empty from "@/components/common/Empty/Empty.tsx";
 
 export default function SciencePopularizationList({
   navigation,
   route,
-}: RootScreenProps<Paths.SciencePopularizationList>) {  const { backgrounds } = useTheme();
+}: RootScreenProps<Paths.SciencePopularizationList>) {
+  const { backgrounds } = useTheme();
   const {
     id,
     name,
@@ -26,7 +27,7 @@ export default function SciencePopularizationList({
   } = route.params;
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: whetherRecommend ? t('title.recommended_science') : name,
+      headerTitle: whetherRecommend ? "Recommended knowledge" : name,
     });
   }, [navigation]);
   const {
@@ -54,7 +55,7 @@ export default function SciencePopularizationList({
         whetherRecommend,
       });
     },
-    queryKey: [Paths.DynamicList, 'scienceList', id, whetherRecommend],
+    queryKey: [Paths.DynamicList, "scienceList", id, whetherRecommend],
   });
 
   console.log(hasNextPage, data);
@@ -74,7 +75,7 @@ export default function SciencePopularizationList({
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
@@ -103,11 +104,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   titleContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   titleText: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

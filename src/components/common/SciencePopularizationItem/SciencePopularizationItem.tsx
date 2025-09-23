@@ -27,6 +27,7 @@ try {
   VideoPlayer = ({ children, ...props }: any) => children;
 }
 import React from "react";
+import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
 
 export default function SciencePopularizationItem({
   item,
@@ -60,9 +61,8 @@ export default function SciencePopularizationItem({
             />
           ) : (
             <Image
-              source={{
-                uri: item.coverImage,
-              }}
+              source={{ uri: normalizeImageUrl(item.coverImage) }}
+              defaultSource={DEFAULT_PLACEHOLDER as unknown as number}
               style={styles.coverImage}
             />
           )}

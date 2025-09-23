@@ -1,39 +1,40 @@
-import type { RootScreenProps } from '@/navigation/types.ts';
+import type { RootScreenProps } from "@/navigation/types.ts";
 
-import { LegendList } from '@legendapp/list';
+import { LegendList } from "@legendapp/list";
 import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
-} from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { useTranslation } from '@/hooks';
-import { Image, ImageURISource, StyleSheet, View } from 'react-native';
-import { Pressable } from 'react-native-gesture-handler';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { Avatar, Divider, Text, TouchableRipple } from 'react-native-paper';
+} from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useTranslation } from "@/hooks";
+import { Image, ImageURISource, StyleSheet, View } from "react-native";
+import { Pressable } from "react-native-gesture-handler";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { Avatar, Divider, Text, TouchableRipple } from "react-native-paper";
 import Reanimated, {
   SharedValue,
   useAnimatedStyle,
-} from 'react-native-reanimated';
-import Toast from 'react-native-root-toast';
+} from "react-native-reanimated";
+import Toast from "react-native-root-toast";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import { SafeScreen } from '@/components/templates';
+import { SafeScreen } from "@/components/templates";
 
-import ReadIcon from '@/assets/images/79.png';
-import RemoveIcon from '@/assets/images/81.png';
-import ArrowIcon from '@/assets/images/80.png';
-import { dayjs } from '@/plugins';
-import { deleteMessage, messageList, readMessage } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
+import ReadIcon from "@/assets/images/79.png";
+import RemoveIcon from "@/assets/images/81.png";
+import ArrowIcon from "@/assets/images/80.png";
+import { dayjs } from "@/plugins";
+import { deleteMessage, messageList, readMessage } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
 
 export default function SystemMessage({
   navigation,
 }: RootScreenProps<Paths.SystemMessage>) {
-  const { backgrounds, colors } = useTheme();  const queryClient = useQueryClient();
+  const { backgrounds, colors } = useTheme();
+  const queryClient = useQueryClient();
 
   const {
     isPending,
@@ -78,7 +79,7 @@ export default function SystemMessage({
               source={ReadIcon as ImageURISource}
               style={styles.readIcon}
             ></Image>
-            <Text style={styles.readText}>{t('common.one_click_read')}</Text>
+            <Text style={styles.readText}>{"Mark all read"}</Text>
           </Pressable>
         );
       },
@@ -88,13 +89,13 @@ export default function SystemMessage({
   const mutationRead = useMutation({
     mutationFn: readMessage,
     onError: (error) => {
-      console.log('error', error);
+      console.log("error", error);
     },
     onSuccess: (response: IResponseData, variables) => {
-      console.log('variables', variables);
+      console.log("variables", variables);
       if (response.code === 200) {
         !variables.id
-          ? Toast.show(t('common.read_all_success'), {
+          ? Toast.show("Marked as read", {
               animation: true,
               delay: 0,
               duration: 1000,
@@ -119,11 +120,11 @@ export default function SystemMessage({
   const mutationRemove = useMutation({
     mutationFn: deleteMessage,
     onError: (error) => {
-      console.log('error', error);
+      console.log("error", error);
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        Toast.show(t('common.message_delete_success'), {
+        Toast.show("Deleted", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -161,8 +162,8 @@ export default function SystemMessage({
   const RightAction = (item: any) => {
     return (prog: SharedValue<number>, drag: SharedValue<number>) => {
       const styleAnimation = useAnimatedStyle(() => {
-        console.log('showRightProgress:', prog.value);
-        console.log('appliedTranslation:', drag.value);
+        console.log("showRightProgress:", prog.value);
+        console.log("appliedTranslation:", drag.value);
 
         return {
           transform: [{ translateX: drag.value + 50 }],
@@ -194,7 +195,7 @@ export default function SystemMessage({
       >
         <Text style={{ ...styles.dateText, color: colors.gray800 }}>
           {item.createTime
-            ? dayjs(item.createTime).format('YYYY-MM-DD HH:mm')
+            ? dayjs(item.createTime).format("YYYY-MM-DD HH:mm")
             : item.createTime}
         </Text>
         <ReanimatedSwipeable
@@ -222,7 +223,7 @@ export default function SystemMessage({
               <Text style={styles.sketchText}>{item.sketch}</Text>
               <Divider />
               <View style={styles.messageFooter}>
-                <Text>{t('common.click_to_view_details')}</Text>
+                <Text>{"Tap to view details"}</Text>
 
                 <Image
                   source={ArrowIcon as ImageURISource}
@@ -238,7 +239,7 @@ export default function SystemMessage({
 
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1550]}
     >
       <LegendList
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   message: {
     borderRadius: 18,
@@ -269,9 +270,9 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   messageFooter: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 12,
   },
   messageIcon: {
@@ -283,12 +284,12 @@ const styles = StyleSheet.create({
     width: 5,
   },
   messageNum: {
-    alignItems: 'center',
-    backgroundColor: '#F2262F',
+    alignItems: "center",
+    backgroundColor: "#F2262F",
     borderRadius: 20,
     height: 14,
-    justifyContent: 'center',
-    position: 'absolute',
+    justifyContent: "center",
+    position: "absolute",
     right: 0,
     top: 0,
     width: 13,
@@ -306,16 +307,16 @@ const styles = StyleSheet.create({
     width: 14,
   },
   phoneWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 1,
     marginTop: 12,
   },
   readFlag: {
-    backgroundColor: '#E62330',
+    backgroundColor: "#E62330",
     borderRadius: 3,
     height: 6,
-    position: 'absolute',
+    position: "absolute",
     right: 0,
     top: 0,
     width: 6,
@@ -326,21 +327,21 @@ const styles = StyleSheet.create({
   },
   readIconWrapper: {
     gap: 4,
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
   },
   readText: {
     fontSize: 13,
-    color: '#F2262F',
+    color: "#F2262F",
   },
   removeIcon: {
     height: 36,
     width: 36,
   },
   rightAction: {
-    alignItems: 'flex-end',
-    height: '100%',
-    justifyContent: 'center',
+    alignItems: "flex-end",
+    height: "100%",
+    justifyContent: "center",
     width: 51,
   },
   safeScreen: {
@@ -352,14 +353,14 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   titleWrapper: {
     paddingRight: 12,
   },
   toolWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 12,
   },
 });

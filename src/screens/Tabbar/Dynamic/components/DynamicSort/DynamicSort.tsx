@@ -1,6 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { useTranslation } from '@/hooks';
+import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 import {
   Pressable,
   Image,
@@ -9,14 +8,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { Button, Text } from 'react-native-paper';
+} from "react-native";
+import { Button, Text } from "react-native-paper";
 
-import { useTheme } from '@/theme';
+import { useTheme } from "@/theme";
 
-import SortIcon from '@/assets/images/179.png';
-import SortFIcon from '@/assets/images/180.png';
-import CloseIcon from '@/assets/images/181.png';
+import SortIcon from "@/assets/images/179.png";
+import SortFIcon from "@/assets/images/180.png";
+import CloseIcon from "@/assets/images/181.png";
 
 export default function DynamicSort({
   hideModal,
@@ -31,14 +30,14 @@ export default function DynamicSort({
 }) {
   const { backgrounds } = useTheme();
   // 排序方式：1-点赞数 2-分享数
-  const [sort, setSort] = useState(sortBy || '');
+  const [sort, setSort] = useState(sortBy || "");
 
   const handleSubmit = () => {
     setSortBy(sort);
     hideModal();
   };
 
-  console.log('sort', sort);
+  console.log("sort", sort);
   return (
     <Modal
       animationType="fade"
@@ -51,7 +50,7 @@ export default function DynamicSort({
         <TouchableOpacity onPress={hideModal} style={{ flex: 1 }} />
         <View style={[styles.container, backgrounds.gray1600]}>
           <View style={styles.titleWrapper}>
-            <Text style={styles.titleText}>{t('common.sort_by')}</Text>
+            <Text style={styles.titleText}>{"Sort by"}</Text>
             <Pressable onPress={hideModal}>
               <Image
                 source={CloseIcon as ImageURISource}
@@ -63,7 +62,7 @@ export default function DynamicSort({
           <View style={styles.sortWrapper}>
             <Pressable
               onPress={() => {
-                setSort('1');
+                setSort("1");
               }}
               style={styles.sort}
             >
@@ -79,12 +78,12 @@ export default function DynamicSort({
                 />
               )}
 
-              <Text style={styles.sortText}>{t('common.highest_likes')}</Text>
+              <Text style={styles.sortText}>{"Highest likes"}</Text>
             </Pressable>
 
             <Pressable
               onPress={() => {
-                setSort('2');
+                setSort("2");
               }}
               style={styles.sort}
             >
@@ -99,7 +98,7 @@ export default function DynamicSort({
                   style={styles.sortIcon}
                 />
               )}
-              <Text style={styles.sortText}>{t('common.most_shared')}</Text>
+              <Text style={styles.sortText}>{"Most shared"}</Text>
             </Pressable>
           </View>
 
@@ -109,7 +108,7 @@ export default function DynamicSort({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t('common.confirm')}
+            {"Confirm"}
           </Button>
         </View>
       </View>
@@ -119,13 +118,13 @@ export default function DynamicSort({
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     height: 49,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   buttonText: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   closeIcon: {
     height: 14,
@@ -138,13 +137,13 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   containerStyle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     flex: 1,
   },
   sort: {
     paddingVertical: 9,
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 10,
   },
   sortIcon: {
@@ -162,11 +161,11 @@ const styles = StyleSheet.create({
   titleText: {
     flexShrink: 1,
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   titleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

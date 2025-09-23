@@ -31,11 +31,11 @@ export default function SetLanguage({
   const menus: Menu[] = [
     {
       code: SupportedLanguages.zh_Hans,
-      name: t("common.chinese"),
+      name: "Chinese",
     },
     {
       code: SupportedLanguages.EN_EN,
-      name: t("common.english"),
+      name: "English",
     },
   ];
 

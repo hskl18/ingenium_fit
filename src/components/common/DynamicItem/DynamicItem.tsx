@@ -7,6 +7,8 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { ImageWithFallback } from "@/components/atoms";
+import { normalizeImageUrl } from "@/utils/image";
 // Conditionally import VideoPlayer
 let VideoPlayer: any = null;
 try {
@@ -68,7 +70,7 @@ export default function DynamicItem({
   const mutation = useMutation({
     mutationFn: blockPost,
     onError: (error) => {
-      console.log("error", error);
+      if (__DEV__) console.log("error", error);
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
@@ -94,7 +96,7 @@ export default function DynamicItem({
   const mutationDelete = useMutation({
     mutationFn: deletePost,
     onError: (error) => {
-      console.log("error", error);
+      if (__DEV__) console.log("error", error);
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
@@ -122,7 +124,7 @@ export default function DynamicItem({
       id: item.id,
     });
     setVisibleMenu(false);
-    console.log(videoPlayerRef.current);
+    if (__DEV__) console.log(videoPlayerRef.current);
     videoPlayerRef.current?.pause();
     setPaused(true);
   };
@@ -136,7 +138,7 @@ export default function DynamicItem({
     videos = item.videos.split(",");
   }
 
-  console.log("pictures", pictures);
+  if (__DEV__) console.log("pictures", pictures);
   if (!item) {
     return null;
   }
@@ -247,10 +249,8 @@ export default function DynamicItem({
             }}
           />
         ) : (
-          <Image
-            source={{
-              uri: pictures[0],
-            }}
+          <ImageWithFallback
+            uri={normalizeImageUrl(pictures[0])}
             style={styles.coverImage}
           />
         )}

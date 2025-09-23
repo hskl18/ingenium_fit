@@ -38,17 +38,18 @@ export default function ApplicationShare({
 }: {
   readonly hideModal: () => void;
   readonly visible: boolean;
-}) {  const { backgrounds } = useTheme();
+}) {
+  const { backgrounds } = useTheme();
 
   const menus: Menu[] = [
     {
       code: "share",
-      name: t("common.share"),
+      name: "Share",
       icon: ShareIcon,
     },
     {
       code: "copy-link",
-      name: t("common.copy_link"),
+      name: "Copy link",
       icon: CopyLinkIcon,
     },
   ];
@@ -104,7 +105,7 @@ export default function ApplicationShare({
         <TouchableOpacity onPress={hideModal} style={{ flex: 1 }} />
         <View style={[styles.container, backgrounds.gray1600]}>
           <View style={styles.titleWrapper}>
-            <Text style={styles.titleText}>{t("common.share_to")}</Text>
+            <Text style={styles.titleText}>{"Share to"}</Text>
             <Pressable onPress={hideModal} style={styles.closeIconWrapper}>
               <Image
                 source={CloseIcon as ImageURISource}

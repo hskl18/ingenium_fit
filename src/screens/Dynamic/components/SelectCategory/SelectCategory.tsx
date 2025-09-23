@@ -1,18 +1,19 @@
-import WheelPicker from '@quidone/react-native-wheel-picker';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import WheelPicker from "@quidone/react-native-wheel-picker";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
+import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Button, Text } from "react-native-paper";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import { dynamicsCategoryList } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
-import { useTranslation } from '@/hooks';
+import { dynamicsCategoryList } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
+import { useTranslation } from "@/hooks";
 
-export default function SelectCategory({ ref, onChange }) {  const [categoryList, setCategoryList] = useState([]);
-  const [value, setValue] = useState('');
+export default function SelectCategory({ ref, onChange }) {
+  const [categoryList, setCategoryList] = useState([]);
+  const [value, setValue] = useState("");
   const [visible, setVisible] = useState(false);
   const { backgrounds, colors } = useTheme();
 
@@ -26,14 +27,14 @@ export default function SelectCategory({ ref, onChange }) {  const [categoryList
 
   const { data, isSuccess } = useQuery({
     queryFn: dynamicsCategoryList,
-    queryKey: [Paths.DynamicPublish, 'dynamicsCategoryList'],
+    queryKey: [Paths.DynamicPublish, "dynamicsCategoryList"],
   });
   useEffect(() => {
-    console.log('data', data);
-    console.log('visible', visible);
+    console.log("data", data);
+    console.log("visible", visible);
     if (isSuccess) {
       setCategoryList(data.data || {});
-      setValue(data.data?.[0]?.id || '');
+      setValue(data.data?.[0]?.id || "");
     }
   }, [setCategoryList, data, isSuccess]);
 
@@ -42,7 +43,7 @@ export default function SelectCategory({ ref, onChange }) {  const [categoryList
   };
 
   const handleSubmit = () => {
-    console.log('handleSubmit: ', value);
+    console.log("handleSubmit: ", value);
 
     onChange(categoryList.find((item) => item.id === value));
     hideModal();
@@ -61,10 +62,10 @@ export default function SelectCategory({ ref, onChange }) {  const [categoryList
         <View style={[styles.container, backgrounds.gray1600]}>
           <View style={[styles.header, backgrounds.gray1550]}>
             <Button textColor={colors.gray800} onPress={hideModal}>
-              {t('common.cancel')}
+              {"Cancel"}
             </Button>
-            <Text style={styles.title}> {t('common.select')}</Text>
-            <Button onPress={handleSubmit}> {t('common.confirm')}</Button>
+            <Text style={styles.title}> {"Select"}</Text>
+            <Button onPress={handleSubmit}> {"Confirm"}</Button>
           </View>
           <WheelPicker
             data={categoryList.map((item) => ({
@@ -89,7 +90,7 @@ export default function SelectCategory({ ref, onChange }) {  const [categoryList
 const styles = StyleSheet.create({
   container: {},
   containerStyle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     flex: 1,
   },
   contentContainer: {
@@ -97,9 +98,9 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   title: {
     fontSize: 17,

@@ -1,18 +1,19 @@
-import { useNavigation } from '@react-navigation/native';
-import { Image, ImageURISource, StyleSheet, View } from 'react-native';
-import { Avatar, Divider, Text } from 'react-native-paper';
-import { useTranslation } from '@/hooks';
+import { useNavigation } from "@react-navigation/native";
+import { Image, ImageURISource, StyleSheet, View } from "react-native";
+import { Avatar, Divider, Text } from "react-native-paper";
+// import { useTranslation } from '@/hooks';
 
-import { useTheme } from '@/theme';
+import { useTheme } from "@/theme";
 
-import ArrowRIcon from '@/assets/images/91.png';
-import { dayjs } from '@/plugins';
-import { Pressable } from 'react-native-gesture-handler';
+import ArrowRIcon from "@/assets/images/91.png";
+import { dayjs } from "@/plugins";
+import { Pressable } from "react-native-gesture-handler";
 
 export default function CommentItem({ item, onReply }: any) {
   const { backgrounds, colors } = useTheme();
-  const navigation = useNavigation();  const replyList = item.userCommentReplyList || [];
-  console.log('replyList', replyList);
+  const navigation = useNavigation();
+  const replyList = item.userCommentReplyList || [];
+  console.log("replyList", replyList);
   return (
     <View>
       <View style={[styles.container]}>
@@ -32,7 +33,7 @@ export default function CommentItem({ item, onReply }: any) {
           <View style={styles.replyBtnWrapper}>
             <Text style={{ ...styles.dateText, color: colors.gray800 }}>
               {item.createTime
-                ? dayjs(item.createTime).format('YYYY-MM-DD HH:mm')
+                ? dayjs(item.createTime).format("YYYY-MM-DD HH:mm")
                 : item.createTime}
             </Text>
             <Pressable
@@ -49,7 +50,7 @@ export default function CommentItem({ item, onReply }: any) {
                   })
                 }
               >
-                {t('common.reply')}
+                {"Reply"}
               </Text>
             </Pressable>
           </View>
@@ -60,7 +61,7 @@ export default function CommentItem({ item, onReply }: any) {
                   <View style={styles.replyHeader}>
                     <Text style={{ ...styles.nameText, color: colors.gray800 }}>
                       {sItem.user?.nickName}
-                      {!sItem.replyUser ? ':' : ''}
+                      {!sItem.replyUser ? ":" : ""}
                     </Text>
                     {sItem.replyUser ? (
                       <View style={styles.arrowRIconWrapper}>
@@ -80,7 +81,7 @@ export default function CommentItem({ item, onReply }: any) {
                   <View style={styles.replyBtnWrapper}>
                     <Text style={{ ...styles.dateText, color: colors.gray800 }}>
                       {sItem.createTime
-                        ? dayjs(sItem.createTime).format('YYYY-MM-DD HH:mm')
+                        ? dayjs(sItem.createTime).format("YYYY-MM-DD HH:mm")
                         : sItem.createTime}
                     </Text>
                     <Pressable
@@ -97,7 +98,7 @@ export default function CommentItem({ item, onReply }: any) {
                           })
                         }
                       >
-                        {t('common.reply')}
+                        {"Reply"}
                       </Text>
                     </Pressable>
                   </View>
@@ -113,7 +114,7 @@ export default function CommentItem({ item, onReply }: any) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 20,
     gap: 8,
   },
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
     height: 20,
     paddingHorizontal: 4,
     borderRadius: 4,
-    backgroundColor: 'rgba(0,119,210,0.1)',
+    backgroundColor: "rgba(0,119,210,0.1)",
   },
 
   starIcon: {
@@ -153,13 +154,13 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   replyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
   },
   arrowRIconWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   arrowRIcon: {
@@ -176,15 +177,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 7,
     borderWidth: 1,
-    borderColor: '#E6E0E0',
+    borderColor: "#E6E0E0",
     borderRadius: 12,
   },
   reply: {
     paddingVertical: 7,
   },
   replyBtnWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 12,
   },
   pictureItem: {
@@ -193,8 +194,8 @@ const styles = StyleSheet.create({
     width: 80,
   },
   pictureWrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 7,
   },
 });

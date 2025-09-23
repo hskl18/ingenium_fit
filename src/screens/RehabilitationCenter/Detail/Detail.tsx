@@ -1,13 +1,13 @@
-import { LegendList } from '@legendapp/list';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import { LegendList } from "@legendapp/list";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import {
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from '@/hooks';
+} from "@tanstack/react-query";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "@/hooks";
 import {
   Dimensions,
   Image,
@@ -17,39 +17,41 @@ import {
   ScrollView,
   StyleSheet,
   View,
-} from 'react-native';
-import { showLocation } from 'react-native-map-link';
-import { Pressable } from 'react-native-gesture-handler';
-import { Avatar, Text } from 'react-native-paper';
-import { useSharedValue } from 'react-native-reanimated';
-import Carousel from 'react-native-reanimated-carousel';
-import Toast from 'react-native-root-toast';
-import { WebView } from 'react-native-webview';
+} from "react-native";
+import { showLocation } from "react-native-map-link";
+import { Pressable } from "react-native-gesture-handler";
+import { Avatar, Text } from "react-native-paper";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel from "react-native-reanimated-carousel";
+import Toast from "react-native-root-toast";
+import { WebView } from "react-native-webview";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import { SafeScreen } from '@/components/templates';
-import CommentItem from '@/screens/RehabilitationCenter/components/CommentItem/CommentItem.tsx';
-import DoctorItem from '@/screens/RehabilitationCenter/components/DoctorItem/DoctorItem.tsx';
+import { SafeScreen } from "@/components/templates";
+import { ImageWithFallback } from "@/components/atoms";
+import CommentItem from "@/screens/RehabilitationCenter/components/CommentItem/CommentItem.tsx";
+import DoctorItem from "@/screens/RehabilitationCenter/components/DoctorItem/DoctorItem.tsx";
 
-import LocationIcon from '@/assets/images/142.png';
-import BackIcon from '@/assets/images/222.png';
-import CollectIcon from '@/assets/images/223.png';
-import CollectFIcon from '@/assets/images/225.png';
-import FilterIcon from '@/assets/images/604.png';
-import { centerDetail, commentList, doctorList, favorite } from '@/services';
-import { Rating } from '@kolking/react-native-rating';
-import { useLocationStore } from '@/store';
-import { Configs } from '@/common/configs.ts';
-import { useFocusEffect } from '@react-navigation/native';
-import GalleryPreview from 'react-native-gallery-preview';
+import LocationIcon from "@/assets/images/142.png";
+import BackIcon from "@/assets/images/222.png";
+import CollectIcon from "@/assets/images/223.png";
+import CollectFIcon from "@/assets/images/225.png";
+import FilterIcon from "@/assets/images/604.png";
+import { centerDetail, commentList, doctorList, favorite } from "@/services";
+import { Rating } from "@kolking/react-native-rating";
+import { useLocationStore } from "@/store";
+import { Configs } from "@/common/configs.ts";
+import { useFocusEffect } from "@react-navigation/native";
+import GalleryPreview from "react-native-gallery-preview";
 
 export default function RehabilitationCenterDetail({
   navigation,
   route,
-}: RootScreenProps<Paths.RehabilitationCenterDetail>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.RehabilitationCenterDetail>) {
+  const { backgrounds, colors } = useTheme();
   const { id } = route.params;
   const progress = useSharedValue<number>(0);
   const [post, setPost] = useState({});
@@ -65,17 +67,16 @@ export default function RehabilitationCenterDetail({
     React.useCallback(() => {
       queryClient.refetchQueries({
         queryKey: [Paths.RehabilitationCenterDetail],
-        type: 'active',
+        type: "active",
       });
-      // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [])
   );
 
   const mutation = useMutation({
     mutationFn: favorite,
     onError: (error) => {
-      console.log('error', error);
+      console.log("error", error);
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
@@ -85,8 +86,8 @@ export default function RehabilitationCenterDetail({
         }));
         Toast.show(
           post.whetherFavoriteByLoginUser
-            ? t('common.unfavorite_success')
-            : t('common.favorite_success'),
+            ? "Removed from favorites"
+            : "Added to favorites",
           {
             animation: true,
             delay: 0,
@@ -94,7 +95,7 @@ export default function RehabilitationCenterDetail({
             hideOnPress: true,
             position: Toast.positions.CENTER,
             shadow: true,
-          },
+          }
         );
       }
     },
@@ -163,12 +164,10 @@ export default function RehabilitationCenterDetail({
         id,
       });
     },
-    queryKey: [Paths.RehabilitationCenterDetail, 'centerDetail', id],
+    queryKey: [Paths.RehabilitationCenterDetail, "centerDetail", id],
   });
 
   useEffect(() => {
-    console.log('postData', postData);
-
     if (postDataIsSuccess) {
       setPost(postData.data || {});
     }
@@ -185,7 +184,7 @@ export default function RehabilitationCenterDetail({
   } = useInfiniteQuery({
     enabled: selectedIndex !== 0,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      console.log(lastPage, allPages);
+      if (__DEV__) console.log(lastPage, allPages);
       if (!lastPage?.rows || lastPage.rows?.length < 10) {
         return undefined;
       }
@@ -211,8 +210,8 @@ export default function RehabilitationCenterDetail({
     },
     queryKey: [
       Paths.RehabilitationCenterDetail,
-      'doctorList',
-      'commentList',
+      "doctorList",
+      "commentList",
       post,
       selectedIndex,
     ],
@@ -239,7 +238,7 @@ export default function RehabilitationCenterDetail({
           console.log(e);
         }}
         onLoadProgress={() => {
-          console.log('loading…');
+          console.log("loading…");
         }}
         onMessage={(event) => {
           const payload = event?.nativeEvent?.data;
@@ -252,9 +251,9 @@ export default function RehabilitationCenterDetail({
           if (Number.isNaN(parsedHeight)) {
             // Non-numeric payloads are link clicks; treat them as external URLs.
             const maybeUrl = payload.trim();
-            if (maybeUrl.startsWith('http')) {
+            if (maybeUrl.startsWith("http")) {
               Linking.openURL(maybeUrl).catch((error) =>
-                console.warn('Failed to open link from webview payload', error),
+                console.warn("Failed to open link from webview payload", error)
               );
             }
             return;
@@ -262,13 +261,13 @@ export default function RehabilitationCenterDetail({
 
           setSectionHeight(parsedHeight);
         }}
-        originWhitelist={['*']}
+        originWhitelist={["*"]}
         overScrollMode="never"
-        scalesPageToFit={Platform.OS === 'ios'}
+        scalesPageToFit={Platform.OS === "ios"}
         scrollEnabled={false}
         source={{
           html:
-            Configs.HtmlHead + `<body><div>${post.detail || ''}</div></body>`,
+            Configs.HtmlHead + `<body><div>${post.detail || ""}</div></body>`,
         }}
         style={[
           {
@@ -282,16 +281,16 @@ export default function RehabilitationCenterDetail({
   const images = useMemo(() => {
     let pictures = [];
     if (post.backgroundImages) {
-      pictures = post.backgroundImages?.split(',').map((img) => ({
+      pictures = post.backgroundImages?.split(",").map((img) => ({
         uri: img,
-        type: 'image',
+        type: "image",
       }));
     }
     return pictures;
   }, [post]);
 
   const postImages = useMemo(() => {
-    return post.backgroundImages ? post.backgroundImages?.split(',') : [];
+    return post.backgroundImages ? post.backgroundImages?.split(",") : [];
   }, [post]);
 
   let dataList = [];
@@ -309,7 +308,7 @@ export default function RehabilitationCenterDetail({
       latitude: +post.latitude,
       longitude: +post.longitude,
       title: post.address,
-      appsWhiteList: ['google-maps', 'apple-maps'],
+      appsWhiteList: ["google-maps", "apple-maps"],
     });
   };
 
@@ -326,14 +325,13 @@ export default function RehabilitationCenterDetail({
                 handlePreview(item);
               }}
             >
-              <Image
-                key={item as string}
-                source={{ uri: item }}
+              <ImageWithFallback
+                uri={String(item)}
                 style={styles.carouselImg}
               />
             </Pressable>
           )}
-          width={Dimensions.get('window').width}
+          width={Dimensions.get("window").width}
         />
         <View style={[styles.info, backgrounds.gray1600]}>
           <Text style={styles.titleText}>{post.name}</Text>
@@ -381,11 +379,7 @@ export default function RehabilitationCenterDetail({
           selectedIndex={selectedIndex}
           sliderStyle={styles.segmentedControlSlider}
           style={styles.segmentedControl}
-          values={[
-            t('common.description'),
-            t('common.medical_team'),
-            t('common.evaluation'),
-          ]}
+          values={["Description", "Medical team", "Evaluation"]}
         />
       </View>
     );
@@ -400,10 +394,10 @@ export default function RehabilitationCenterDetail({
             </Text>
           </View>
           <View>
-            <Text>{t('common.very_good')}</Text>
+            <Text>{"Very good"}</Text>
             <Text>
               {post.commentNum || 0}
-              {t('common.reviews_count')}
+              {"Reviews count"}
             </Text>
           </View>
         </View>
@@ -426,7 +420,7 @@ export default function RehabilitationCenterDetail({
             source={FilterIcon as ImageURISource}
             style={styles.buttonIcon}
           />
-          <Text style={styles.buttonLabel}>{t('common.write_evaluation')}</Text>
+          <Text style={styles.buttonLabel}>{"Write evaluation"}</Text>
         </Pressable>
       </View>
     );
@@ -452,7 +446,7 @@ export default function RehabilitationCenterDetail({
   return (
     <>
       <SafeScreen
-        edges={['bottom']}
+        edges={["bottom"]}
         style={[styles.safeScreen, backgrounds.gray1600]}
       >
         {selectedIndex === 0 ? (
@@ -508,11 +502,11 @@ export default function RehabilitationCenterDetail({
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 15,
-    borderStyle: 'solid',
+    borderStyle: "solid",
     borderWidth: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 5,
     height: 30,
     paddingHorizontal: 11,
@@ -527,7 +521,7 @@ const styles = StyleSheet.create({
   },
   carouselImg: {
     height: 211,
-    width: '100%',
+    width: "100%",
   },
   commentIcon: {
     height: 18,
@@ -535,7 +529,7 @@ const styles = StyleSheet.create({
   },
   commentTitleText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   container: {},
   content: {
@@ -561,27 +555,27 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#E77626',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#E77626",
   },
   evaluationTitleLeft: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 10,
   },
   evaluationTitleWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 18,
     marginBottom: 6,
     paddingHorizontal: 20,
   },
   headerBtnGroup: {
     paddingHorizontal: 10,
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 10,
   },
   headerBtnIcon: {
@@ -608,10 +602,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   locationWrapper: {
-    alignContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 15,
     gap: 20,
   },
@@ -631,8 +625,8 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   scoreWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 4,
     marginTop: 14,
   },
@@ -642,7 +636,7 @@ const styles = StyleSheet.create({
     width: 298,
   },
   segmentedControlContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 8,
     marginTop: 20,
   },
@@ -659,15 +653,15 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   toolWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 50,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginTop: 28,
   },
   userWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 7,
   },

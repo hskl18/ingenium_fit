@@ -24,9 +24,9 @@ export default function Tabbar() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerTitle: t("tabbar.home"),
+        headerTitle: "Home",
         tabBarStyle: { ...backgrounds.gray1600 },
-        title: t("tabbar.home"),
+        title: "Home",
       }}
     >
       <Tab.Screen
@@ -34,23 +34,23 @@ export default function Tabbar() {
         name={Paths.Home}
         options={{
           headerShown: false,
-          headerTitle: t("tabbar.home"),
+          headerTitle: "Home",
           tabBarIcon: ({ focused }) => {
             return focused ? (
               <Image
-                alt={t("common.home")}
+                alt={"Home"}
                 source={HomeFIcon as ImageURISource}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                alt={t("common.home")}
+                alt={"Home"}
                 source={HomeIcon as ImageURISource}
                 style={styles.iconStyle}
               />
             );
           },
-          title: t("tabbar.home"),
+          title: "Home",
         }}
       />
       <Tab.Screen
@@ -58,23 +58,23 @@ export default function Tabbar() {
         name={Paths.Dynamic}
         options={{
           headerShown: false,
-          headerTitle: t("tabbar.dynamic"),
+          headerTitle: "Updates",
           tabBarIcon: ({ focused }) => {
             return focused ? (
               <Image
-                alt={t("common.home")}
+                alt={"Home"}
                 source={DynamicFIcon as ImageURISource}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                alt={t("common.home")}
+                alt={"Home"}
                 source={DynamicIcon as ImageURISource}
                 style={styles.iconStyle}
               />
             );
           },
-          title: t("tabbar.dynamic"),
+          title: "Updates",
         }}
       />
       <Tab.Screen
@@ -82,23 +82,23 @@ export default function Tabbar() {
         name={Paths.Profile}
         options={{
           headerShown: false,
-          headerTitle: t("tabbar.profile"),
+          headerTitle: "Profile",
           tabBarIcon: ({ focused }) => {
             return focused ? (
               <Image
-                alt={t("common.home")}
+                alt={"Home"}
                 source={ProfileFIcon as ImageURISource}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                alt={t("common.home")}
+                alt={"Home"}
                 source={ProfileIcon as ImageURISource}
                 style={styles.iconStyle}
               />
             );
           },
-          title: t("tabbar.profile"),
+          title: "Profile",
         }}
       />
     </Tab.Navigator>

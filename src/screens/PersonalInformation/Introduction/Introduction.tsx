@@ -19,12 +19,15 @@ export function Introduction({
   navigation,
 }: RootScreenProps<Paths.Introduction>) {
   const userInfo = useUserStore((state) => state.userInfo);
-  const { backgrounds } = useTheme();  const [parameters, setParameters] = useState({
+  const { backgrounds } = useTheme();
+  const [parameters, setParameters] = useState({
     introduction: userInfo.introduction ?? "",
   });
 
   const FormSchema = z.object({
-    introduction: z.string().min(1, { message: t("message.introduction") }),
+    introduction: z
+      .string()
+      .min(1, { message: "Please enter an introduction" }),
   });
 
   const checkForm = (): boolean => {
@@ -105,7 +108,7 @@ export function Introduction({
             onChangeText={(text) => {
               handleUpdateParameters(text, "introduction");
             }}
-            placeholder={t("input.introduction")}
+            placeholder={"Enter introduction"}
             style={[styles.textInput, backgrounds.gray1600]}
             underlineColor="transparent"
             value={parameters.introduction}
@@ -119,7 +122,7 @@ export function Introduction({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t("common.save")}
+            {"Save"}
           </Button>
         </View>
       </SafeScreen>

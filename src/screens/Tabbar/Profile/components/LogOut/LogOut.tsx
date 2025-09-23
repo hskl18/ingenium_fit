@@ -17,7 +17,8 @@ export default function LogOut({
 }: {
   readonly hideModal: () => void;
   readonly visible: boolean;
-}) {  const navigation = useNavigation();
+}) {
+  const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
   const containerStyle = {
     backgroundColor: "transparent",
@@ -37,7 +38,7 @@ export default function LogOut({
       hideModal();
       if (response.code === 200) {
         storage.delete(Configs.Token);
-        Toast.show(t("common.logout_success"), {
+        Toast.show("Logged out", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -68,7 +69,7 @@ export default function LogOut({
       >
         <View style={[styles.container, backgrounds.gray1600]}>
           <Text style={styles.titleText}>
-            {t("common.logout_confirmation")}
+            Are you sure you want to log out?
           </Text>
         </View>
         <Button
@@ -78,7 +79,7 @@ export default function LogOut({
           mode="text"
           onPress={handleSubmit}
         >
-          <Text style={styles.buttonText}>{t("common.log_out")}</Text>
+          <Text style={styles.buttonText}>Log out</Text>
         </Button>
       </Modal>
     </Portal>

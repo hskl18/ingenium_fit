@@ -19,13 +19,14 @@ export default function Nickname({
   navigation,
 }: RootScreenProps<Paths.Nickname>) {
   const userInfo = useUserStore((state) => state.userInfo);
-  const { backgrounds } = useTheme();  const queryClient = useQueryClient();
+  const { backgrounds } = useTheme();
+  const queryClient = useQueryClient();
   const [parameters, setParameters] = useState({
     nickName: userInfo.nickName ?? "",
   });
 
   const FormSchema = z.object({
-    nickName: z.string().min(1, { message: t("message.nickname") }),
+    nickName: z.string().min(1, { message: "Please enter a nickname" }),
   });
 
   const checkForm = (): boolean => {
@@ -102,7 +103,7 @@ export default function Nickname({
             onChangeText={(text) => {
               handleUpdateParameters(text, "nickName");
             }}
-            placeholder={t("input.nickname")}
+            placeholder={"Enter nickname"}
             style={[backgrounds.gray1600]}
             underlineColor="transparent"
             value={parameters.nickName}
@@ -116,7 +117,7 @@ export default function Nickname({
             mode="contained"
             onPress={handleSubmit}
           >
-            {t("common.save")}
+            {"Save"}
           </Button>
         </View>
       </SafeScreen>

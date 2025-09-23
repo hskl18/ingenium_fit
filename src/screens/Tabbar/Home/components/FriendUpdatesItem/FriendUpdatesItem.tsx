@@ -1,20 +1,22 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import {
   Image,
   ImageURISource,
   Pressable,
   StyleSheet,
   View,
-} from 'react-native';
-import { Text } from 'react-native-paper';
+} from "react-native";
+import { ImageWithFallback } from "@/components/atoms";
+import { Text } from "react-native-paper";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import PlayIcon from '@/assets/images/256.png';
-import LikeIcon from '@/assets/images/52.png';
+import PlayIcon from "@/assets/images/256.png";
+import LikeIcon from "@/assets/images/52.png";
 
-import { dayjs } from '@/plugins/day.ts';
+import { dayjs } from "@/plugins/day.ts";
+import { normalizeImageUrl } from "@/utils/image";
 
 export default function FriendUpdatesItem({ item }) {
   const { colors } = useTheme();
@@ -23,11 +25,11 @@ export default function FriendUpdatesItem({ item }) {
   let pictures = [];
   let videos = [];
   if (item.pictures) {
-    pictures = item.pictures.split(',');
+    pictures = item.pictures.split(",");
   }
 
   if (item.videos) {
-    videos = item.videos.split(',');
+    videos = item.videos.split(",");
   }
   return (
     <Pressable
@@ -39,10 +41,8 @@ export default function FriendUpdatesItem({ item }) {
       style={[styles.container]}
     >
       <View style={styles.coverImageWrapper}>
-        <Image
-          source={{
-            uri: pictures[0],
-          }}
+        <ImageWithFallback
+          uri={normalizeImageUrl(pictures[0])}
           style={styles.coverImage}
         />
         <Image source={PlayIcon as ImageURISource} style={styles.playIcon} />
@@ -53,15 +53,13 @@ export default function FriendUpdatesItem({ item }) {
         </Text>
         <Text style={{ ...styles.dateText, color: colors.gray800 }}>
           {item.createTime
-            ? dayjs(item.createTime).format('YYYY-MM-DD HH:mm')
+            ? dayjs(item.createTime).format("YYYY-MM-DD HH:mm")
             : item.createTime}
         </Text>
         <View style={styles.toolWrapper}>
           <View style={styles.toolLeft}>
-            <Image
-              source={{
-                uri: item.user?.avatar,
-              }}
+            <ImageWithFallback
+              uri={normalizeImageUrl(item.user?.avatar)}
               style={styles.avatar}
             />
             <Text style={{ ...styles.nameText, color: colors.gray800 }}>
@@ -107,11 +105,11 @@ const styles = StyleSheet.create({
   coverImage: {
     borderRadius: 18,
     height: 120,
-    width: '100%',
+    width: "100%",
   },
   coverImageWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   dateText: {
     fontSize: 13,
@@ -126,7 +124,7 @@ const styles = StyleSheet.create({
   },
   playIcon: {
     height: 36,
-    position: 'absolute',
+    position: "absolute",
     width: 36,
   },
   titleText: {
@@ -135,14 +133,14 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   toolLeft: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     gap: 3,
   },
   toolWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
   },
 });

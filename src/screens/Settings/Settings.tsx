@@ -30,12 +30,12 @@ export default function Settings({
   const menus: Menu[] = [
     {
       code: "changePassword",
-      name: t("common.change_password"),
+      name: "Change password",
       path: Paths.ChangePassword,
     },
     {
       code: "platformAgreement",
-      name: t("common.platform_agreement"),
+      name: "Platform agreement",
       params: {
         code: Agreements.PlatformAgreement,
       },
@@ -43,7 +43,7 @@ export default function Settings({
     },
     {
       code: "aboutUs",
-      name: t("common.about_us"),
+      name: "About us",
       params: {
         code: Agreements.AboutUs,
       },
@@ -86,9 +86,7 @@ export default function Settings({
         ))}
         <Pressable onPress={showModal}>
           <View style={[styles.menu, backgrounds.gray1600, { marginTop: 10 }]}>
-            <Text style={styles.menuNameText}>
-              {t("common.cancel_account")}
-            </Text>
+            <Text style={styles.menuNameText}>{"Cancel account"}</Text>
             <Image
               alt="arrow-right"
               source={ArrowIcon as ImageURISource}

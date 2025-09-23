@@ -17,6 +17,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { ImageWithFallback } from "@/components/atoms";
 import GalleryPreview from "react-native-gallery-preview";
 import { Pressable } from "react-native-gesture-handler";
 import { useKeyboardAnimation } from "react-native-keyboard-controller";
@@ -60,7 +61,8 @@ import {
 export default function RehabilitationCenterDetail({
   route,
 }: RootScreenProps<Paths.RehabilitationCenterDetail>) {
-  const navigation = useNavigation();  const { backgrounds, colors } = useTheme();
+  const navigation = useNavigation();
+  const { backgrounds, colors } = useTheme();
   const { id } = route.params;
   const progress = useSharedValue<number>(0);
   const [post, setPost] = useState({});
@@ -91,8 +93,8 @@ export default function RehabilitationCenterDetail({
         }));
         Toast.show(
           post.whetherFavoriteByLoginUser
-            ? t("common.unfavorite_success")
-            : t("common.favorite_success"),
+            ? "Removed from favorites"
+            : "Added to favorites",
 
           {
             animation: true,
@@ -165,8 +167,6 @@ export default function RehabilitationCenterDetail({
   });
 
   useEffect(() => {
-    console.log("postData", postData);
-
     if (postDataIsSuccess) {
       setPost(postData.data || {});
     }
@@ -183,7 +183,7 @@ export default function RehabilitationCenterDetail({
   } = useInfiniteQuery({
     enabled: !!post.id,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      console.log(lastPage, allPages);
+      if (__DEV__) console.log(lastPage, allPages);
       if (!lastPage?.rows || lastPage.rows?.length < 10) {
         return undefined;
       }
@@ -215,7 +215,7 @@ export default function RehabilitationCenterDetail({
           queryKey: [Paths.SciencePopularizationDetail, "commentList"],
           type: "active",
         });
-        Toast.show(t("common.send_success"), {
+        Toast.show("Sent", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -239,7 +239,7 @@ export default function RehabilitationCenterDetail({
           queryKey: [Paths.SciencePopularizationDetail, "commentList"],
           type: "active",
         });
-        Toast.show(t("common.send_success"), {
+        Toast.show("Sent", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -409,9 +409,8 @@ export default function RehabilitationCenterDetail({
                     handlePreview(item);
                   }}
                 >
-                  <Image
-                    key={item as string}
-                    source={{ uri: item.url }}
+                  <ImageWithFallback
+                    uri={item.url}
                     style={styles.carouselImg}
                   />
                 </Pressable>
@@ -436,7 +435,7 @@ export default function RehabilitationCenterDetail({
             style={styles.commentIcon}
           />
           <Text style={{ ...styles.commentTitleText }}>
-            {t("common.comment")}({post.commentNum || 0})
+            {"Comments"}({post.commentNum || 0})
           </Text>
         </View>
       </View>
@@ -465,7 +464,7 @@ export default function RehabilitationCenterDetail({
           }}
           outlineColor="transparent"
           outlineStyle={styles.textInputOutline}
-          placeholder={t("common.civilized_comments")}
+          placeholder={"Write a comment..."}
           style={[styles.inputBar, backgrounds.gray1560]}
           underlineColor="transparent"
           value={commentContent}

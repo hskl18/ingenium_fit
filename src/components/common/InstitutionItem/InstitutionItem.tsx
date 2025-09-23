@@ -1,31 +1,32 @@
-import { useNavigation } from '@react-navigation/native';
-import { Image, ImageURISource, StyleSheet, View } from 'react-native';
-import { Card, Text } from 'react-native-paper';
-import { useTranslation } from '@/hooks';
+import * as React from "react";
+import { useNavigation } from "@react-navigation/native";
+import { Image, ImageURISource, StyleSheet, View } from "react-native";
+import { Card, Text } from "react-native-paper";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import ScoreIcon from '@/assets/images/244.png';
-import CollectIcon from '@/assets/images/31.png';
-import CollectFIcon from '@/assets/images/247.png';
+import ScoreIcon from "@/assets/images/244.png";
+import CollectIcon from "@/assets/images/31.png";
+import CollectFIcon from "@/assets/images/247.png";
+import { normalizeImageUrl } from "@/utils/image";
+import { ImageWithFallback } from "@/components/atoms";
 
 export default function InstitutionItem({ item }: any) {
   const { backgrounds, colors } = useTheme();
-  const navigation = useNavigation();  return (
+  const navigation = useNavigation<any>();
+  return (
     <Card
       onPress={() => {
-        navigation.navigate(Paths.RehabilitationCenterDetail, {
+        navigation.navigate(Paths.RehabilitationCenterDetail as any, {
           id: item.id,
         });
       }}
       style={[styles.container, backgrounds.gray1600]}
     >
       <View>
-        <Image
-          source={{
-            uri: item.coverImage,
-          }}
+        <ImageWithFallback
+          uri={normalizeImageUrl(item.coverImage)}
           style={styles.coverImage}
         />
       </View>
@@ -48,7 +49,7 @@ export default function InstitutionItem({ item }: any) {
         </View>
         {item.distance ? (
           <Text style={styles.distanceText}>
-            {t('common.distance')} {item.distance}km
+            {"Distance"} {item.distance}km
           </Text>
         ) : undefined}
         {Array.isArray(item.accessibleHighlights) &&
@@ -60,14 +61,16 @@ export default function InstitutionItem({ item }: any) {
                 color: colors.gray500,
               }}
             >
-              {t('common.accessibility_supports')}
+              {"Accessibility supports"}
             </Text>
             <View style={styles.highlightChips}>
-              {item.accessibleHighlights.slice(0, 2).map((highlight) => (
-                <Text key={highlight} style={styles.highlightChip}>
-                  {highlight}
-                </Text>
-              ))}
+              {item.accessibleHighlights
+                .slice(0, 2)
+                .map((highlight: string) => (
+                  <Text key={highlight} style={styles.highlightChip}>
+                    {highlight}
+                  </Text>
+                ))}
             </View>
           </View>
         ) : undefined}
@@ -96,10 +99,10 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 18,
     padding: 0,
-    shadowColor: '#001C40',
+    shadowColor: "#001C40",
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 8 },
     shadowRadius: 18,
@@ -113,14 +116,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     height: 188,
-    width: '100%',
+    width: "100%",
   },
   descText: {
     fontSize: 13,
     fontWeight: 500,
   },
   distanceText: {
-    color: '#00A654',
+    color: "#00A654",
     flexShrink: 1,
     fontSize: 12,
     marginVertical: 9,
@@ -130,20 +133,20 @@ const styles = StyleSheet.create({
   },
   highlightLabel: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: "600",
     letterSpacing: 0.3,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   highlightChips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
     marginTop: 10,
   },
   highlightChip: {
-    backgroundColor: 'rgba(0, 119, 210, 0.08)',
+    backgroundColor: "rgba(0, 119, 210, 0.08)",
     borderRadius: 999,
-    color: '#0B3A64',
+    color: "#0B3A64",
     fontSize: 12,
     lineHeight: 16,
     paddingHorizontal: 12,
@@ -162,8 +165,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   scoreWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
     marginTop: 14,
   },
   titleText: {
@@ -172,8 +175,8 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   titleWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 20,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
 });

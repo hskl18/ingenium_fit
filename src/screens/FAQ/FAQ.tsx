@@ -2,9 +2,9 @@ import {
   keepPreviousData,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from '@/hooks';
+} from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
@@ -12,26 +12,26 @@ import {
   ScrollView,
   StyleSheet,
   View,
-} from 'react-native';
-import Accordion from 'react-native-collapsible/Accordion';
-import { Button, List, Searchbar, Text } from 'react-native-paper';
-import Animated from 'react-native-reanimated';
+} from "react-native";
+import Accordion from "react-native-collapsible/Accordion";
+import { Button, List, Searchbar, Text } from "react-native-paper";
+import Animated from "react-native-reanimated";
 
-import { Paths } from '@/navigation/paths.ts';
-import { RootScreenProps } from '@/navigation/types.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { RootScreenProps } from "@/navigation/types.ts";
+import { useTheme } from "@/theme";
 
-import { SafeScreen } from '@/components/templates';
+import { SafeScreen } from "@/components/templates";
 
-import TitleIcon from '@/assets/images/205.png';
-import { faqsList } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
-import { useFocusEffect } from '@react-navigation/native';
+import TitleIcon from "@/assets/images/205.png";
+import { faqsList } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
   const { backgrounds } = useTheme();
   const [activeSections, setActiveSections] = useState([]);
-  const [searchKey, setSearchKey] = useState('');
+  const [searchKey, setSearchKey] = useState("");
 
   const queryClient = useQueryClient();
 
@@ -50,7 +50,7 @@ export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
         searchKey,
       });
     },
-    queryKey: [Paths.FAQ, 'faqsList'],
+    queryKey: [Paths.FAQ, "faqsList"],
   });
 
   const handleSearch = () => {
@@ -70,7 +70,7 @@ export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
   const renderContent = (section) => {
     let pictures = [];
     if (section?.images) {
-      pictures = section.images.split(',');
+      pictures = section.images.split(",");
     }
     return (
       <Animated.View
@@ -94,16 +94,16 @@ export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
   }
   return (
     <ScrollView style={[styles.scrollView, backgrounds.gray1550]}>
-      <SafeScreen edges={['bottom']} style={[backgrounds.gray1550]}>
+      <SafeScreen edges={["bottom"]} style={[backgrounds.gray1550]}>
         <View style={styles.searchWrapper}>
           <Searchbar
             onChangeText={setSearchKey}
-            placeholder={t('common.keyword_search')}
+            placeholder={"Keyword search"}
             right={() => {
               return (
                 <View style={{ paddingHorizontal: 10 }}>
                   <Button mode="contained" onPress={handleSearch}>
-                    {t('common.search')}
+                    {"Search"}
                   </Button>
                 </View>
               );
@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
     width: 80,
   },
   pictureWrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 7,
   },
   titleWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
     paddingVertical: 14,
   },
