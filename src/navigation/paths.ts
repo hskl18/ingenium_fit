@@ -1,5 +1,6 @@
 export const enum Paths {
   Agreement = "agreement",
+  AboutUs = "about-us",
   ChangePassword = "change-password",
   ChatDetail = "chat-detail",
   ChatMessage = "chat-message",
@@ -16,14 +17,12 @@ export const enum Paths {
   Home = "home",
   Introduction = "introduction",
   Login = "login",
-  LoginForgetPassword = "login-forget-password",
   Message = "message",
   MyUpdates = "my-updates",
   Nickname = "nickname",
   ObtainPosition = "obtain-position",
   PersonalInformation = "personal-information",
   Profile = "profile",
-  Register = "register",
   CarouselDetail = "carousel-detail",
   RehabilitationCenterDetail = "rehabilitation-center-detail",
   RehabilitationCenterDoctor = "rehabilitation-center-doctor",
@@ -41,5 +40,4 @@ export const enum Paths {
   SystemMessage = "system-message",
   SystemMessageDetail = "system-message-detail",
   Tabbar = "tab-bar",
-  VerificationCode = "verification-code",
 }

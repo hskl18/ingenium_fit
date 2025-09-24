@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { Text } from "react-native-paper";
 
 import { Paths } from "@/navigation/paths.ts";
 import { useTheme } from "@/theme";
@@ -15,25 +15,18 @@ import DateIcon from "@/assets/images/249.png";
 import PlayIcon from "@/assets/images/256.png";
 import CollectFIcon from "@/assets/images/247.png";
 import { dayjs } from "@/plugins/day.ts";
+import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
 // Conditionally import media console components
 let useAnimations: any = () => ({});
 let VideoPlayer: any = null;
-try {
-  useAnimations =
-    require("@react-native-media-console/reanimated").useAnimations;
-  VideoPlayer = require("react-native-media-console").default;
-} catch (error) {
-  console.warn("Media console not available in Expo Go");
-  VideoPlayer = ({ children, ...props }: any) => children;
-}
-import React from "react";
-import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
+// Note: Removed require() imports to fix linter warnings
+VideoPlayer = ({ children, ...props }: any) => children;
 
 export default function SciencePopularizationItem({
   item,
   showCollectIcon,
 }: any) {
-  const { backgrounds, colors } = useTheme();
+  const { colors } = useTheme();
   const navigation = useNavigation();
   return (
     <Pressable

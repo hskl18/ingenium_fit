@@ -17,16 +17,12 @@ import {
   DynamicPublish,
   FanAttention,
   FAQ,
-  ForgotPassword,
   Introduction,
-  Login,
-  LoginForgetPassword,
   Message,
   MyUpdates,
   Nickname,
   ObtainPosition,
   PersonalInformation,
-  Register,
   RehabilitationCenterDetail,
   RehabilitationCenterDoctor,
   RehabilitationCenterDoctorEvaluate,
@@ -37,11 +33,9 @@ import {
   Search,
   SelectLocation,
   Settings,
-  Startup,
   SystemMessage,
   SystemMessageDetail,
   Tabbar,
-  VerificationCode,
 } from "@/screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -53,18 +47,12 @@ function ApplicationNavigator() {
     <PaperProvider theme={navigationTheme}>
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
         <Stack.Navigator
-          initialRouteName={Paths.Startup}
+          id="RootStack"
+          initialRouteName={Paths.Tabbar}
           screenOptions={{
             headerTitleAlign: "center",
           }}
         >
-          <Stack.Screen
-            component={Startup}
-            name={Paths.Startup}
-            options={{
-              headerShown: false,
-            }}
-          />
           <Stack.Screen
             component={Tabbar}
             name={Paths.Tabbar}
@@ -346,13 +334,6 @@ function ApplicationNavigator() {
               name={Paths.ChangePassword}
               options={{
                 headerTitle: "Change password",
-              }}
-            />
-            <Stack.Screen
-              component={ForgotPassword}
-              name={Paths.ForgotPassword}
-              options={{
-                headerTitle: "Forgot password",
               }}
             />
             <Stack.Screen

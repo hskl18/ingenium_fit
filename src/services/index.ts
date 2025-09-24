@@ -1,7 +1,4 @@
 // Export all mock API services for frontend-only demo
-export * from "./mock";
-export * from "./types";
-
 // Re-export commonly used functions with original names for backward compatibility
 // Auth temporarily disabled for demo-only frontend
 // import { authApi } from './mock/auth';
@@ -12,6 +9,9 @@ import { postsApi } from "./mock/posts";
 import { rehabilitationApi } from "./mock/rehabilitation";
 import { messagesApi } from "./mock/messages";
 
+export * from "./mock";
+export * from "./types";
+
 // Auth functions
 // export const login = authApi.login;
 // export const register = authApi.register;
@@ -19,6 +19,12 @@ import { messagesApi } from "./mock/messages";
 // export const forgotPassword = authApi.forgotPassword;
 // export const changePassword = authApi.changePassword;
 // export const logOff = authApi.deleteAccount;
+
+// Add missing exports that are being imported
+export const logout = () =>
+  Promise.resolve({ success: true, message: "Logged out successfully" });
+export const changePassword = (data: any) =>
+  Promise.resolve({ success: true, message: "Password changed successfully" });
 
 // Upload functions
 export const uploadFile = uploadApi.uploadFile;

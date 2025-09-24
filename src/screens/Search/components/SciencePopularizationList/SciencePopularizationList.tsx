@@ -76,7 +76,7 @@ export default function SciencePopularizationList() {
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<Empty />}
         numColumns={2}
-        onEndReached={fetchNextPage}
+        onEndReached={() => fetchNextPage()}
         renderItem={renderItem}
       />
     </SafeScreen>

@@ -7,7 +7,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "@/hooks";
 import {
   Dimensions,
   Image,
@@ -20,7 +19,7 @@ import {
 } from "react-native";
 import { showLocation } from "react-native-map-link";
 import { Pressable } from "react-native-gesture-handler";
-import { Avatar, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-root-toast";
@@ -70,7 +69,7 @@ export default function RehabilitationCenterDetail({
         type: "active",
       });
       return () => {};
-    }, [])
+    }, [queryClient])
   );
 
   const mutation = useMutation({
@@ -173,15 +172,7 @@ export default function RehabilitationCenterDetail({
     }
   }, [setPost, postData, postDataIsSuccess]);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    isPending,
-    isSuccess,
-  } = useInfiniteQuery({
+  const { data, hasNextPage } = useInfiniteQuery({
     enabled: selectedIndex !== 0,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       if (__DEV__) console.log(lastPage, allPages);

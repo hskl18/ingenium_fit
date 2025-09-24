@@ -9,6 +9,7 @@ export type RootStackParamList = {
   [Paths.Agreement]: {
     code: string;
   };
+  [Paths.AboutUs]: undefined;
   [Paths.CarouselDetail]: {
     id: string;
   };
@@ -34,17 +35,15 @@ export type RootStackParamList = {
   [Paths.FollowersList]: undefined;
   [Paths.FollowingList]: undefined;
   [Paths.ForgotPassword]: undefined;
+  [Paths.Login]: undefined;
   [Paths.Home]: undefined;
   [Paths.Introduction]: undefined;
-  [Paths.Login]: undefined;
-  [Paths.LoginForgetPassword]: undefined;
   [Paths.Message]: undefined;
   [Paths.MyUpdates]: undefined;
   [Paths.Nickname]: undefined;
   [Paths.ObtainPosition]: undefined;
   [Paths.PersonalInformation]: undefined;
   [Paths.Profile]: undefined;
-  [Paths.Register]: undefined;
   [Paths.RehabilitationCenterDetail]: {
     id: string;
   };
@@ -85,7 +84,4 @@ export type RootStackParamList = {
     id: string;
   };
   [Paths.Tabbar]: undefined;
-  [Paths.VerificationCode]: {
-    email?: string;
-  };
 };

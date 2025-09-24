@@ -5,9 +5,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "@/hooks";
-import React from "react";
 import {
   Dimensions,
   Image,
@@ -382,7 +381,7 @@ export function RehabilitationCenterDoctor({
             contentContainerStyle={styles.container}
             data={dataList}
             keyExtractor={(item) => item.id}
-            onEndReached={fetchNextPage}
+            onEndReached={() => fetchNextPage()}
             ListHeaderComponent={
               <>
                 {RenderListHeader}

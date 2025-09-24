@@ -16,7 +16,7 @@ export default function getAssetsContext(type: "images" | "icons") {
       } catch (error) {
         console.warn(`Could not load image: ${path}`, error);
         // Return a placeholder image source
-        return require("../../assets/images/nothing.png");
+        return import("../../assets/images/nothing.png");
       }
     };
   }

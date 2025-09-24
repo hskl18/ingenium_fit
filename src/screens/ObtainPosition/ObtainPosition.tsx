@@ -1,10 +1,32 @@
 import type { RootScreenProps } from "@/navigation/types.ts";
+import {
+  PermissionsAndroid,
+  Platform,
+  Image,
+  Alert,
+  StyleSheet,
+  View,
+} from "react-native";
+import { Button, Text } from "react-native-paper";
+
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
+
+import { SafeScreen } from "@/components/templates";
+
+import { storage } from "@/storage";
+import LocationIcon from "@/assets/images/14.png";
+import { Configs } from "@/common/configs.ts";
+import { useLocationStore } from "@/store";
+import { locationCity } from "@/services";
+import Toast from "react-native-root-toast";
 
 // Conditionally import Geolocation
 let Geolocation: any = null;
 try {
-  Geolocation = require("@react-native-community/geolocation").default;
-} catch (error) {
+  const geolocationModule = require("@react-native-community/geolocation");
+  Geolocation = geolocationModule?.default ?? geolocationModule;
+} catch {
   console.warn("Geolocation not available in Expo Go");
   // Fallback geolocation for web/Expo Go
   Geolocation = {
@@ -19,16 +41,6 @@ try {
     clearWatch: () => {},
   };
 }
-import { useEffect } from "react";
-import {
-  PermissionsAndroid,
-  Platform,
-  Image,
-  Alert,
-  StyleSheet,
-  View,
-} from "react-native";
-import { Button, Text } from "react-native-paper";
 // Conditionally import permissions
 let check: any = () => Promise.resolve("granted");
 let openSettings: any = () => Promise.resolve();
@@ -37,27 +49,15 @@ let request: any = () => Promise.resolve("granted");
 let RESULTS: any = { GRANTED: "granted", DENIED: "denied" };
 
 try {
-  const permissionsModule = require("react-native-permissions");
+  const permissionsModule = require("react-native-permissions"); // eslint-disable-line @typescript-eslint/no-require-imports
   check = permissionsModule.check;
   openSettings = permissionsModule.openSettings;
   PERMISSIONS = permissionsModule.PERMISSIONS;
   request = permissionsModule.request;
   RESULTS = permissionsModule.RESULTS;
-} catch (error) {
+} catch {
   console.warn("Permissions not available in Expo Go");
 }
-
-import { Paths } from "@/navigation/paths.ts";
-import { useTheme } from "@/theme";
-
-import { SafeScreen } from "@/components/templates";
-
-import { storage } from "@/storage";
-import LocationIcon from "@/assets/images/14.png";
-import { Configs } from "@/common/configs.ts";
-import { useLocationStore } from "@/store";
-import { locationCity } from "@/services";
-import Toast from "react-native-root-toast";
 
 export default function ObtainPosition({
   navigation,
@@ -68,31 +68,6 @@ export default function ObtainPosition({
   // useEffect(() => {
   //   checkLocationPermission();
   // }, []);
-
-  const checkLocationPermission = async () => {
-    const permission =
-      Platform.OS === "ios"
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-
-    const result = await check(permission);
-
-    switch (result) {
-      case RESULTS.UNAVAILABLE:
-        console.log("This feature is not available on this device or OS.");
-        break;
-      case RESULTS.DENIED:
-        console.log("Permission has not been requested / is denied.");
-        handleDeniedPermissionModal();
-        break;
-      case RESULTS.GRANTED:
-        console.log("Permission is granted.");
-        break;
-      case RESULTS.BLOCKED:
-        console.log("Permission is denied and cannot be requested (blocked).");
-        break;
-    }
-  };
 
   const handleDeniedPermissionModal = () => {
     Alert.alert(

@@ -1,4 +1,5 @@
 import type { RootScreenProps } from "@/navigation/types.ts";
+import type { IResponseData } from "@/services/types";
 
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -19,7 +20,8 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function Login({
   navigation,
-}: RootScreenProps<Paths.ChangePassword>) {  const { navigationTheme, backgrounds } = useTheme();
+}: RootScreenProps<Paths.ChangePassword>) {
+  const { navigationTheme, backgrounds } = useTheme();
 
   const [parameters, setParameters] = useState({
     oldPassword: "",

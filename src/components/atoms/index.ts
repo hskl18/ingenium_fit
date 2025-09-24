@@ -2,3 +2,6 @@ export { default as AssetByVariant } from "./AssetByVariant/AssetByVariant";
 export { default as IconByVariant } from "./IconByVariant/IconByVariant";
 export { default as Skeleton } from "./Skeleton/Skeleton";
 export { default as ImageWithFallback } from "./ImageWithFallback";
+
+// Web-specific component
+export { default as WebFeatureNotice } from "./WebFeatureNotice";

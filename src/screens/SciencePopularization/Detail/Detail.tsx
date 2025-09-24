@@ -25,15 +25,6 @@ import { Avatar, Button, Divider, Text, TextInput } from "react-native-paper";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-root-toast";
-// Conditionally import VideoPlayer
-let VideoPlayer: any = null;
-try {
-  VideoPlayer = require("react-native-video").default;
-} catch (error) {
-  console.warn("VideoPlayer not available in Expo Go");
-  // Fallback to a simple View for web/Expo Go
-  VideoPlayer = ({ children, ...props }: any) => children;
-}
 import { WebView } from "react-native-webview";
 
 import { Paths } from "@/navigation/paths.ts";
@@ -57,6 +48,16 @@ import {
   favorite,
   scienceDetail,
 } from "@/services";
+// Conditionally import VideoPlayer
+let VideoPlayer: any = null;
+try {
+  const videoModule = require("react-native-video");
+  VideoPlayer = videoModule?.default ?? videoModule;
+} catch (error) {
+  console.warn("VideoPlayer not available in Expo Go");
+  // Fallback to a simple View for web/Expo Go
+  VideoPlayer = ({ children }: any) => children;
+}
 
 export default function RehabilitationCenterDetail({
   route,
@@ -494,7 +495,7 @@ export default function RehabilitationCenterDetail({
           ListHeaderComponent={renderListHeader()}
           ListEmptyComponent={<Empty />}
           ListFooterComponent={<View style={{ height: 74 }}></View>}
-          onEndReached={fetchNextPage}
+          onEndReached={() => fetchNextPage()}
           renderItem={renderItem}
         />
       </SafeScreen>

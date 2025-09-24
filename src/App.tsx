@@ -1,26 +1,15 @@
-import React from "react";
-import "react-native-gesture-handler";
-// Conditionally import polyfills for native platforms only
-if (typeof global !== "undefined" && !global.crypto) {
-  try {
-    require("react-native-get-random-values");
-  } catch (error) {
-    console.warn("Crypto polyfill not available in Expo Go");
-  }
-}
+import React, { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  Platform,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { Linking } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { StatusBar, Platform } from "react-native";
-
-// Conditionally import BootSplash only on native platforms
-let BootSplash: any = null;
-if (Platform.OS !== "web") {
-  try {
-    BootSplash = require("react-native-bootsplash").default;
-  } catch (error) {
-    console.warn("BootSplash not available in Expo Go");
-  }
-}
 
 import { storage } from "@/storage";
 import { RootSiblingParent } from "react-native-root-siblings";
@@ -34,20 +23,49 @@ import { ThemeProvider } from "@/theme";
 import "@/translations";
 
 import { Configs } from "@/common/configs.ts";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-// Conditionally import KeyboardProvider
-let KeyboardProvider: any = ({ children }: { children: React.ReactNode }) =>
-  children;
-if (Platform.OS !== "web") {
-  try {
-    KeyboardProvider =
-      require("react-native-keyboard-controller").KeyboardProvider;
-  } catch (error) {
-    console.warn("KeyboardProvider not available in Expo Go");
-  }
-}
 
 import ApplicationNavigator from "@/navigation/Application";
+import BootSplash from "@/platform/bootsplash";
+import { KeyboardProvider } from "@/platform/keyboard";
+import { isExpoGo, isWeb } from "@/platform/platform";
+
+const WebPlaceholder = () => {
+  return (
+    <View style={styles.webContainer}>
+      <View style={styles.webHeader}>
+        <Text style={styles.webTitle}>Ingenium Fit (Preview)</Text>
+        <Text style={styles.webSubtitle}>
+          The full experience is available on iOS and Android. Use the links
+          below to open the Expo preview or download the app.
+        </Text>
+      </View>
+      <View style={styles.webActions}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => Linking.openURL("https://expo.dev/client")}
+          style={styles.webButton}
+        >
+          <Text style={styles.webButtonText}>Get Expo Go</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() =>
+            Linking.openURL("https://expo.dev/@ingenium/ingenium-fit")
+          }
+          style={[styles.webButton, styles.webButtonSecondary]}
+        >
+          <Text style={styles.webButtonSecondaryText}>Open Dev Preview</Text>
+        </Pressable>
+      </View>
+      <Text style={styles.webFooter}>
+        If you already have Expo Go installed, scan the QR code shown in the
+        terminal to launch the mobile app.
+      </Text>
+    </View>
+  );
+};
+
+// All imports are static above; no runtime require
 export const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {
@@ -94,7 +112,7 @@ function App() {
           "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
       })
     );
-  }, []);
+  }, [toggleLanguage]);
   useEffect(() => {
     const init = async () => {
       if (BootSplash && Platform.OS !== "web") {
@@ -105,6 +123,7 @@ function App() {
 
     init();
   }, []);
+  // Web-specific banner
   return (
     <RootSiblingParent>
       <StatusBar
@@ -114,11 +133,11 @@ function App() {
         barStyle={"dark-content"}
       />
       <QueryClientProvider client={queryClient}>
-        <KeyboardProvider>
+        <KeyboardProvider disabled={isExpoGo}>
           <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <ThemeProvider storage={storage}>
               <GestureHandlerRootView style={{ flex: 1 }}>
-                <ApplicationNavigator />
+                {isWeb ? <WebPlaceholder /> : <ApplicationNavigator />}
               </GestureHandlerRootView>
             </ThemeProvider>
           </SafeAreaProvider>
@@ -127,5 +146,70 @@ function App() {
     </RootSiblingParent>
   );
 }
+
+const styles = StyleSheet.create({
+  webContainer: {
+    flex: 1,
+    backgroundColor: "#f5f7fb",
+    paddingHorizontal: 32,
+    paddingTop: 64,
+    alignItems: "center",
+  },
+  webHeader: {
+    maxWidth: 640,
+    alignItems: "center",
+    gap: 16,
+  },
+  webTitle: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#1a202c",
+    textAlign: "center",
+  },
+  webSubtitle: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: "#4a5568",
+    textAlign: "center",
+  },
+  webActions: {
+    marginTop: 32,
+    flexDirection: Platform.OS === "web" ? "row" : "column",
+    gap: 16,
+  },
+  webButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 999,
+    backgroundColor: "#2563eb",
+    shadowColor: "#2563eb",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 4,
+  },
+  webButtonSecondary: {
+    backgroundColor: "#e2e8f0",
+    shadowOpacity: 0,
+  },
+  webButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  webButtonSecondaryText: {
+    color: "#1a202c",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  webFooter: {
+    marginTop: 24,
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#718096",
+    textAlign: "center",
+    maxWidth: 540,
+  },
+});
 
 export default App;

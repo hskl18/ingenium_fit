@@ -5,6 +5,20 @@ import { Image, ImageURISource, StyleSheet, View } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import { Button, Text, TextInput } from "react-native-paper";
 
+type ScoreState = {
+  id: string | number;
+  label?: string;
+  minScore?: string | number;
+  maxScore?: string | number;
+};
+
+type DistanceState = {
+  id: string | number;
+  label?: string;
+  minDistance?: string | number;
+  maxDistance?: string | number;
+};
+
 import { Paths } from "@/navigation/paths.ts";
 import { RootScreenProps } from "@/navigation/types.ts";
 import { useTheme } from "@/theme";
@@ -32,12 +46,12 @@ export default function RehabilitationCenterList({
   const [visibleFilter, setVisibleFilter] = useState(false);
   // 排序方式：1-默认排序(默认) 2-距离排序 3-星级排序
   const [sortBy, setSortBy] = useState("1");
-  const [score, setScore] = useState({
+  const [score, setScore] = useState<ScoreState>({
     id: "",
     minScore: "",
     maxScore: "",
   });
-  const [distance, setDistance] = useState({
+  const [distance, setDistance] = useState<DistanceState>({
     id: "",
     maxDistance: "",
     minDistance: "",
@@ -182,7 +196,7 @@ export default function RehabilitationCenterList({
         keyExtractor={(item) => item.id}
         ListHeaderComponent={renderListHeader()}
         ListEmptyComponent={<Empty />}
-        onEndReached={fetchNextPage}
+        onEndReached={() => fetchNextPage()}
       />
 
       <RehabilitationCenterFilter

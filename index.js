@@ -2,30 +2,18 @@ import "react-native-gesture-handler";
 import "react-native-url-polyfill/auto";
 import { AppRegistry, LogBox } from "react-native";
 
-import App from "./src/App.safe";
+import App from "./src/App";
 
 // Temporarily disabled to fix runtime issues
 // if (__DEV__) {
 //   require("./src/reactotron.config.ts");
 // }
 
+global.__ENABLE_LOGS__ = true;
+
 // Silence verbose logs in dev and production while keeping warnings/errors
 // Toggle by setting global.__ENABLE_LOGS__ = true in the console if needed
-if (typeof global.__ENABLE_LOGS__ === "undefined") {
-  // eslint-disable-next-line no-undef
-  global.__ENABLE_LOGS__ = false;
-}
 const noop = () => {};
-// Always keep warn/error; quiet log/debug/info/trace unless explicitly enabled
-// Devs can re-enable by setting global.__ENABLE_LOGS__ = true in the debugger
-// or commenting out the lines below.
-// eslint-disable-next-line no-undef
-if (!__DEV__ || !global.__ENABLE_LOGS__) {
-  console.log = noop;
-  console.debug = noop;
-  console.info = noop;
-  console.trace = noop;
-}
 // Reduce LogBox noise during development
 if (__DEV__) {
   LogBox.ignoreLogs([

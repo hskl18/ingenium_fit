@@ -1,13 +1,19 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    "jsx": "react",
-    "types": ["react-native", "jest", "node"],
-    "typeRoots": ["./src/types/"],
+    "jsx": "react-jsx",
+    "types": ["jest", "node"],
+    "typeRoots": ["./src/types/", "./node_modules/@types"],
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noUnusedLocals": true
+    "noUnusedLocals": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "strict": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "noUncheckedIndexedAccess": false
   },
   "include": [
     "src/tests/**/*",

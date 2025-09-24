@@ -320,7 +320,7 @@ export default function Dynamic({
         data={dataList}
         renderItem={renderItem}
         ListEmptyComponent={<Empty />}
-        keyExtractor={(item: any, idx: number) => String(item?.id ?? idx)}
+        keyExtractor={(item: any, idx: number) => `${item?.id ?? "dynamic"}-${idx}`}
         onEndReached={() => {
           // LegendList expects a callback, not RN FlatList signature
           fetchNextPage();

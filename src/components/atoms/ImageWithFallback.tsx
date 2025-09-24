@@ -26,15 +26,15 @@ export default function ImageWithFallback({
 
   const normalized = useMemo(() => normalizeImageUrl(uri || undefined), [uri]);
 
-  const handleLoad = (...args: any[]) => {
+  const handleLoad = (...args: unknown[]) => {
     setIsLoading(false);
-    onLoad?.(...(args as any));
+    onLoad?.(args[0]);
   };
 
-  const handleError = (...args: any[]) => {
+  const handleError = (...args: unknown[]) => {
     setIsLoading(false);
     setFailed(true);
-    onError?.(...(args as any));
+    onError?.(args[0]);
   };
 
   const shouldShowPlaceholder = failed || !normalized;

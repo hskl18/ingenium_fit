@@ -10,13 +10,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-// Conditionally import ImagePicker
-let ImagePicker: any = null;
-try {
-  ImagePicker = require("react-native-image-crop-picker").default;
-} catch (error) {
-  console.warn("ImagePicker not available in Expo Go");
-}
 import { Button, Switch, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-root-toast";
 import { Pressable } from "react-native-gesture-handler";
@@ -29,19 +22,28 @@ import SelectCategory from "@/screens/Dynamic/components/SelectCategory/SelectCa
 import ArrowIcon from "@/assets/images/158.png";
 import RemoveIcon from "@/assets/images/159.png";
 import UploadIcon from "@/assets/images/235.png";
-import { publishPost, uploadFile } from "@/services";
+import { publishPost } from "@/services";
+import AWSHelper from "@/services/mock/upload";
+// Conditionally import ImagePicker
+let ImagePicker: any = null;
+try {
+  const imagePickerModule = require("react-native-image-crop-picker");
+  ImagePicker = imagePickerModule?.default ?? imagePickerModule;
+} catch {
+  console.warn("ImagePicker not available in Expo Go");
+}
 // Conditionally import media console components
 let useAnimations: any = () => ({});
 let VideoPlayer: any = null;
 try {
-  useAnimations =
-    require("@react-native-media-console/reanimated").useAnimations;
-  VideoPlayer = require("react-native-media-console").default;
-} catch (error) {
+  const reanimatedConsole = require("@react-native-media-console/reanimated");
+  useAnimations = reanimatedConsole.useAnimations;
+  const mediaConsole = require("react-native-media-console");
+  VideoPlayer = mediaConsole?.default ?? mediaConsole;
+} catch {
   console.warn("Media console not available in Expo Go");
-  VideoPlayer = ({ children, ...props }: any) => children;
+  VideoPlayer = ({ children }: any) => children;
 }
-import AWSHelper from "@/services/mock/upload";
 
 export default function DynamicPublish({
   navigation,

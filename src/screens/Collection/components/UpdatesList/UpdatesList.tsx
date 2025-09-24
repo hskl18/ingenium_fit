@@ -1,18 +1,17 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import DynamicItem from '@/components/common/DynamicItem/DynamicItem.tsx';
-import { SafeScreen } from '@/components/templates';
+import DynamicItem from "@/components/common/DynamicItem/DynamicItem.tsx";
+import { SafeScreen } from "@/components/templates";
 
-import { favoriteList } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
-import { useFocusEffect } from '@react-navigation/native';
+import { favoriteList } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function UpdatesList() {
   const { backgrounds } = useTheme();
@@ -22,24 +21,15 @@ export default function UpdatesList() {
   useFocusEffect(
     React.useCallback(() => {
       queryClient.refetchQueries({
-        queryKey: [Paths.Collection, 'UpdatesList'],
-        type: 'active',
+        queryKey: [Paths.Collection, "UpdatesList"],
+        type: "active",
       });
       // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [queryClient])
   );
 
-
-  const {
-    isPending,
-    data,
-    isFetching,
-    isSuccess,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       console.log(lastPage, allPages);
       if (!lastPage?.rows || lastPage.rows?.length < 10) {
@@ -55,7 +45,7 @@ export default function UpdatesList() {
         page: pageParam.pageParam,
       });
     },
-    queryKey: [Paths.Collection, 'UpdatesList'],
+    queryKey: [Paths.Collection, "UpdatesList"],
   });
 
   console.log(hasNextPage, data);
@@ -67,13 +57,13 @@ export default function UpdatesList() {
   const renderItem = ({ item, index }) => {
     return (
       <View key={item.id} style={{ marginTop: index > 0 ? 20 : 0 }}>
-        <DynamicItem item={item.dynamicsPost || {}} hideVisibleShield/>
+        <DynamicItem item={item.dynamicsPost || {}} hideVisibleShield />
       </View>
     );
   };
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
@@ -82,7 +72,7 @@ export default function UpdatesList() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<Empty />}
-        onEndReached={fetchNextPage}
+        onEndReached={() => fetchNextPage()}
       />
     </SafeScreen>
   );

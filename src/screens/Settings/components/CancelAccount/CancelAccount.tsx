@@ -28,7 +28,6 @@ export default function CancelAccount({
 }) {
   const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
-  const { t } = useTranslation();
   const containerStyle = {
     backgroundColor: "transparent",
     bottom: 0,

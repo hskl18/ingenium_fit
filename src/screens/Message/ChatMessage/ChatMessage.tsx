@@ -159,7 +159,7 @@ export default function ChatMessage({
         renderItem={renderItem}
         ListEmptyComponent={<Empty />}
         keyExtractor={(item) => item.id}
-        onEndReached={fetchNextPage}
+        onEndReached={() => fetchNextPage()}
       />
     </SafeScreen>
   );

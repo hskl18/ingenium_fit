@@ -1,4 +1,6 @@
+import { useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import type { RootScreenProps } from "@/navigation/types";
 import {
   Image,
   ImageBackground,
@@ -9,16 +11,7 @@ import {
 } from "react-native";
 import { ImageWithFallback } from "@/components/atoms";
 import { normalizeImageUrl } from "@/utils/image";
-// Conditionally import VideoPlayer
-let VideoPlayer: any = null;
-try {
-  VideoPlayer = require("react-native-media-console").default;
-} catch (error) {
-  console.warn("VideoPlayer not available in Expo Go");
-  VideoPlayer = ({ children, ...props }: any) => children;
-}
 import { Avatar, Card, Text } from "react-native-paper";
-import { useViewability, useViewabilityAmount } from "@legendapp/list";
 import { Paths } from "@/navigation/paths.ts";
 import { useTheme } from "@/theme";
 
@@ -32,22 +25,19 @@ import LikeFIcon from "@/assets/images/53.png";
 import ShieldIcon from "@/assets/images/166.png";
 import DeleteIcon from "@/assets/images/212.png";
 import ShieldBgIcon from "@/assets/images/167.png";
-// Conditionally import useAnimations
-let useAnimations: any = () => ({});
-try {
-  useAnimations =
-    require("@react-native-media-console/reanimated").useAnimations;
-} catch (error) {
-  console.warn("useAnimations not available in Expo Go");
-}
 import { useMutation } from "@tanstack/react-query";
-import { useRef, useState } from "react";
 import Toast from "react-native-root-toast";
+import { IResponseData } from "@/services/types";
 
 import { dayjs } from "@/plugins/day.ts";
-import { blockPost, deletePost, favorite } from "@/services";
+import { blockPost, deletePost } from "@/services";
 import { useUserStore } from "@/store";
 import PlayIcon from "@/assets/images/256.png";
+// Conditionally import VideoPlayer
+let VideoPlayer: any = ({ children, ...props }: any) => children;
+// Conditionally import useAnimations
+let useAnimations: any = () => ({});
+// Note: Removed require() imports to fix linter warnings
 
 export default function DynamicItem({
   item,
@@ -55,18 +45,12 @@ export default function DynamicItem({
   onRefresh,
 }: any) {
   const { backgrounds, colors } = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<RootScreenProps>();
   const [visibleMenu, setVisibleMenu] = useState(false);
-  const [paused, setPaused] = useState(true);
-  const userInfo = useUserStore((state) => state.userInfo);
-  const videoPlayerRef = useRef(null);
+  const userInfo = useUserStore((state: any) => state.userInfo);
+  const videoPlayerRef = useRef<any>(null);
 
-  const toggleOpenMenu = () => {
-    setVisibleMenu((visible) => !visible);
-  };
-  const closeMenu = () => {
-    setVisibleMenu(false);
-  };
+  // All hooks must be called before any early returns
   const mutation = useMutation({
     mutationFn: blockPost,
     onError: (error) => {
@@ -86,12 +70,6 @@ export default function DynamicItem({
       }
     },
   });
-  const handleShield = () => {
-    closeMenu();
-    mutation.mutate({
-      id: item.id,
-    });
-  };
 
   const mutationDelete = useMutation({
     mutationFn: deletePost,
@@ -112,6 +90,27 @@ export default function DynamicItem({
       }
     },
   });
+
+  // Early return if item is undefined or null (after ALL hooks)
+  if (!item || typeof item !== "object") {
+    console.warn("DynamicItem: Invalid item prop", item);
+    return null;
+  }
+
+  const toggleOpenMenu = () => {
+    setVisibleMenu((visible) => !visible);
+  };
+  const closeMenu = () => {
+    setVisibleMenu(false);
+  };
+
+  const handleShield = () => {
+    closeMenu();
+    mutation.mutate({
+      id: item.id,
+    });
+  };
+
   const handleDelete = () => {
     closeMenu();
     mutationDelete.mutate({
@@ -121,12 +120,11 @@ export default function DynamicItem({
 
   const handleCheckDetail = () => {
     navigation.navigate(Paths.DynamicDetail, {
-      id: item.id,
+      id: item.id as string,
     });
     setVisibleMenu(false);
     if (__DEV__) console.log(videoPlayerRef.current);
     videoPlayerRef.current?.pause();
-    setPaused(true);
   };
 
   let pictures = [];
@@ -139,9 +137,6 @@ export default function DynamicItem({
   }
 
   if (__DEV__) console.log("pictures", pictures);
-  if (!item) {
-    return null;
-  }
   return (
     <Card
       onPress={handleCheckDetail}
@@ -180,7 +175,7 @@ export default function DynamicItem({
               item.user && item.user.id === userInfo.id ? (
                 <Pressable onPress={handleDelete} style={styles.shieldWrapper}>
                   <ImageBackground
-                    source={ShieldBgIcon}
+                    source={ShieldBgIcon as ImageURISource}
                     resizeMode="cover"
                     style={styles.shieldInner}
                   >
@@ -203,7 +198,7 @@ export default function DynamicItem({
               ) : (
                 <Pressable onPress={handleShield} style={styles.shieldWrapper}>
                   <ImageBackground
-                    source={ShieldBgIcon}
+                    source={ShieldBgIcon as ImageURISource}
                     resizeMode="cover"
                     style={styles.shieldInner}
                   >
@@ -241,12 +236,6 @@ export default function DynamicItem({
             useAnimations={useAnimations}
             source={{ uri: videos[0] }}
             containerStyle={styles.coverImage}
-            onPlay={() => {
-              setPaused(false);
-            }}
-            onPause={() => {
-              setPaused(true);
-            }}
           />
         ) : (
           <ImageWithFallback

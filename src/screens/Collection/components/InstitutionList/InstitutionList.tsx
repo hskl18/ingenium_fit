@@ -1,19 +1,18 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import InstitutionItem from '@/components/common/InstitutionItem/InstitutionItem.tsx';
-import { SafeScreen } from '@/components/templates';
+import InstitutionItem from "@/components/common/InstitutionItem/InstitutionItem.tsx";
+import { SafeScreen } from "@/components/templates";
 
-import { favoriteList } from '@/services';
-import Empty from '@/components/common/Empty/Empty.tsx';
-import { useLocationStore } from '@/store';
-import { useFocusEffect } from '@react-navigation/native';
+import { favoriteList } from "@/services";
+import Empty from "@/components/common/Empty/Empty.tsx";
+import { useLocationStore } from "@/store";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function InstitutionList() {
   const { backgrounds } = useTheme();
@@ -23,24 +22,15 @@ export default function InstitutionList() {
   useFocusEffect(
     React.useCallback(() => {
       queryClient.refetchQueries({
-        queryKey: [Paths.Collection, 'InstitutionList'],
-        type: 'active',
+        queryKey: [Paths.Collection, "InstitutionList"],
+        type: "active",
       });
       // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [queryClient])
   );
 
-
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    isPending,
-    isSuccess,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       console.log(lastPage, allPages);
       if (!lastPage?.rows || lastPage.rows?.length < 10) {
@@ -57,7 +47,7 @@ export default function InstitutionList() {
         page: pageParam.pageParam,
       });
     },
-    queryKey: [Paths.Collection, 'InstitutionList', location],
+    queryKey: [Paths.Collection, "InstitutionList", location],
   });
 
   console.log(hasNextPage, data);
@@ -75,14 +65,14 @@ export default function InstitutionList() {
   };
   return (
     <SafeScreen
-      edges={['bottom']}
+      edges={["bottom"]}
       style={[styles.safeScreen, backgrounds.gray1600]}
     >
       <LegendList
         contentContainerStyle={styles.container}
         data={dataList}
         keyExtractor={(item) => item.id}
-        onEndReached={fetchNextPage}
+        onEndReached={() => fetchNextPage()}
         ListEmptyComponent={<Empty />}
         renderItem={renderItem}
       />

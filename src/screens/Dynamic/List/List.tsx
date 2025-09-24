@@ -1,6 +1,6 @@
 import { LegendList } from "@legendapp/list";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 // import { useTranslation } from '@/hooks';
 import { StyleSheet, View } from "react-native";
 
@@ -34,7 +34,7 @@ export default function DynamicList({
     navigation.setOptions({
       headerTitle: headerTitle,
     });
-  }, [navigation]);
+  }, [navigation, selectType, whetherRecommend]);
   const { data, fetchNextPage } = useInfiniteQuery<
     any,
     Error,

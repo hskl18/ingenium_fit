@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { Text, TouchableOpacity, View } from "react-native";
 

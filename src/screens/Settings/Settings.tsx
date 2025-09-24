@@ -24,8 +24,7 @@ type Menu = {
 export default function Settings({
   navigation,
 }: RootScreenProps<Paths.Settings>) {
-  const { backgrounds, colors } = useTheme();
-  const { t } = useTranslation();
+  const { backgrounds } = useTheme();
 
   const menus: Menu[] = [
     {

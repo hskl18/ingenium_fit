@@ -1,6 +1,5 @@
 import type { RootScreenProps } from "@/navigation/types.ts";
 
-import { LegendList } from "@legendapp/list";
 import {
   useInfiniteQuery,
   useQuery,
@@ -25,10 +24,8 @@ import { useShallow } from "zustand/react/shallow";
 
 import { Paths } from "@/navigation/paths.ts";
 import { useTheme } from "@/theme";
-import { useTranslation } from "@/hooks";
 import { Analytics } from "@/utils";
 
-import Empty from "@/components/common/Empty/Empty.tsx";
 import InstitutionItem from "@/components/common/InstitutionItem/InstitutionItem.tsx";
 import { SafeScreen } from "@/components/templates";
 import FriendUpdatesItem from "@/screens/Tabbar/Dynamic/components/FriendUpdatesItem/FriendUpdatesItem.tsx";
@@ -70,7 +67,6 @@ const NON_LATIN_REGEX = /[^\x00-\x7F]/;
 
 export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
-  const { t } = useTranslation();
   const [searchKey, setSearchKey] = useState("");
   const [categoryList, setCategoryList] = useState(pasadenaCategories);
   const [recommendedPosts, setRecommendedPosts] = useState(
@@ -99,7 +95,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
         type: "active",
       });
       return () => {};
-    }, [])
+    }, [queryClient])
   );
 
   const { data: messageData, isSuccess: messageIsSuccess } = useQuery({
@@ -304,15 +300,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
    * 康复中心
    */
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    isPending,
-    isSuccess,
-  } = useInfiniteQuery({
+  const { data, hasNextPage } = useInfiniteQuery({
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       console.log(lastPage, allPages);
       return undefined;

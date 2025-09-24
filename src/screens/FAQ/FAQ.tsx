@@ -1,20 +1,14 @@
-import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "@/hooks";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   Image,
   ImageURISource,
-  Platform,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
-import { Button, List, Searchbar, Text } from "react-native-paper";
+import { Button, Searchbar, Text } from "react-native-paper";
 import Animated from "react-native-reanimated";
 
 import { Paths } from "@/navigation/paths.ts";
@@ -26,25 +20,15 @@ import { SafeScreen } from "@/components/templates";
 import TitleIcon from "@/assets/images/205.png";
 import { faqsList } from "@/services";
 import Empty from "@/components/common/Empty/Empty.tsx";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
   const { backgrounds } = useTheme();
-  const [activeSections, setActiveSections] = useState([]);
+  const [activeSections, setActiveSections] = useState<number[]>([]);
   const [searchKey, setSearchKey] = useState("");
 
   const queryClient = useQueryClient();
 
-  const {
-    data,
-    error,
-    isError,
-    isFetching,
-    isPending,
-    isPlaceholderData,
-    isSuccess,
-    refetch,
-  } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryFn: () => {
       return faqsList({
         searchKey,
@@ -59,7 +43,7 @@ export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
     });
   };
 
-  const renderHeader = (section) => {
+  const renderHeader = (section: any) => {
     return (
       <Animated.View style={[styles.titleWrapper]}>
         <Image source={TitleIcon as ImageURISource} style={styles.icon} />
@@ -67,19 +51,16 @@ export default function FAQ({ navigation }: RootScreenProps<Paths.FAQ>) {
       </Animated.View>
     );
   };
-  const renderContent = (section) => {
-    let pictures = [];
+  const renderContent = (section: any) => {
+    let pictures: string[] = [];
     if (section?.images) {
       pictures = section.images.split(",");
     }
     return (
-      <Animated.View
-        transition="backgroundColor"
-        style={[styles.contentWrapper]}
-      >
+      <Animated.View style={[styles.contentWrapper]}>
         <Text>{section.content}</Text>
         <View style={styles.pictureWrapper}>
-          {pictures.map((item, index) => (
+          {pictures.map((item: string, index: number) => (
             <View key={item} style={styles.pictureItem}>
               <Image source={{ uri: item }} style={styles.picture} />
             </View>

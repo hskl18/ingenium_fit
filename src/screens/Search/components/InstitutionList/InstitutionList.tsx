@@ -74,7 +74,7 @@ export default function RehabilitationCenterList() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<Empty />}
-        onEndReached={fetchNextPage}
+        onEndReached={() => fetchNextPage()}
       />
     </SafeScreen>
   );

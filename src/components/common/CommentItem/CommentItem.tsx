@@ -1,19 +1,20 @@
-import { useNavigation } from "@react-navigation/native";
-import { Image, ImageURISource, StyleSheet, View } from "react-native";
-import { Avatar, Divider, Text } from "react-native-paper";
-// import { useTranslation } from '@/hooks';
-
 import { useTheme } from "@/theme";
+import { Image, ImageURISource, StyleSheet, View } from "react-native";
+import { Avatar, Text } from "react-native-paper";
+import { dayjs } from "@/plugins";
 
 import ArrowRIcon from "@/assets/images/91.png";
-import { dayjs } from "@/plugins";
 import { Pressable } from "react-native-gesture-handler";
 
-export default function CommentItem({ item, onReply }: any) {
-  const { backgrounds, colors } = useTheme();
-  const navigation = useNavigation();
+export default function CommentItem({
+  item,
+  onReply,
+}: {
+  item: any;
+  onReply: (item: any) => void;
+}) {
+  const { colors } = useTheme();
   const replyList = item.userCommentReplyList || [];
-  console.log("replyList", replyList);
   return (
     <View>
       <View style={[styles.container]}>
@@ -43,12 +44,12 @@ export default function CommentItem({ item, onReply }: any) {
               style={styles.replyBtn}
             >
               <Text
-                style={
-                  ([styles.replyBtnText],
+                style={[
+                  styles.replyBtnText,
                   {
                     color: colors.primary,
-                  })
-                }
+                  },
+                ]}
               >
                 {"Reply"}
               </Text>
@@ -56,7 +57,7 @@ export default function CommentItem({ item, onReply }: any) {
           </View>
           {replyList.length > 0 ? (
             <View style={styles.replyWrapper}>
-              {replyList.map((sItem) => (
+              {replyList.map((sItem: any) => (
                 <View key={sItem.id} style={styles.reply}>
                   <View style={styles.replyHeader}>
                     <Text style={{ ...styles.nameText, color: colors.gray800 }}>
@@ -91,12 +92,12 @@ export default function CommentItem({ item, onReply }: any) {
                       style={styles.replyBtn}
                     >
                       <Text
-                        style={
-                          ([styles.replyBtnText],
+                        style={[
+                          styles.replyBtnText,
                           {
                             color: colors.primary,
-                          })
-                        }
+                          },
+                        ]}
                       >
                         {"Reply"}
                       </Text>

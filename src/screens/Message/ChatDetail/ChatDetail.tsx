@@ -18,14 +18,6 @@ import {
   PermissionsAndroid,
 } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
-// Conditionally import NitroSound
-let NitroSound: any = null;
-
-try {
-  NitroSound = require("react-native-nitro-sound");
-} catch (error) {
-  console.warn("NitroSound not available in Expo Go");
-}
 import AudioIcon from "@/assets/images/234.png";
 
 import { Paths } from "@/navigation/paths.ts";
@@ -57,6 +49,14 @@ import { SafeScreen } from "@/components/templates";
 
 import Toast from "react-native-root-toast";
 import AWSHelper from "@/services/mock/upload";
+// Conditionally import NitroSound
+let NitroSound: any = null;
+
+try {
+  NitroSound = require("react-native-nitro-sound");
+} catch (error) {
+  console.warn("NitroSound not available in Expo Go");
+}
 const { width } = Dimensions.get("window");
 
 interface LeaveWordInfo {

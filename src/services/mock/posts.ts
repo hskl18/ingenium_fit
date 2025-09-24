@@ -1,4 +1,4 @@
-import type { IResponseData } from '../types';
+import type { IResponseData, Post, GroupedPost } from "../types";
 
 // Mock delay to simulate network requests
 const mockDelay = (ms: number = 800) =>
@@ -7,59 +7,59 @@ const mockDelay = (ms: number = 800) =>
 // Pasadena adaptive sports community posts for research study
 const pasadenaPosts = [
   {
-    title: 'Amazing session at Rose Bowl Aquatics!',
+    title: "Amazing session at Rose Bowl Aquatics!",
     content:
-      'Just finished my weekly adaptive swimming at Rose Bowl Aquatics Center. The new pool lift makes transfers so much easier! Shoutout to Coach Sarah for the technique tips. 🏊‍♀️ #PasadenaAdaptive #Swimming',
-    location: 'Rose Bowl Aquatics Center',
-    category: 'Training',
+      "Just finished my weekly adaptive swimming at Rose Bowl Aquatics Center. The new pool lift makes transfers so much easier! Shoutout to Coach Sarah for the technique tips. 🏊‍♀️ #PasadenaAdaptive #Swimming",
+    location: "Rose Bowl Aquatics Center",
+    category: "Training",
   },
   {
-    title: 'Wheelchair basketball tryouts this weekend',
+    title: "Wheelchair basketball tryouts this weekend",
     content:
-      'Pasadena Adaptive Basketball is holding tryouts at PCC Gymnasium this Saturday 2pm. All skill levels welcome! They provide loaner chairs for newcomers. Great way to get into the sport! 🏀',
-    location: 'Pasadena City College',
-    category: 'Community',
+      "Pasadena Adaptive Basketball is holding tryouts at PCC Gymnasium this Saturday 2pm. All skill levels welcome! They provide loaner chairs for newcomers. Great way to get into the sport! 🏀",
+    location: "Pasadena City College",
+    category: "Community",
   },
   {
-    title: 'New racing chair grant available!',
+    title: "New racing chair grant available!",
     content:
-      'Just got approved for the Pasadena Adaptive Sports Equipment Grant! $2,500 towards a new racing wheelchair. The application process was straightforward - happy to help others navigate it. 💪',
-    location: 'Pasadena, CA',
-    category: 'Equipment',
+      "Just got approved for the Pasadena Adaptive Sports Equipment Grant! $2,500 towards a new racing wheelchair. The application process was straightforward - happy to help others navigate it. 💪",
+    location: "Pasadena, CA",
+    category: "Equipment",
   },
   {
-    title: 'Accessible Metro Gold Line tips',
+    title: "Accessible Metro Gold Line tips",
     content:
-      'Pro tip for getting to sports venues: The Gold Line to Memorial Park station is fully accessible and only 2 blocks from the Rose Bowl. Much easier than driving and parking! 🚊',
-    location: 'Memorial Park Station',
-    category: 'Transportation',
+      "Pro tip for getting to sports venues: The Gold Line to Memorial Park station is fully accessible and only 2 blocks from the Rose Bowl. Much easier than driving and parking! 🚊",
+    location: "Memorial Park Station",
+    category: "Transportation",
   },
   {
-    title: 'Adaptive cycling group ride tomorrow',
+    title: "Adaptive cycling group ride tomorrow",
     content:
-      'Weekly Pasadena Adaptive Cycling group meets at Brookside Park 9am Sundays. Hand cycles and recumbent bikes available to borrow. Beautiful route along the Arroyo Seco! 🚴‍♂️',
-    location: 'Brookside Park',
-    category: 'Community',
+      "Weekly Pasadena Adaptive Cycling group meets at Brookside Park 9am Sundays. Hand cycles and recumbent bikes available to borrow. Beautiful route along the Arroyo Seco! 🚴‍♂️",
+    location: "Brookside Park",
+    category: "Community",
   },
 ];
 
 const pasadenaAthletes = [
   {
-    name: 'Maria Rodriguez',
-    nickname: 'MariaWheels',
-    sport: 'Wheelchair Basketball',
+    name: "Maria Rodriguez",
+    nickname: "MariaWheels",
+    sport: "Wheelchair Basketball",
   },
-  { name: 'Alex Chen', nickname: 'AlexSwims', sport: 'Adaptive Swimming' },
-  { name: 'Jordan Smith', nickname: 'JordanRaces', sport: 'Wheelchair Racing' },
-  { name: 'Taylor Brown', nickname: 'TaylorCycles', sport: 'Hand Cycling' },
+  { name: "Alex Chen", nickname: "AlexSwims", sport: "Adaptive Swimming" },
+  { name: "Jordan Smith", nickname: "JordanRaces", sport: "Wheelchair Racing" },
+  { name: "Taylor Brown", nickname: "TaylorCycles", sport: "Hand Cycling" },
   {
-    name: 'Casey Wilson',
-    nickname: 'CaseyVolley',
-    sport: 'Sitting Volleyball',
+    name: "Casey Wilson",
+    nickname: "CaseyVolley",
+    sport: "Sitting Volleyball",
   },
 ];
 
-const generateMockPosts = (count: number) => {
+const generateMockPosts = (count: number): Post[] => {
   return Array.from({ length: count }, (_, i) => {
     const postTemplate = pasadenaPosts[i % pasadenaPosts.length];
     const author = pasadenaAthletes[i % pasadenaAthletes.length];
@@ -87,10 +87,10 @@ const generateMockPosts = (count: number) => {
       isLiked: Math.random() > 0.6,
       isFavorited: Math.random() > 0.8,
       createdAt: new Date(
-        Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
+        Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
       ).toISOString(),
       category: postTemplate.category,
-      tags: ['#PasadenaAdaptive', `#${postTemplate.category}`, '#IngeniusFit'],
+      tags: ["#PasadenaAdaptive", `#${postTemplate.category}`, "#IngeniusFit"],
       confidenceBoost: Math.random() > 0.7, // Research metric: posts that boost confidence
     };
   });
@@ -133,16 +133,38 @@ export const postsApi = {
   myPostList: async (data: any): Promise<IResponseData> => {
     await mockDelay();
 
-    const posts = generateMockPosts(5);
+    const posts = generateMockPosts(8);
+
+    // Group posts by year-month
+    const groupedPosts: { [key: string]: Post[] } = {};
+
+    posts.forEach((post: Post) => {
+      const date = new Date(post.createdAt);
+      const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+      if (!groupedPosts[yearMonth]) {
+        groupedPosts[yearMonth] = [];
+      }
+      groupedPosts[yearMonth].push(post);
+    });
+
+    // Convert to the expected format with yearMonth and dynamicsPostList
+    const groupedItems: GroupedPost[] = Object.entries(groupedPosts).map(
+      ([yearMonth, dynamicsPostList]) => ({
+        yearMonth,
+        dynamicsPostList,
+        id: yearMonth,
+      })
+    );
 
     return {
       success: true,
       data: {
-        items: posts,
-        total: 12,
+        items: groupedItems,
+        total: groupedItems.length,
         page: data.page || 1,
         limit: 10,
-        totalPages: 2,
+        totalPages: 1,
       },
     };
   },
@@ -153,7 +175,7 @@ export const postsApi = {
 
     return {
       success: true,
-      message: 'Post published successfully',
+      message: "Post published successfully",
       data: {
         id: `post-${Date.now()}`,
         ...data,
@@ -168,7 +190,7 @@ export const postsApi = {
 
     return {
       success: true,
-      message: 'Post deleted successfully',
+      message: "Post deleted successfully",
     };
   },
 
@@ -178,7 +200,7 @@ export const postsApi = {
 
     return {
       success: true,
-      message: data.isBlocked ? 'Post unblocked' : 'Post blocked',
+      message: data.isBlocked ? "Post unblocked" : "Post blocked",
     };
   },
 
@@ -188,7 +210,7 @@ export const postsApi = {
 
     return {
       success: true,
-      message: 'Post shared successfully',
+      message: "Post shared successfully",
     };
   },
 
@@ -198,7 +220,7 @@ export const postsApi = {
 
     return {
       success: true,
-      message: data.isLiked ? 'Post unliked' : 'Post liked',
+      message: data.isLiked ? "Post unliked" : "Post liked",
       data: {
         isLiked: !data.isLiked,
         likesCount: data.likesCount + (data.isLiked ? -1 : 1),
@@ -213,11 +235,11 @@ export const postsApi = {
     return {
       success: true,
       data: [
-        { id: '1', name: 'Training', icon: '🏋️' },
-        { id: '2', name: 'Equipment', icon: '🦽' },
-        { id: '3', name: 'Community', icon: '👥' },
-        { id: '4', name: 'Tips', icon: '💡' },
-        { id: '5', name: 'Events', icon: '📅' },
+        { id: "1", name: "Training", icon: "🏋️" },
+        { id: "2", name: "Equipment", icon: "🦽" },
+        { id: "3", name: "Community", icon: "👥" },
+        { id: "4", name: "Tips", icon: "💡" },
+        { id: "5", name: "Events", icon: "📅" },
       ],
     };
   },

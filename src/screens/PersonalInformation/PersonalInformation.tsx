@@ -15,15 +15,16 @@ import ArrowIcon from "@/assets/images/203.png";
 
 import { editUserInfo, getLoginUser } from "@/services";
 import { useUserStore } from "@/store";
+import Toast from "react-native-root-toast";
+import AWSHelper from "@/services/mock/upload";
 // Conditionally import ImagePicker
 let ImagePicker: any = null;
 try {
-  ImagePicker = require("react-native-image-crop-picker").default;
+  const imagePickerModule = require("react-native-image-crop-picker");
+  ImagePicker = imagePickerModule?.default ?? imagePickerModule;
 } catch (error) {
   console.warn("ImagePicker not available in Expo Go");
 }
-import Toast from "react-native-root-toast";
-import AWSHelper from "@/services/mock/upload";
 
 type Menu = {
   code: string;
@@ -33,7 +34,8 @@ type Menu = {
 
 export default function PersonalInformation({
   navigation,
-}: RootScreenProps<Paths.PersonalInformation>) {  const { backgrounds, colors } = useTheme();
+}: RootScreenProps<Paths.PersonalInformation>) {
+  const { backgrounds, colors } = useTheme();
 
   const menus: Menu[] = [
     {

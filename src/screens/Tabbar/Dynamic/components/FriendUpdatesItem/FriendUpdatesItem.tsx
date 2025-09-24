@@ -1,11 +1,4 @@
 // Conditionally import useAnimations
-let useAnimations: any = () => ({});
-try {
-  useAnimations =
-    require("@react-native-media-console/reanimated").useAnimations;
-} catch (error) {
-  console.warn("useAnimations not available in Expo Go");
-}
 import { useNavigation } from "@react-navigation/native";
 import {
   Image,
@@ -15,14 +8,6 @@ import {
   View,
 } from "react-native";
 import { ImageWithFallback } from "@/components/atoms";
-// Conditionally import VideoPlayer
-let VideoPlayer: any = null;
-try {
-  VideoPlayer = require("react-native-media-console").default;
-} catch (error) {
-  console.warn("VideoPlayer not available in Expo Go");
-  VideoPlayer = ({ children, ...props }: any) => children;
-}
 import { Text, TouchableRipple } from "react-native-paper";
 
 import { Paths } from "@/navigation/paths.ts";
@@ -34,6 +19,22 @@ import LikeFIcon from "@/assets/images/53.png";
 
 import { dayjs } from "@/plugins/day.ts";
 import { normalizeImageUrl } from "@/utils/image";
+let useAnimations: any = () => ({});
+try {
+  const reanimatedConsole = require("@react-native-media-console/reanimated");
+  useAnimations = reanimatedConsole.useAnimations;
+} catch (error) {
+  console.warn("useAnimations not available in Expo Go");
+}
+// Conditionally import VideoPlayer
+let VideoPlayer: any = null;
+try {
+  const mediaConsole = require("react-native-media-console");
+  VideoPlayer = mediaConsole?.default ?? mediaConsole;
+} catch (error) {
+  console.warn("VideoPlayer not available in Expo Go");
+  VideoPlayer = ({ children }: any) => children;
+}
 
 export default function FriendUpdatesItem({ item }) {
   const { colors } = useTheme();

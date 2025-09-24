@@ -10,13 +10,6 @@ import {
   View,
 } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
-// Conditionally import ImagePicker
-let ImagePicker: any = null;
-try {
-  ImagePicker = require("react-native-image-crop-picker").default;
-} catch (error) {
-  console.warn("ImagePicker not available in Expo Go");
-}
 import { Button, Switch, Text, TextInput } from "react-native-paper";
 import Toast from "react-native-root-toast";
 
@@ -31,6 +24,14 @@ import UploadIcon from "@/assets/images/235.png";
 import { addComment, uploadFile } from "@/services";
 import { z } from "zod";
 import AWSHelper from "@/services/mock/upload";
+// Conditionally import ImagePicker
+let ImagePicker: any = null;
+try {
+  const imagePickerModule = require("react-native-image-crop-picker");
+  ImagePicker = imagePickerModule?.default ?? imagePickerModule;
+} catch (error) {
+  console.warn("ImagePicker not available in Expo Go");
+}
 
 export default function RehabilitationCenterEvaluate({
   navigation,

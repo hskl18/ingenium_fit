@@ -13,6 +13,7 @@ module.exports = function (api) {
           root: ["./src"],
         },
       ],
+      // Keep the worklets plugin last so Reanimated worklets compile correctly
       "react-native-worklets/plugin",
     ],
   };

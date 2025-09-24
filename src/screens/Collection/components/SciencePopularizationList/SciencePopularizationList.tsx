@@ -1,17 +1,17 @@
-import { LegendList } from '@legendapp/list';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { StyleSheet, View } from 'react-native';
+import { LegendList } from "@legendapp/list";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { StyleSheet, View } from "react-native";
 
-import { Paths } from '@/navigation/paths.ts';
-import { useTheme } from '@/theme';
+import { Paths } from "@/navigation/paths.ts";
+import { useTheme } from "@/theme";
 
-import { SafeScreen } from '@/components/templates';
+import { SafeScreen } from "@/components/templates";
 
-import { favoriteList } from '@/services';
-import SciencePopularizationItem from '@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx';
+import { favoriteList } from "@/services";
+import SciencePopularizationItem from "@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx";
 import Empty from "@/components/common/Empty/Empty.tsx";
-import { useFocusEffect } from '@react-navigation/native';
-import React from 'react';
+import { useFocusEffect } from "@react-navigation/native";
+import React from "react";
 
 export default function SciencePopularizationList() {
   const { backgrounds } = useTheme();
@@ -20,12 +20,12 @@ export default function SciencePopularizationList() {
   useFocusEffect(
     React.useCallback(() => {
       queryClient.refetchQueries({
-        queryKey: [Paths.Collection, 'SciencePopularizationList'],
-        type: 'active',
+        queryKey: [Paths.Collection, "SciencePopularizationList"],
+        type: "active",
       });
       // Do something when the screen is focused
       return () => {};
-    }, []),
+    }, [queryClient])
   );
   const {
     isPending,
@@ -51,7 +51,7 @@ export default function SciencePopularizationList() {
         page: pageParam.pageParam,
       });
     },
-    queryKey: [Paths.Collection, 'SciencePopularizationList'],
+    queryKey: [Paths.Collection, "SciencePopularizationList"],
   });
 
   console.log(hasNextPage, data);
@@ -63,12 +63,15 @@ export default function SciencePopularizationList() {
   const renderItem = ({ item, index }) => {
     return (
       <View key={item.id} style={{ marginTop: index > 1 ? 20 : 0 }}>
-        <SciencePopularizationItem item={item.science || {}}  showCollectIcon/>
+        <SciencePopularizationItem item={item.science || {}} showCollectIcon />
       </View>
     );
   };
   return (
-    <SafeScreen edges={['bottom']} style={[styles.safeScreen,backgrounds.gray1600]}>
+    <SafeScreen
+      edges={["bottom"]}
+      style={[styles.safeScreen, backgrounds.gray1600]}
+    >
       <LegendList
         columnWrapperStyle={{
           rowGap: 10,
@@ -77,10 +80,9 @@ export default function SciencePopularizationList() {
         contentContainerStyle={styles.container}
         data={dataList}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<Empty/>}
+        ListEmptyComponent={<Empty />}
         numColumns={2}
-        onEndReached={fetchNextPage}
-
+        onEndReached={() => fetchNextPage()}
         renderItem={renderItem}
       />
     </SafeScreen>

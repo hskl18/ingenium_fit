@@ -18,16 +18,6 @@ import {
   StatusBar,
 } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
-// import VideoPlayer from 'react-native-media-console';
-// Conditionally import VideoPlayer
-let VideoPlayer: any = null;
-try {
-  VideoPlayer = require("react-native-video").default;
-} catch (error) {
-  console.warn("VideoPlayer not available in Expo Go");
-  // Fallback to a simple View for web/Expo Go
-  VideoPlayer = ({ children, ...props }: any) => children;
-}
 import { Avatar, Button, Portal, Text, TextInput } from "react-native-paper";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-reanimated-carousel";
@@ -35,6 +25,7 @@ import Toast from "react-native-root-toast";
 
 import { Paths } from "@/navigation/paths.ts";
 import { RootScreenProps } from "@/navigation/types.ts";
+import type { IResponseData } from "@/services/types";
 import { useTheme } from "@/theme";
 
 import CommentItem from "@/components/common/CommentItem/CommentItem.tsx";
@@ -72,12 +63,23 @@ import DeleteIcon from "@/assets/images/212.png";
 import GalleryPreview from "react-native-gallery-preview";
 import * as React from "react";
 import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
+// import VideoPlayer from 'react-native-media-console';
+// Conditionally import VideoPlayer
+let VideoPlayer: any = null;
+try {
+  const videoModule = require("react-native-video");
+  VideoPlayer = videoModule?.default ?? videoModule;
+} catch {
+  console.warn("VideoPlayer not available in Expo Go");
+  // Fallback to a simple View for web/Expo Go
+  VideoPlayer = ({ children }: any) => children;
+}
 export default function DynamicDetail({
   route,
 }: RootScreenProps<Paths.DynamicDetail>) {
   const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
-  const { id } = route.params;
+  const { id } = route.params as { id: string };
 
   const userInfo = useUserStore((state) => state.userInfo);
   const queryClient = useQueryClient();
@@ -95,7 +97,6 @@ export default function DynamicDetail({
   const [visibleMenu, setVisibleMenu] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [initialIndex, setInitialIndex] = useState(0);
-  const videoPlayerRef = useRef(null);
   const inputToolBarRef = useRef(null);
 
   const toggleOpenMenu = () => {
@@ -333,15 +334,7 @@ export default function DynamicDetail({
     }
   }, [setPost, postData, postDataIsSuccess]);
 
-  const {
-    isPending,
-    data,
-    isFetching,
-    isSuccess,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 1,
     enabled: !!post.id,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
@@ -738,7 +731,7 @@ export default function DynamicDetail({
           renderItem={renderItem}
           ListEmptyComponent={<Empty />}
           keyExtractor={(item) => item.id}
-          onEndReached={fetchNextPage}
+          onEndReached={() => fetchNextPage()}
         />
         <ApplicationShare hideModal={hideShareModal} visible={isShowShare} />
       </SafeScreen>

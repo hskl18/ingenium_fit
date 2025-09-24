@@ -172,7 +172,7 @@ export default function FollowingList() {
         contentContainerStyle={styles.container}
         data={dataList}
         keyExtractor={(item) => item.id}
-        onEndReached={fetchNextPage}
+        onEndReached={() => fetchNextPage()}
         ListEmptyComponent={<Empty />}
         renderItem={renderItem}
       />

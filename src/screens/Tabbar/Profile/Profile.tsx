@@ -101,7 +101,7 @@ export default function Profile({
       });
       // Do something when the screen is focused
       return () => {};
-    }, [])
+    }, [queryClient])
   );
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image, ImageURISource, StyleSheet, View } from "react-native";
 import { Card, Text } from "react-native-paper";

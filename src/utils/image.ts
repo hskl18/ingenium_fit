@@ -15,4 +15,5 @@ export function normalizeImageUrl(url?: string | null): string | undefined {
 }
 
 // Reuse app logo as a guaranteed-present placeholder
-export const DEFAULT_PLACEHOLDER = require("@/assets/logo/logo.png");
+import DefaultPlaceholder from "@/assets/logo/logo.png";
+export const DEFAULT_PLACEHOLDER = DefaultPlaceholder;

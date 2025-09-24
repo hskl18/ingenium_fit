@@ -7,25 +7,26 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Platform,
 } from "react-native";
 import { Divider, Text } from "react-native-paper";
-import { Platform } from "react-native";
-
-// Conditionally import Clipboard
-let Clipboard: any = null;
-if (Platform.OS !== "web") {
-  try {
-    Clipboard = require("@react-native-clipboard/clipboard").default;
-  } catch (error) {
-    console.warn("Clipboard not available in Expo Go");
-  }
-}
 import { useTheme } from "@/theme";
 
 import CloseIcon from "@/assets/images/181.png";
 import ShareIcon from "@/assets/images/220.png";
 import CopyLinkIcon from "@/assets/images/609.png";
 import { Configs } from "@/common/configs.ts";
+
+// Conditionally import Clipboard
+let Clipboard: any = null;
+if (Platform.OS !== "web") {
+  try {
+    const clipboardModule = require("@react-native-clipboard/clipboard");
+    Clipboard = clipboardModule?.default ?? clipboardModule;
+  } catch (error) {
+    console.warn("Clipboard not available in Expo Go");
+  }
+}
 
 type Menu = {
   code: string;

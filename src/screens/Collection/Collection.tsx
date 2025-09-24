@@ -12,6 +12,7 @@ export default function Collection() {
   const { t } = useTranslation();
   return (
     <Tab.Navigator
+      id="CollectionTab"
       screenOptions={{
         tabBarStyle: {
           backgroundColor: "#fff",

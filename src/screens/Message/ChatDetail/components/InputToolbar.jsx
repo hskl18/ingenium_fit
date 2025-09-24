@@ -70,9 +70,10 @@ export const renderComposer = (props) => (
   />
 );
 
-export const renderSend = (openToolbar) => {
+const SendButton = (props) => {
+  SendButton.displayName = "SendButton";
   const { backgrounds, colors } = useTheme();
-  return (props) => (
+  return (
     <View style={styles.sendContainer}>
       <Send
         {...props}
@@ -91,11 +92,15 @@ export const renderSend = (openToolbar) => {
           </Text>
         </View>
       </Send>
-      <Pressable onPress={openToolbar} style={styles.iconButton}>
+      <Pressable onPress={props.openToolbar} style={styles.iconButton}>
         <Image style={{ width: 26, height: 26 }} source={SendIcon} />
       </Pressable>
     </View>
   );
+};
+
+export const renderSend = (openToolbar) => {
+  return (props) => <SendButton {...props} openToolbar={openToolbar} />;
 };
 
 const styles = StyleSheet.create({
