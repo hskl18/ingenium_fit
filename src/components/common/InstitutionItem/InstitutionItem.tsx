@@ -34,7 +34,7 @@ export default function InstitutionItem({ item }: any) {
           <Text numberOfLines={1} style={styles.titleText}>
             {item.name}
           </Text>
-          {item.whetherFavoriteByLoginUser ? (
+          {item.isFavorited ? (
             <Image
               source={CollectFIcon as ImageURISource}
               style={styles.collectIcon}

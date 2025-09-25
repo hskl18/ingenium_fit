@@ -63,15 +63,12 @@ import DeleteIcon from "@/assets/images/212.png";
 import GalleryPreview from "react-native-gallery-preview";
 import * as React from "react";
 import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
-// import VideoPlayer from 'react-native-media-console';
-// Conditionally import VideoPlayer
 let VideoPlayer: any = null;
 try {
   const videoModule = require("react-native-video");
   VideoPlayer = videoModule?.default ?? videoModule;
 } catch {
   console.warn("VideoPlayer not available in Expo Go");
-  // Fallback to a simple View for web/Expo Go
   VideoPlayer = ({ children }: any) => children;
 }
 export default function DynamicDetail({
@@ -120,11 +117,11 @@ export default function DynamicDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        setPost((post) => ({
-          ...post,
-          whetherFollowByLoginUser: !post.whetherFollowByLoginUser,
+        setPost((current) => ({
+          ...current,
+          isFollowed: !current?.isFollowed,
         }));
-        Toast.show(post.whetherFollowByLoginUser ? "Unfollowed" : "Followed", {
+        Toast.show(post?.isFollowed ? "Unfollowed" : "Followed", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -227,7 +224,7 @@ export default function DynamicDetail({
         return (
           <View style={styles.headerBtnGroup}>
             <Pressable onPress={handleToggleCollect}>
-              {post.whetherFavoriteByLoginUser ? (
+              {post?.isFavorited ? (
                 <Image
                   source={CollectFIcon as ImageURISource}
                   style={styles.headerBtnIcon}
@@ -362,14 +359,12 @@ export default function DynamicDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        setPost((post) => ({
-          ...post,
-          whetherFavoriteByLoginUser: !post.whetherFavoriteByLoginUser,
+        setPost((current) => ({
+          ...current,
+          isFavorited: !current?.isFavorited,
         }));
         Toast.show(
-          post.whetherFavoriteByLoginUser
-            ? "Removed from favorites"
-            : "Added to favorites",
+          post?.isFavorited ? "Removed from favorites" : "Added to favorites",
           {
             animation: true,
             delay: 0,
@@ -398,14 +393,14 @@ export default function DynamicDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        setPost((post) => ({
-          ...post,
-          likesNum: post.whetherGiveLikeByLoginUser
-            ? post.likesNum - 1
-            : post.likesNum + 1,
-          whetherGiveLikeByLoginUser: !post.whetherGiveLikeByLoginUser,
+        setPost((current) => ({
+          ...current,
+          likesNum: current?.isLiked
+            ? Math.max(0, (current.likesNum || 1) - 1)
+            : (current.likesNum || 0) + 1,
+          isLiked: !current?.isLiked,
         }));
-        Toast.show(post.whetherGiveLikeByLoginUser ? "Unliked" : "Liked", {
+        Toast.show(post?.isLiked ? "Unliked" : "Liked", {
           animation: true,
           delay: 0,
           duration: 1000,
@@ -534,9 +529,14 @@ export default function DynamicDetail({
     }
     return videosOrimages;
   }, [post]);
-  let dataList = [];
+  let dataList: any[] = [];
   if (data?.pages) {
-    dataList = data?.pages.flatMap((item) => item?.rows);
+    dataList = (data.pages as any[]).flatMap((page, pageIndex) =>
+      ((page as any)?.rows ?? []).map((row: any, rowIndex: number) => ({
+        ...row,
+        __legendKey: `${row?.id ?? "dynamic-comment"}-${pageIndex}-${rowIndex}`,
+      }))
+    );
   }
   console.log("progress.value", progress.value);
   const renderListHeader = useCallback(() => {
@@ -590,7 +590,7 @@ export default function DynamicDetail({
           </View>
           {post.user && post.user.id !== userInfo.id ? (
             <>
-              {post.whetherFollowByLoginUser ? (
+              {post?.isFollowed ? (
                 <Pressable style={styles.button} onPress={handleToggleFollow}>
                   <Image
                     source={UserFIcon as ImageURISource}
@@ -632,7 +632,7 @@ export default function DynamicDetail({
           <View style={styles.toolWrapper}>
             <Pressable onPress={handleToggleLike}>
               <View style={styles.tool}>
-                {post.whetherGiveLikeByLoginUser ? (
+                {post?.isLiked ? (
                   <Image
                     source={LikeFIcon as ImageURISource}
                     style={styles.toolIcon}
@@ -677,7 +677,10 @@ export default function DynamicDetail({
 
   const renderItem = ({ item, index }) => {
     return (
-      <View key={item.id} style={{ marginTop: index > 0 ? 20 : 0 }}>
+      <View
+        key={item.__legendKey ?? item.id ?? index}
+        style={{ marginTop: index > 0 ? 20 : 0 }}
+      >
         <CommentItem item={item || {}} onReply={handleOnReply} />
       </View>
     );
@@ -730,7 +733,9 @@ export default function DynamicDetail({
           data={dataList}
           renderItem={renderItem}
           ListEmptyComponent={<Empty />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) =>
+            item?.__legendKey ?? `${item?.id ?? index}`
+          }
           onEndReached={() => fetchNextPage()}
         />
         <ApplicationShare hideModal={hideShareModal} visible={isShowShare} />

@@ -88,14 +88,12 @@ export default function RehabilitationCenterDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        setPost((post) => ({
-          ...post,
-          whetherFavoriteByLoginUser: !post.whetherFavoriteByLoginUser,
+        setPost((current) => ({
+          ...current,
+          isFavorited: !current?.isFavorited,
         }));
         Toast.show(
-          post.whetherFavoriteByLoginUser
-            ? "Removed from favorites"
-            : "Added to favorites",
+          post?.isFavorited ? "Removed from favorites" : "Added to favorites",
 
           {
             animation: true,
@@ -142,7 +140,7 @@ export default function RehabilitationCenterDetail({
         return post.id ? (
           <View style={styles.headerBtnGroup}>
             <Pressable onPress={handleToggleCollect}>
-              {post.whetherFavoriteByLoginUser ? (
+              {post?.isFavorited ? (
                 <Image
                   source={CollectFIcon as ImageURISource}
                   style={styles.headerBtnIcon}
@@ -285,10 +283,14 @@ export default function RehabilitationCenterDetail({
 
   console.log(hasNextPage, data);
 
-  let dataList = [];
-
+  let dataList: any[] = [];
   if (data?.pages) {
-    dataList = data?.pages.flatMap((item) => item?.rows);
+    dataList = (data.pages as any[]).flatMap((page, pageIndex) =>
+      ((page as any)?.rows ?? []).map((row: any, rowIndex: number) => ({
+        ...row,
+        __legendKey: `${row?.id ?? "science-comment"}-${pageIndex}-${rowIndex}`,
+      }))
+    );
   }
 
   const images = useMemo(() => {
@@ -445,7 +447,10 @@ export default function RehabilitationCenterDetail({
 
   const renderItem = ({ index, item }) => {
     return (
-      <View key={item.id} style={{ marginTop: index > 0 ? 20 : 0 }}>
+      <View
+        key={item.__legendKey ?? item.id ?? index}
+        style={{ marginTop: index > 0 ? 20 : 0 }}
+      >
         <CommentItem item={item || {}} onReply={handleOnReply} />
       </View>
     );
@@ -491,7 +496,9 @@ export default function RehabilitationCenterDetail({
         <LegendList
           contentContainerStyle={styles.container}
           data={dataList}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) =>
+            item?.__legendKey ?? `${item?.id ?? index}`
+          }
           ListHeaderComponent={renderListHeader()}
           ListEmptyComponent={<Empty />}
           ListFooterComponent={<View style={{ height: 74 }}></View>}

@@ -29,7 +29,7 @@ export const pasadenaRehabCenters = [
       "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1200&q=80&auto=format&fit=crop",
     star: 4.7,
     commentNum: 128,
-    whetherFavoriteByLoginUser: false,
+    isFavorited: false,
     accessibleHighlights: [
       "Wheelchair Access",
       "Elevator",
@@ -45,7 +45,7 @@ export const pasadenaRehabCenters = [
       "https://images.unsplash.com/photo-1504439468489-c8920d796a29?w=1200&q=80&auto=format&fit=crop",
     star: 4.8,
     commentNum: 203,
-    whetherFavoriteByLoginUser: true,
+    isFavorited: true,
     accessibleHighlights: ["Ramp", "Assistive Listening", "Valet Drop-off"],
   },
 ];
@@ -206,7 +206,7 @@ export const pasadenaCommunityHighlights = [
     videos: "",
     createTime: Date.now(),
     likesNum: 12,
-    whetherGiveLikeByLoginUser: false,
+    isLiked: false,
     user: {
       nickName: "Alex",
       avatar:
@@ -221,7 +221,7 @@ export const pasadenaCommunityHighlights = [
     videos: "",
     createTime: Date.now(),
     likesNum: 38,
-    whetherGiveLikeByLoginUser: true,
+    isLiked: true,
     user: {
       nickName: "Jamie",
       avatar:
@@ -236,7 +236,7 @@ export const pasadenaCommunityHighlights = [
     videos: "",
     createTime: Date.now(),
     likesNum: 7,
-    whetherGiveLikeByLoginUser: false,
+    isLiked: false,
     user: {
       nickName: "Sam",
       avatar:

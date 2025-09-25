@@ -5,38 +5,7 @@ import { PaperProvider } from "react-native-paper";
 import { Paths } from "@/navigation/paths";
 import { useTheme } from "@/theme";
 
-import {
-  Agreement,
-  CarouselDetail,
-  ChangePassword,
-  ChatDetail,
-  ChatMessage,
-  Collection,
-  DynamicDetail,
-  DynamicList,
-  DynamicPublish,
-  FanAttention,
-  FAQ,
-  Introduction,
-  Message,
-  MyUpdates,
-  Nickname,
-  ObtainPosition,
-  PersonalInformation,
-  RehabilitationCenterDetail,
-  RehabilitationCenterDoctor,
-  RehabilitationCenterDoctorEvaluate,
-  RehabilitationCenterEvaluate,
-  RehabilitationCenterList,
-  SciencePopularizationDetail,
-  SciencePopularizationList,
-  Search,
-  SelectLocation,
-  Settings,
-  SystemMessage,
-  SystemMessageDetail,
-  Tabbar,
-} from "@/screens";
+import * as Screens from "@/screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -54,14 +23,14 @@ function ApplicationNavigator() {
           }}
         >
           <Stack.Screen
-            component={Tabbar}
+            component={Screens.Tabbar}
             name={Paths.Tabbar}
             options={{
               headerShown: false,
             }}
           />
           <Stack.Screen
-            component={Search}
+            component={Screens.Search}
             name={Paths.Search}
             options={{
               animation: "fade_from_bottom",
@@ -69,7 +38,7 @@ function ApplicationNavigator() {
             }}
           />
           <Stack.Screen
-            component={Message}
+            component={Screens.Message}
             name={Paths.Message}
             options={{
               animation: "fade_from_bottom",
@@ -81,7 +50,7 @@ function ApplicationNavigator() {
             }}
           />
           <Stack.Screen
-            component={Agreement}
+            component={Screens.Agreement}
             name={Paths.Agreement}
             options={{
               headerShadowVisible: false,
@@ -92,7 +61,7 @@ function ApplicationNavigator() {
             }}
           />
           <Stack.Screen
-            component={ObtainPosition}
+            component={Screens.ObtainPosition}
             name={Paths.ObtainPosition}
             options={{
               animation: "fade_from_bottom",
@@ -101,7 +70,7 @@ function ApplicationNavigator() {
           />
 
           <Stack.Screen
-            component={SelectLocation}
+            component={Screens.SelectLocation}
             name={Paths.SelectLocation}
             options={{
               animation: "fade_from_bottom",
@@ -113,12 +82,10 @@ function ApplicationNavigator() {
             }}
           />
 
-          {/* Auth screens removed for demo */}
-
           {/* 康复中心 */}
           <Stack.Group screenOptions={{}}>
             <Stack.Screen
-              component={RehabilitationCenterList}
+              component={Screens.RehabilitationCenterList}
               name={Paths.RehabilitationCenterList}
               options={{
                 headerShadowVisible: false,
@@ -129,7 +96,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={RehabilitationCenterDetail}
+              component={Screens.RehabilitationCenterDetail}
               name={Paths.RehabilitationCenterDetail}
               options={{
                 headerTransparent: true,
@@ -138,7 +105,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={RehabilitationCenterDoctor}
+              component={Screens.RehabilitationCenterDoctor}
               name={Paths.RehabilitationCenterDoctor}
               options={{
                 headerTransparent: true,
@@ -147,7 +114,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={RehabilitationCenterDoctorEvaluate}
+              component={Screens.RehabilitationCenterDoctorEvaluate}
               name={Paths.RehabilitationCenterDoctorEvaluate}
               options={{
                 headerShadowVisible: false,
@@ -158,7 +125,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={RehabilitationCenterEvaluate}
+              component={Screens.RehabilitationCenterEvaluate}
               name={Paths.RehabilitationCenterEvaluate}
               options={{
                 headerShadowVisible: false,
@@ -172,7 +139,7 @@ function ApplicationNavigator() {
 
           <Stack.Group screenOptions={{}}>
             <Stack.Screen
-              component={SciencePopularizationList}
+              component={Screens.SciencePopularizationList}
               name={Paths.SciencePopularizationList}
               options={{
                 headerShadowVisible: false,
@@ -183,7 +150,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={SciencePopularizationDetail}
+              component={Screens.SciencePopularizationDetail}
               name={Paths.SciencePopularizationDetail}
               options={{
                 headerTransparent: true,
@@ -196,7 +163,7 @@ function ApplicationNavigator() {
           {/* 消息 */}
           <Stack.Group screenOptions={{}}>
             <Stack.Screen
-              component={ChatMessage}
+              component={Screens.ChatMessage}
               name={Paths.ChatMessage}
               options={{
                 headerShadowVisible: false,
@@ -207,7 +174,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={ChatDetail}
+              component={Screens.ChatDetail}
               name={Paths.ChatDetail}
               options={{
                 headerShadowVisible: false,
@@ -219,7 +186,7 @@ function ApplicationNavigator() {
             />
 
             <Stack.Screen
-              component={SystemMessage}
+              component={Screens.SystemMessage}
               name={Paths.SystemMessage}
               options={{
                 headerTitleAlign: "left",
@@ -231,7 +198,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={SystemMessageDetail}
+              component={Screens.SystemMessageDetail}
               name={Paths.SystemMessageDetail}
               options={{
                 headerShadowVisible: false,
@@ -243,7 +210,7 @@ function ApplicationNavigator() {
             />
 
             <Stack.Screen
-              component={CarouselDetail}
+              component={Screens.CarouselDetail}
               name={Paths.CarouselDetail}
               options={{
                 headerShadowVisible: false,
@@ -258,7 +225,7 @@ function ApplicationNavigator() {
           {/* 动态 */}
           <Stack.Group screenOptions={{}}>
             <Stack.Screen
-              component={DynamicPublish}
+              component={Screens.DynamicPublish}
               name={Paths.DynamicPublish}
               options={{
                 animation: "fade_from_bottom",
@@ -270,7 +237,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={DynamicList}
+              component={Screens.DynamicList}
               name={Paths.DynamicList}
               options={{
                 headerShadowVisible: false,
@@ -281,7 +248,7 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={DynamicDetail}
+              component={Screens.DynamicDetail}
               name={Paths.DynamicDetail}
               options={{
                 headerTransparent: true,
@@ -301,14 +268,14 @@ function ApplicationNavigator() {
             }}
           >
             <Stack.Screen
-              component={MyUpdates}
+              component={Screens.MyUpdates}
               name={Paths.MyUpdates}
               options={{
                 headerTitle: "My updates",
               }}
             />
             <Stack.Screen
-              component={PersonalInformation}
+              component={Screens.PersonalInformation}
               name={Paths.PersonalInformation}
               options={{
                 animation: "fade_from_bottom",
@@ -316,49 +283,49 @@ function ApplicationNavigator() {
               }}
             />
             <Stack.Screen
-              component={FAQ}
+              component={Screens.FAQ}
               name={Paths.FAQ}
               options={{
                 headerTitle: "FAQ",
               }}
             />
             <Stack.Screen
-              component={Settings}
+              component={Screens.Settings}
               name={Paths.Settings}
               options={{
                 headerTitle: "Settings",
               }}
             />
             <Stack.Screen
-              component={ChangePassword}
+              component={Screens.ChangePassword}
               name={Paths.ChangePassword}
               options={{
                 headerTitle: "Change password",
               }}
             />
             <Stack.Screen
-              component={Collection}
+              component={Screens.Collection}
               name={Paths.Collection}
               options={{
                 headerTitle: "Collection",
               }}
             />
             <Stack.Screen
-              component={FanAttention}
+              component={Screens.FanAttention}
               name={Paths.FanAttention}
               options={{
                 headerTitle: "Fans & following",
               }}
             />
             <Stack.Screen
-              component={Nickname}
+              component={Screens.Nickname}
               name={Paths.Nickname}
               options={{
                 headerTitle: "Nickname",
               }}
             />
             <Stack.Screen
-              component={Introduction}
+              component={Screens.Introduction}
               name={Paths.Introduction}
               options={{
                 headerTitle: "Introduction",

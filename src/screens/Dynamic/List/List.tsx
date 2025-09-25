@@ -71,7 +71,12 @@ export default function DynamicList({
 
   let dataList: any[] = [];
   if (data?.pages) {
-    dataList = data.pages.flatMap((item: any) => item?.rows);
+    dataList = data.pages.flatMap((page: any, pageIndex: number) =>
+      (page?.rows ?? []).map((row: any, rowIndex: number) => ({
+        ...row,
+        __legendKey: `${row?.id ?? "dynamic-list"}-${pageIndex}-${rowIndex}`,
+      }))
+    );
   }
 
   const renderItem = ({ item, index }: { item: any; index: number }) => {
@@ -91,7 +96,7 @@ export default function DynamicList({
         contentContainerStyle={styles.container}
         data={dataList}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item?.__legendKey ?? `${index}`}
         ListEmptyComponent={<Empty />}
         onEndReached={() => fetchNextPage()}
       />

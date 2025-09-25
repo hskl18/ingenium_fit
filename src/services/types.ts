@@ -93,9 +93,9 @@ export interface SciencePopularization {
   detailVideos?: string[];
   createTime: string;
   commentNum?: number;
-  whetherGiveLikeByLoginUser?: boolean;
+  isLiked?: boolean;
   likesNum?: number;
-  whetherFavoriteByLoginUser?: boolean;
+  isFavorited?: boolean;
 }
 
 export interface RehabilitationCenter {
@@ -114,6 +114,6 @@ export interface UserProfile {
   avatar?: string;
   introduction?: string;
   whetherMutualFollow?: boolean;
-  whetherFollowByLoginUser?: boolean;
+  isFollowed?: boolean;
   whetherFollowByUser?: boolean;
 }

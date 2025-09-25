@@ -17,7 +17,6 @@ import ShareIcon from "@/assets/images/220.png";
 import CopyLinkIcon from "@/assets/images/609.png";
 import { Configs } from "@/common/configs.ts";
 
-// Conditionally import Clipboard
 let Clipboard: any = null;
 if (Platform.OS !== "web") {
   try {
@@ -85,7 +84,6 @@ export default function ApplicationShare({
         if (Clipboard) {
           Clipboard.setString(`【${Configs.AppName}】${shareUrl}`);
         } else if (Platform.OS === "web" && navigator.clipboard) {
-          // Web fallback
           navigator.clipboard.writeText(`【${Configs.AppName}】${shareUrl}`);
         } else {
           console.warn("Clipboard not available");

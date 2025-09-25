@@ -36,7 +36,13 @@ try {
   VideoPlayer = ({ children }: any) => children;
 }
 
-export default function FriendUpdatesItem({ item }) {
+export default function FriendUpdatesItem({
+  item,
+  index,
+}: {
+  item: any;
+  index?: number;
+}) {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
@@ -108,7 +114,7 @@ export default function FriendUpdatesItem({ item }) {
             </View>
 
             <View style={styles.toolLeft}>
-              {item.whetherGiveLikeByLoginUser ? (
+              {item.isLiked ? (
                 <Image
                   source={LikeFIcon as ImageURISource}
                   style={styles.likeIcon}

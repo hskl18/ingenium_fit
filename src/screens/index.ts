@@ -11,7 +11,7 @@ export { default as ObtainPosition } from "./ObtainPosition/ObtainPosition";
 export { Introduction } from "./PersonalInformation/Introduction/Introduction";
 export { default as Nickname } from "./PersonalInformation/Nickname/Nickname";
 export { default as PersonalInformation } from "./PersonalInformation/PersonalInformation";
-export { default as Search } from "./Search/Search.tsx";
+export { default as Search } from "./Search/Search";
 export { default as SelectLocation } from "./SelectLocation/SelectLocation";
 export { default as Settings } from "./Settings/Settings";
 export { default as Tabbar } from "./Tabbar/Tabbar";

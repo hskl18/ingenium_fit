@@ -79,14 +79,12 @@ export default function RehabilitationCenterDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        setPost((post) => ({
-          ...post,
-          whetherFavoriteByLoginUser: !post.whetherFavoriteByLoginUser,
+        setPost((current) => ({
+          ...current,
+          isFavorited: !current?.isFavorited,
         }));
         Toast.show(
-          post.whetherFavoriteByLoginUser
-            ? "Removed from favorites"
-            : "Added to favorites",
+          post?.isFavorited ? "Removed from favorites" : "Added to favorites",
           {
             animation: true,
             delay: 0,
@@ -138,7 +136,7 @@ export default function RehabilitationCenterDetail({
         return (
           <View style={styles.headerBtnGroup}>
             <Pressable onPress={handleToggleCollect}>
-              {post.whetherFavoriteByLoginUser ? (
+              {post?.isFavorited ? (
                 <Image
                   source={CollectFIcon as ImageURISource}
                   style={styles.headerBtnIcon}
@@ -284,9 +282,14 @@ export default function RehabilitationCenterDetail({
     return post.backgroundImages ? post.backgroundImages?.split(",") : [];
   }, [post]);
 
-  let dataList = [];
-  if (data?.pages && data?.pages.length) {
-    dataList = data?.pages.flatMap((item) => item?.rows);
+  let dataList: any[] = [];
+  if (data?.pages) {
+    dataList = (data.pages as any[]).flatMap((page, pageIndex) =>
+      ((page as any)?.rows ?? []).map((row: any, rowIndex: number) => ({
+        ...row,
+        __legendKey: `${row?.id ?? "rehab-comment"}-${pageIndex}-${rowIndex}`,
+      }))
+    );
   }
 
   const handlePreview = (item) => {
@@ -467,16 +470,18 @@ export default function RehabilitationCenterDetail({
             <LegendList
               contentContainerStyle={styles.container}
               data={dataList}
-              keyExtractor={(item) => item.id}
-              onEndReached={fetchNextPage}
-              ListHeaderComponent={
-                <>
-                  <RenderListHeader />
-                  {renderSegmentedControl()}
-                  {renderCommentTitle()}
-                </>
+              keyExtractor={(item, index) =>
+                item?.__legendKey ?? `${item?.id ?? index}`
               }
-              renderItem={renderCommentItem}
+              onEndReached={() => fetchNextPage()}
+              ListEmptyComponent={<Empty />}
+              renderItem={({ index, item }) => (
+                <CommentItem
+                  item={item || {}}
+                  key={item.__legendKey ?? item.id ?? index}
+                  onReply={handleOnReply}
+                />
+              )}
             />
           </>
         ) : undefined}

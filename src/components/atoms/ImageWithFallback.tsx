@@ -1,6 +1,6 @@
 import type { ImageProps, ImageURISource } from "react-native";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Image, View, StyleSheet } from "react-native";
 
 import Skeleton from "@/components/atoms/Skeleton/Skeleton";
@@ -25,6 +25,54 @@ export default function ImageWithFallback({
   const [failed, setFailed] = useState<boolean>(false);
 
   const normalized = useMemo(() => normalizeImageUrl(uri || undefined), [uri]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!normalized) {
+      setFailed(true);
+      setIsLoading(false);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    setFailed(false);
+
+    if (!normalized.startsWith("http")) {
+      setIsLoading(Boolean(uri));
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    setIsLoading(true);
+    Image.prefetch(normalized)
+      .then((result) => {
+        if (cancelled) {
+          return;
+        }
+        if (!result) {
+          setFailed(true);
+        }
+      })
+      .catch(() => {
+        if (cancelled) {
+          return;
+        }
+        setFailed(true);
+      })
+      .finally(() => {
+        if (cancelled) {
+          return;
+        }
+        setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [normalized, uri]);
 
   const handleLoad = (...args: unknown[]) => {
     setIsLoading(false);

@@ -250,7 +250,7 @@ export default function DynamicItem({
       <View style={styles.toolWrapper}>
         <View style={styles.toolLeft}>
           <View style={styles.tool}>
-            {item.whetherGiveLikeByLoginUser ? (
+            {item.isLiked ? (
               <Image
                 source={LikeFIcon as ImageURISource}
                 style={styles.toolIcon}
@@ -285,7 +285,7 @@ export default function DynamicItem({
           </View>
         </View>
         <View style={styles.tool}>
-          {item.whetherFavoriteByLoginUser ? (
+          {item.isFavorited ? (
             <Image
               source={CollectFIcon as ImageURISource}
               style={styles.toolIcon}

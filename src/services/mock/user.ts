@@ -1,4 +1,4 @@
-import type { IResponseData } from '../types';
+import type { IResponseData } from "../types";
 
 // Mock delay to simulate network requests
 const mockDelay = (ms: number = 800) =>
@@ -6,28 +6,29 @@ const mockDelay = (ms: number = 800) =>
 
 // Mock user data - Pasadena adaptive athlete for research study
 const mockUser = {
-  id: '1',
-  email: 'maria.rodriguez@email.com',
-  firstName: 'Maria',
-  lastName: 'Rodriguez',
-  nickname: 'MariaWheels',
-  avatar: 'https://via.placeholder.com/150/4A90E2/FFFFFF?text=MR',
-  phoneNumber: '+1-626-555-0123',
+  id: "1",
+  email: "maria.rodriguez@email.com",
+  firstName: "Maria",
+  lastName: "Rodriguez",
+  nickname: "MariaWheels",
+  avatar:
+    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=200&fit=crop&crop=faces&auto=format",
+  phoneNumber: "+1-626-555-0123",
   introduction:
-    'Wheelchair basketball player at Rose Bowl Aquatics Center. Passionate about adaptive sports in Pasadena and helping new athletes find their community.',
-  location: 'Pasadena, CA',
-  disabilities: ['Spinal Cord Injury'],
+    "Wheelchair basketball player at Rose Bowl Aquatics Center. Passionate about adaptive sports in Pasadena and helping new athletes find their community.",
+  location: "Pasadena, CA",
+  disabilities: ["Spinal Cord Injury"],
   sportsInterests: [
-    'Wheelchair Basketball',
-    'Adaptive Swimming',
-    'Hand Cycling',
+    "Wheelchair Basketball",
+    "Adaptive Swimming",
+    "Hand Cycling",
   ],
   confidenceLevel: 8, // Research metric: 1-10 scale
-  participationFrequency: 'Weekly',
-  transportationNeeds: ['Accessible Transit', 'Volunteer Driver'],
-  equipmentNeeds: ['Racing Wheelchair', 'Pool Transfer Chair'],
-  createdAt: '2024-01-01T00:00:00Z',
-  updatedAt: '2024-01-15T00:00:00Z',
+  participationFrequency: "Weekly",
+  transportationNeeds: ["Accessible Transit", "Volunteer Driver"],
+  equipmentNeeds: ["Racing Wheelchair", "Pool Transfer Chair"],
+  createdAt: "2024-01-01T00:00:00Z",
+  updatedAt: "2024-01-15T00:00:00Z",
 };
 
 // User related API calls
@@ -64,7 +65,7 @@ export const userApi = {
 
     return {
       success: true,
-      message: 'User information updated successfully',
+      message: "User information updated successfully",
       data: {
         ...mockUser,
         ...data,
@@ -79,9 +80,9 @@ export const userApi = {
 
     return {
       success: true,
-      message: data.isFollowing ? 'User unfollowed' : 'User followed',
+      message: data.isFollowed ? "User unfollowed" : "User followed",
       data: {
-        isFollowing: !data.isFollowing,
+        isFollowed: !data.isFollowed,
       },
     };
   },
@@ -92,24 +93,25 @@ export const userApi = {
 
     // Pasadena adaptive sports community members
     const pasadenaAthletes = [
-      'Alex Chen - Adaptive Tennis',
-      'Jordan Smith - Para Swimming',
-      'Sam Johnson - Wheelchair Racing',
-      'Taylor Brown - Adaptive Cycling',
-      'Casey Wilson - Sitting Volleyball',
-      'Riley Davis - Adaptive Rowing',
-      'Morgan Lee - Wheelchair Basketball',
-      'Avery Garcia - Para Track',
-      'Quinn Martinez - Adaptive Climbing',
-      'Cameron Thompson - Adaptive Skiing',
+      "Alex Chen - Adaptive Tennis",
+      "Jordan Smith - Para Swimming",
+      "Sam Johnson - Wheelchair Racing",
+      "Taylor Brown - Adaptive Cycling",
+      "Casey Wilson - Sitting Volleyball",
+      "Riley Davis - Adaptive Rowing",
+      "Morgan Lee - Wheelchair Basketball",
+      "Avery Garcia - Para Track",
+      "Quinn Martinez - Adaptive Climbing",
+      "Cameron Thompson - Adaptive Skiing",
     ];
 
     const mockFollowers = Array.from({ length: 10 }, (_, i) => ({
       id: `user-${i + 1}`,
-      nickname: pasadenaAthletes[i].split(' - ')[0],
-      sport: pasadenaAthletes[i].split(' - ')[1],
-      avatar: `https://via.placeholder.com/100/4A90E2/FFFFFF?text=${pasadenaAthletes[i].charAt(0)}`,
-      location: 'Pasadena, CA',
+      nickname: pasadenaAthletes[i].split(" - ")[0],
+      sport: pasadenaAthletes[i].split(" - ")[1],
+      avatar:
+        "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=200&h=200&fit=crop&crop=faces&auto=format",
+      location: "Pasadena, CA",
       isFollowing: Math.random() > 0.5,
       isNavigator: i < 3, // First 3 are sport navigators
     }));

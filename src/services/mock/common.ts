@@ -95,19 +95,22 @@ export const commonApi = {
         {
           id: "1",
           title: "Welcome to Adaptive Sports Navigator",
-          image: "https://via.placeholder.com/800x400?text=Welcome+Banner",
+          image:
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&q=80&auto=format&fit=crop",
           link: "/showcase",
         },
         {
           id: "2",
           title: "Find Your Local Rehabilitation Center",
-          image: "https://via.placeholder.com/800x400?text=Rehab+Centers",
+          image:
+            "https://images.unsplash.com/photo-1580281657521-4e01bb1911b4?w=1600&q=80&auto=format&fit=crop",
           link: "/rehabilitation",
         },
         {
           id: "3",
           title: "Connect with Sport Navigators",
-          image: "https://via.placeholder.com/800x400?text=Navigators",
+          image:
+            "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1600&q=80&auto=format&fit=crop",
           link: "/navigators",
         },
       ],
@@ -123,7 +126,8 @@ export const commonApi = {
         id: data.id,
         title: "Carousel Item Detail",
         description: "Detailed information about this carousel item.",
-        image: `https://via.placeholder.com/800x600?text=Detail+${data.id}`,
+        image:
+          "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1600&q=80&auto=format&fit=crop",
       },
     };
   },
@@ -138,7 +142,8 @@ export const commonApi = {
       author: {
         id: `user-${i + 1}`,
         nickname: `Commenter ${i + 1}`,
-        avatar: `https://via.placeholder.com/40?text=C${i + 1}`,
+        avatar:
+          "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=200&h=200&fit=crop&crop=faces&auto=format",
       },
       createdAt: new Date(
         Date.now() - Math.random() * 24 * 60 * 60 * 1000
@@ -209,7 +214,8 @@ export const commonApi = {
       id: `favorite-${i + 1}`,
       title: `Favorite Item ${i + 1}`,
       type: ["post", "center", "doctor"][Math.floor(Math.random() * 3)],
-      image: `https://via.placeholder.com/200x150?text=Fav+${i + 1}`,
+      image:
+        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=1200&q=80&auto=format&fit=crop",
       createdAt: new Date(
         Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
       ).toISOString(),

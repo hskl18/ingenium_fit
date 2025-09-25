@@ -69,15 +69,15 @@ const generateMockPosts = (count: number): Post[] => {
       title: postTemplate.title,
       content: postTemplate.content,
       images: [
-        `https://via.placeholder.com/400x300/4A90E2/FFFFFF?text=${postTemplate.category}+Photo`,
-        `https://via.placeholder.com/400x300/7ED321/FFFFFF?text=Pasadena+Sports`,
+        `https://images.unsplash.com/photo-1508780709619-79562169bc64?w=1200&q=80&auto=format&fit=crop`,
+        `https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80&auto=format&fit=crop`,
       ],
       author: {
         id: `user-${(i % 5) + 1}`,
         nickname: author.nickname,
         name: author.name,
         sport: author.sport,
-        avatar: `https://via.placeholder.com/50/4A90E2/FFFFFF?text=${author.name.charAt(0)}`,
+        avatar: `https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=200&fit=crop&crop=faces&auto=format`,
         isNavigator: i % 4 === 0, // Every 4th person is a navigator
       },
       location: postTemplate.location,

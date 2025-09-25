@@ -159,12 +159,18 @@ export default function Dynamic({
 
   let dataList: any[] = [];
   if (data?.pages) {
-    dataList = (data.pages as any[]).flatMap((page) => {
+    dataList = (data.pages as any[]).flatMap((page, pageIndex) => {
       const rows = (page as any)?.rows;
       const items = (page as any)?.data?.items || (page as any)?.items;
-      if (Array.isArray(rows)) return rows;
-      if (Array.isArray(items)) return items;
-      return [];
+      const list = Array.isArray(rows)
+        ? rows
+        : Array.isArray(items)
+          ? items
+          : [];
+      return list.map((row: any, rowIndex: number) => ({
+        ...row,
+        __legendKey: `${row?.id ?? "dynamic"}-${pageIndex}-${rowIndex}`,
+      }));
     });
   }
 
@@ -259,9 +265,9 @@ export default function Dynamic({
                 horizontal
                 showsHorizontalScrollIndicator={false}
               >
-                {friendUpdatesData.data.items.map((item: any) => (
-                  <View key={item.id}>
-                    <FriendUpdatesItem item={item} />
+                {friendUpdatesData.data.items.map((item: any, idx: number) => (
+                  <View key={`${item?.id ?? "friend-update"}-${idx}`}>
+                    <FriendUpdatesItem item={item} index={idx} />
                   </View>
                 ))}
               </ScrollView>
@@ -320,7 +326,7 @@ export default function Dynamic({
         data={dataList}
         renderItem={renderItem}
         ListEmptyComponent={<Empty />}
-        keyExtractor={(item: any, idx: number) => `${item?.id ?? "dynamic"}-${idx}`}
+        keyExtractor={(item: any, idx: number) => item?.__legendKey ?? `${idx}`}
         onEndReached={() => {
           // LegendList expects a callback, not RN FlatList signature
           fetchNextPage();
