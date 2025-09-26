@@ -28,3 +28,7 @@ yarn-error.log
 .expo
 .nvmrc
 .vscode
+
+#Ignore cursor AI rules
+.cursor/rules/codacy.mdc
+.env

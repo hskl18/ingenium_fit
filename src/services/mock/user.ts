@@ -12,7 +12,7 @@ const mockUser = {
   lastName: "Rodriguez",
   nickname: "MariaWheels",
   avatar:
-    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=200&fit=crop&crop=faces&auto=format",
+    "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png",
   phoneNumber: "+1-626-555-0123",
   introduction:
     "Wheelchair basketball player at Rose Bowl Aquatics Center. Passionate about adaptive sports in Pasadena and helping new athletes find their community.",
@@ -110,7 +110,7 @@ export const userApi = {
       nickname: pasadenaAthletes[i].split(" - ")[0],
       sport: pasadenaAthletes[i].split(" - ")[1],
       avatar:
-        "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=200&h=200&fit=crop&crop=faces&auto=format",
+        "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png",
       location: "Pasadena, CA",
       isFollowing: Math.random() > 0.5,
       isNavigator: i < 3, // First 3 are sport navigators

@@ -1,6 +1,5 @@
 export const Configs = {
   AppName: "Ingenium Fit",
-  GoogleApiKey: "AIzaSyCrA6EbhKM6SJ2kFU7DpCltQwBWpe1k9dI",
   HistoryList: "HISTORY_LIST",
   Language: "LANGUAGE",
   Location: "LOCATION",

@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 export default {
   expo: {
     name: "Ingenium Fit",
@@ -39,5 +41,8 @@ export default {
       ],
     ],
     scheme: "ingenium-fit",
+    extra: {
+      openaiApiKey: process.env.openai_api || "",
+    },
   },
 };

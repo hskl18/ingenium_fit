@@ -1,6 +1,9 @@
 // Utility helpers for robust image rendering
 // Normalizes URLs and provides a fallback placeholder
 
+// Reuse app logo as a guaranteed-present placeholder
+import DefaultPlaceholder from "@/assets/logo/logo.png";
+
 export function normalizeImageUrl(url?: string | null): string | undefined {
   if (!url || typeof url !== "string") return undefined;
   const trimmed = url.trim();
@@ -13,7 +16,4 @@ export function normalizeImageUrl(url?: string | null): string | undefined {
   // If it's missing protocol, try https
   return `https://${trimmed}`;
 }
-
-// Reuse app logo as a guaranteed-present placeholder
-import DefaultPlaceholder from "@/assets/logo/logo.png";
 export const DEFAULT_PLACEHOLDER = DefaultPlaceholder;

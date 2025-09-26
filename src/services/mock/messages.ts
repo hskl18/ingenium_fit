@@ -76,18 +76,37 @@ const generateMockMessages = (count: number) => {
 };
 
 // Mock chat messages
+const mockNavigatorProfile = {
+  id: "navigator-1",
+  nickName: "AI Navigator",
+  avatar:
+    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=200&fit=crop&crop=faces&auto=format",
+};
+
+const mockAthleteProfile = {
+  id: "athlete-1",
+  nickName: "You",
+  avatar:
+    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=faces&auto=format",
+};
+
 const generateMockChatMessages = (count: number) => {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `chat-${i + 1}`,
-    content:
-      i % 2 === 0
-        ? `Hi! How can I help you with your adaptive sports journey today?`
-        : `Thanks for reaching out! I'm looking for information about wheelchair basketball programs.`,
-    type: i % 2 === 0 ? "text" : "text",
-    isFromMe: i % 2 !== 0,
-    timestamp: new Date(Date.now() - (count - i) * 60 * 1000).toISOString(),
-    status: "delivered",
-  }));
+  return Array.from({ length: count }, (_, i) => {
+    const isNavigatorMessage = i % 2 === 0;
+    const sender = isNavigatorMessage ? mockNavigatorProfile : mockAthleteProfile;
+
+    return {
+      id: `chat-${i + 1}`,
+      messageContent: isNavigatorMessage
+        ? "Hi! How can I help you with your adaptive sports journey today?"
+        : "Thanks for reaching out! I'm looking for information about wheelchair basketball programs.",
+      messageType: 1,
+      createTime: new Date(Date.now() - (count - i) * 60 * 1000).toISOString(),
+      sendUserId: sender.id,
+      userName: sender.nickName,
+      userAvatar: sender.avatar,
+    };
+  });
 };
 
 // Messages and notifications API calls
@@ -229,9 +248,13 @@ export const messagesApi = {
     const messages = generateMockChatMessages(20);
 
     return {
+      code: 200,
       success: true,
+      items: messages,
+      rows: messages,
       data: {
         items: messages,
+        rows: messages,
         total: messages.length,
         page: data.page || 1,
         limit: 20,
@@ -244,19 +267,22 @@ export const messagesApi = {
   leaveWordDetail: async (data: any): Promise<IResponseData> => {
     await mockDelay();
 
+    const conversationId = data.conversationId || mockNavigatorProfile.id;
+
     return {
+      code: 200,
       success: true,
+      leaveWordId: conversationId,
       data: {
-        id: data.conversationId,
-        participant: {
-          id: "navigator-1",
-          name: "Sarah Johnson",
-          avatar:
-            "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=200&h=200&fit=crop&crop=faces&auto=format",
-          title: "Sport Navigator",
-          bio: "Helping adaptive athletes find their perfect sport and community in Pasadena.",
-          isOnline: true,
+        id: conversationId,
+        user: {
+          id: mockNavigatorProfile.id,
+          nickName: mockNavigatorProfile.nickName,
+          avatar: mockNavigatorProfile.avatar,
         },
+        title: "Sport Navigator",
+        bio: "Helping adaptive athletes find their perfect sport and community in Pasadena.",
+        isOnline: true,
       },
     };
   },
@@ -266,13 +292,17 @@ export const messagesApi = {
     await mockDelay(500);
 
     return {
+      code: 200,
       success: true,
       message: "Message sent successfully",
       data: {
         id: `message-${Date.now()}`,
-        content: data.content,
-        type: data.type || "text",
-        timestamp: new Date().toISOString(),
+        messageContent: data.messageContent || data.content,
+        messageType: data.messageType || 1,
+        createTime: new Date().toISOString(),
+        sendUserId: mockAthleteProfile.id,
+        userName: mockAthleteProfile.nickName,
+        userAvatar: mockAthleteProfile.avatar,
         status: "sent",
       },
     };

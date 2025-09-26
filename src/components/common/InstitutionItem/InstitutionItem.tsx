@@ -18,7 +18,16 @@ export default function InstitutionItem({ item }: any) {
     <Card
       onPress={() => {
         navigation.navigate(Paths.RehabilitationCenterDetail as any, {
-          id: item.id,
+          id: String(item?.id ?? ''),
+          payload: item,
+          coverImage: item?.coverImage,
+          name: item?.name,
+          description: item?.description,
+          distance: item?.distance,
+          star: item?.star,
+          rating: item?.rating,
+          commentNum: item?.commentNum,
+          reviewsCount: item?.reviewCount ?? item?.reviewsCount,
         });
       }}
       style={[styles.container, backgrounds.gray1600]}

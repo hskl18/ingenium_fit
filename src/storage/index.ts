@@ -29,7 +29,7 @@ function createStorage() {
       if (!hasTurbo) {
         throw new Error("TurboModules not enabled; skip MMKV for Expo Go");
       }
-      const { MMKV } = require("react-native-mmkv"); // eslint-disable-line @typescript-eslint/no-require-imports
+      const { MMKV } = require("react-native-mmkv");
       const instance = new MMKV();
       // Normalize API between MMKV and memory fallback
       if (typeof (instance as any).set !== "function") {

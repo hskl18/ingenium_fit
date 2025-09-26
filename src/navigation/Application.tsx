@@ -30,14 +30,6 @@ function ApplicationNavigator() {
             }}
           />
           <Stack.Screen
-            component={Screens.Search}
-            name={Paths.Search}
-            options={{
-              animation: "fade_from_bottom",
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
             component={Screens.Message}
             name={Paths.Message}
             options={{

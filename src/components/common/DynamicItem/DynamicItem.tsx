@@ -39,6 +39,9 @@ let VideoPlayer: any = ({ children, ...props }: any) => children;
 let useAnimations: any = () => ({});
 // Note: Removed require() imports to fix linter warnings
 
+const DEFAULT_AVATAR_URI =
+  "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png";
+
 export default function DynamicItem({
   item,
   hideVisibleShield,
@@ -119,22 +122,75 @@ export default function DynamicItem({
   };
 
   const handleCheckDetail = () => {
+    const firstImage = pictures[0] || item?.coverImage || item?.image;
+    const picturesParam = pictures.length
+      ? pictures.join(",")
+      : typeof item?.pictures === "string"
+      ? (item.pictures as string)
+      : undefined;
+    const videosParam = videos.length
+      ? videos.join(",")
+      : typeof item?.videos === "string"
+      ? (item.videos as string)
+      : undefined;
+
     navigation.navigate(Paths.DynamicDetail, {
-      id: item.id as string,
+      id: String(item?.id ?? ""),
+      payload: item,
+      pictures: picturesParam,
+      videos: videosParam,
+      image: firstImage,
+      coverImage: firstImage,
+      content: item?.content,
     });
     setVisibleMenu(false);
     if (__DEV__) console.log(videoPlayerRef.current);
     videoPlayerRef.current?.pause();
   };
 
-  let pictures = [];
-  let videos = [];
+  let pictures: string[] = [];
+  let videos: string[] = [];
+
   if (item?.pictures) {
-    pictures = item.pictures.split(",");
+    if (Array.isArray(item.pictures)) {
+      pictures = item.pictures.filter(Boolean);
+    } else if (typeof item.pictures === "string") {
+      pictures = item.pictures
+        .split(",")
+        .map((value: string) => value.trim())
+        .filter(Boolean);
+    }
   }
+
+  if (!pictures.length && Array.isArray(item?.images)) {
+    pictures = item.images.filter(Boolean);
+  }
+
+  if (!pictures.length && item?.image) {
+    pictures = [item.image];
+  }
+
   if (item?.videos) {
-    videos = item.videos.split(",");
+    if (Array.isArray(item.videos)) {
+      videos = item.videos.filter(Boolean);
+    } else if (typeof item.videos === "string") {
+      videos = item.videos
+        .split(",")
+        .map((value: string) => value.trim())
+        .filter(Boolean);
+    }
   }
+
+  const author = item?.user ?? item?.author ?? {};
+  const avatarUri = normalizeImageUrl(author?.avatar) ?? DEFAULT_AVATAR_URI;
+  const displayName =
+    author?.nickName || author?.nickname || author?.name || "Community member";
+  const createdAt = item?.createTime ?? item?.createdAt;
+  const isCurrentUser = Boolean(author?.id && author.id === userInfo.id);
+  const parsedDate = createdAt ? dayjs(createdAt) : null;
+  const displayDate = parsedDate?.isValid()
+    ? parsedDate.format("YYYY-MM-DD")
+    : createdAt;
 
   if (__DEV__) console.log("pictures", pictures);
   return (
@@ -147,18 +203,16 @@ export default function DynamicItem({
           <Avatar.Image
             size={40}
             source={{
-              uri: item.user?.avatar,
+              uri: avatarUri,
             }}
             style={styles.avatar}
           />
           <View>
             <Text style={{ ...styles.nameText, color: colors.gray800 }}>
-              {item.user?.nickName}
+              {displayName}
             </Text>
             <Text style={{ ...styles.dateText, color: colors.gray800 }}>
-              {item?.createTime
-                ? dayjs(+item?.createTime).format("YYYY-MM-DD")
-                : item?.createTime}
+              {displayDate}
             </Text>
           </View>
         </View>
@@ -172,7 +226,7 @@ export default function DynamicItem({
               />
             </Pressable>
             {visibleMenu ? (
-              item.user && item.user.id === userInfo.id ? (
+              isCurrentUser ? (
                 <Pressable onPress={handleDelete} style={styles.shieldWrapper}>
                   <ImageBackground
                     source={ShieldBgIcon as ImageURISource}

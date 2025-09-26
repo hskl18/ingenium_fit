@@ -1,149 +1,151 @@
 import React from "react";
 
-import { StyleSheet, Image, View, Pressable } from "react-native";
-import {
-  InputToolbar,
-  Actions,
-  Composer,
-  Send,
-} from "react-native-gifted-chat";
-import ImageIcon from "@/assets/images/235.png";
-import AudioIcon from "@/assets/images/234.png";
-import SendIcon from "@/assets/images/233.png";
-import { Text } from "react-native-paper";
+import { StyleSheet, View, Text } from "react-native";
+import { InputToolbar, Composer, Send } from "react-native-gifted-chat";
 import { useTheme } from "@/theme";
-import { useTranslation } from "@/hooks";
 
-export const renderInputToolbar = (props) => {
-  const { selectImage, visibleToolbar } = props;
+const ThemedToolbar = (props) => {
+  const { colors } = useTheme();
+
   return (
-    <View>
+    <View style={styles.toolbarSurface}>
       <InputToolbar
         {...props}
-        containerStyle={{
-          backgroundColor: "#FFFFFF",
-          paddingTop: 6,
-        }}
-        primaryStyle={{ alignItems: "center" }}
+        containerStyle={[styles.toolbarContainer, { borderTopColor: colors.gray300 }]}
+        primaryStyle={styles.toolbarPrimary}
       />
-      {/* 底部工具栏 */}
-      {visibleToolbar ? (
-        <View style={styles.bottomToolbar}>
-          <Pressable onPress={selectImage} style={styles.toolbarButton}>
-            <Image style={styles.imageIcon} source={ImageIcon} />
-          </Pressable>
-        </View>
-      ) : undefined}
     </View>
   );
 };
 
-export const renderActions = (props) => (
-  <Actions
-    {...props}
-    containerStyle={{
-      width: 44,
-      height: 44,
-      alignItems: "center",
-      justifyContent: "center",
-      marginLeft: 4,
-      marginRight: 4,
-      marginBottom: 0,
-    }}
-    icon={() => <Image style={{ width: 26, height: 26 }} source={AudioIcon} />}
-  />
-);
+export const renderInputToolbar = (props) => <ThemedToolbar {...props} />;
 
-export const renderComposer = (props) => (
-  <Composer
-    {...props}
-    textInputStyle={{
-      color: "#222B45",
-      backgroundColor: "#F5F5F5",
-      borderWidth: 1,
-      borderRadius: 22,
-      borderColor: "#F5F5F5",
-      paddingTop: 8.5,
-      paddingHorizontal: 12,
-      marginLeft: 0,
-    }}
-  />
-);
+export const renderActions = () => null;
+
+export const renderComposer = (props) => {
+  const composerProps = {
+    ...props,
+    textInputProps: {
+      placeholder: props?.placeholder || "Ask the Pasadena navigator anything…",
+      placeholderTextColor: "rgba(26, 30, 46, 0.55)",
+      allowFontScaling: true,
+      multiline: true,
+      underlineColorAndroid: "transparent",
+      autoCorrect: true,
+      autoComplete: "off",
+      autoCapitalize: "sentences",
+      textAlignVertical: "center",
+      enablesReturnKeyAutomatically: true,
+      blurOnSubmit: false,
+      clearButtonMode: "never",
+      editable: !props.disableComposer,
+      selectionColor: "#0B6BFF",
+      ...(props.textInputProps || {}),
+    },
+    textInputStyle: [styles.textInput, props.textInputStyle],
+  };
+
+  return <Composer {...composerProps} />;
+};
 
 const SendButton = (props) => {
-  SendButton.displayName = "SendButton";
   const { backgrounds, colors } = useTheme();
+  const disabled = !props?.text?.trim?.();
+
   return (
     <View style={styles.sendContainer}>
       <Send
         {...props}
-        disabled={!props.text}
-        containerStyle={{
-          width: 44,
-          height: 44,
-          alignItems: "center",
-          justifyContent: "center",
-          marginHorizontal: 4,
-        }}
+        disabled={disabled}
+        containerStyle={styles.sendButtonContainer}
       >
-        <View style={[backgrounds.primary, styles.button]}>
-          <Text style={[styles.buttonText, { color: colors.gray1600 }]}>
-            {"Send"}
+        <View
+          style={[
+            backgrounds.primary,
+            styles.sendButton,
+            disabled && styles.sendButtonDisabled,
+          ]}
+        >
+          <Text
+            maxFontSizeMultiplier={1.2}
+            style={[styles.sendLabel, { color: colors.gray1600 }]}
+          >
+            Send
           </Text>
         </View>
       </Send>
-      <Pressable onPress={props.openToolbar} style={styles.iconButton}>
-        <Image style={{ width: 26, height: 26 }} source={SendIcon} />
-      </Pressable>
     </View>
   );
 };
 
-export const renderSend = (openToolbar) => {
-  return (props) => <SendButton {...props} openToolbar={openToolbar} />;
-};
+SendButton.displayName = "SendButton";
+
+export const renderSend = (props) => <SendButton {...props} />;
 
 const styles = StyleSheet.create({
+  toolbarSurface: {
+    backgroundColor: "#FFFFFF",
+    shadowColor: "rgba(15, 23, 42, 0.12)",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  toolbarContainer: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  toolbarPrimary: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  textInput: {
+    flex: 1,
+    color: "#1A1E2E",
+    backgroundColor: "#F4F6FB",
+    borderRadius: 22,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    fontSize: 15,
+    lineHeight: 20,
+    marginRight: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(15, 23, 42, 0.06)",
+  },
   sendContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 14,
+    justifyContent: "center",
+    paddingHorizontal: 6,
   },
-  button: {
-    width: 60,
-    height: 34,
-    borderRadius: 22,
+  sendButtonContainer: {
     alignItems: "center",
     justifyContent: "center",
+    marginHorizontal: 4,
   },
-  buttonText: {
-    fontSize: 15,
-    fontWeight: 500,
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  bottomToolbar: {
-    minHeight: 156,
-    backgroundColor: "#FFFFFF",
+  sendButton: {
+    minWidth: 64,
     paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderTopWidth: 0.5,
-    borderTopColor: "#E5E5E5",
+    height: 44,
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "rgba(11, 107, 255, 0.25)",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  toolbarButton: {},
-  imageIcon: {
-    width: 65,
-    height: 65,
+  sendButtonDisabled: {
+    opacity: 0.5,
+    shadowOpacity: 0,
   },
-  toolbarText: {
-    fontSize: 11,
-    color: "#666666",
-    marginTop: 4,
-    textAlign: "center",
+  sendLabel: {
+    fontSize: 15,
+    fontWeight: "600",
+    letterSpacing: 0.1,
   },
 });

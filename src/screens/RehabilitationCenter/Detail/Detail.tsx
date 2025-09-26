@@ -16,6 +16,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { showLocation } from "react-native-map-link";
 import { Pressable } from "react-native-gesture-handler";
@@ -31,6 +32,8 @@ import { useTheme } from "@/theme";
 
 import { SafeScreen } from "@/components/templates";
 import { ImageWithFallback } from "@/components/atoms";
+import { normalizeImageUrl } from "@/utils/image";
+import Empty from "@/components/common/Empty/Empty.tsx";
 import CommentItem from "@/screens/RehabilitationCenter/components/CommentItem/CommentItem.tsx";
 import DoctorItem from "@/screens/RehabilitationCenter/components/DoctorItem/DoctorItem.tsx";
 
@@ -46,14 +49,161 @@ import { Configs } from "@/common/configs.ts";
 import { useFocusEffect } from "@react-navigation/native";
 import GalleryPreview from "react-native-gallery-preview";
 
+const IMAGE_SOURCE_KEYS: readonly string[] = [
+  "backgroundImages",
+  "images",
+  "imageList",
+  "gallery",
+  "pictures",
+  "photo",
+  "photos",
+  "album",
+  "image",
+  "coverImage",
+  "cover",
+  "banner",
+];
+
+const IMAGE_NESTED_KEYS: readonly string[] = [
+  "url",
+  "uri",
+  "image",
+  "imageUrl",
+  "value",
+  "src",
+  "path",
+];
+
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim().length > 0;
+
+const asRecord = (value: unknown): Record<string, unknown> => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+  return value as Record<string, unknown>;
+};
+
+const escapeHtml = (value: string): string =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+const extractStrings = (value: unknown): string[] => {
+  if (!value) {
+    return [];
+  }
+
+  if (isNonEmptyString(value)) {
+    return value
+      .split(/[,\n]/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap((entry) => extractStrings(entry));
+  }
+
+  if (typeof value === "object") {
+    const record = asRecord(value);
+    return IMAGE_NESTED_KEYS.flatMap((key) => extractStrings(record[key]));
+  }
+
+  return [];
+};
+
+const imageFromHtml = (html?: string): string | undefined => {
+  if (!html) {
+    return undefined;
+  }
+  const match = html.match(/<img[^>]+src=['"]([^'"]+)['"]/i);
+  return match?.[1];
+};
+
+const extractImageUris = (
+  source: Record<string, unknown>,
+  html?: string,
+): string[] => {
+  const uris = new Set<string>();
+
+  IMAGE_SOURCE_KEYS.forEach((key) => {
+    extractStrings(source[key]).forEach((uri) => {
+      if (isNonEmptyString(uri)) {
+        uris.add(uri);
+      }
+    });
+  });
+
+  if (uris.size === 0) {
+    const htmlImage = imageFromHtml(html);
+    if (htmlImage) {
+      uris.add(htmlImage);
+    }
+  }
+
+  return Array.from(uris);
+};
+
+const listHtml = (title: string, items: unknown): string => {
+  const values = Array.isArray(items) ? items : undefined;
+  if (!values || values.length === 0) {
+    return "";
+  }
+
+  const sanitizedItems = values
+    .map((item) => (isNonEmptyString(item) ? escapeHtml(item) : undefined))
+    .filter(Boolean) as string[];
+
+  if (sanitizedItems.length === 0) {
+    return "";
+  }
+
+  return `
+    <section>
+      <h3>${escapeHtml(title)}</h3>
+      <ul>
+        ${sanitizedItems.map((entry) => `<li>${entry}</li>`).join("")}
+      </ul>
+    </section>
+  `;
+};
+
+const hoursHtml = (hours: unknown): string => {
+  const entries = Object.entries(asRecord(hours));
+  if (entries.length === 0) {
+    return "";
+  }
+
+  return `
+    <section>
+      <h3>Hours</h3>
+      <ul>
+        ${entries
+          .map(([day, schedule]) => {
+            if (!isNonEmptyString(schedule)) {
+              return "";
+            }
+            return `<li><strong>${escapeHtml(day)}</strong>: ${escapeHtml(schedule)}</li>`;
+          })
+          .join("")}
+      </ul>
+    </section>
+  `;
+};
 export default function RehabilitationCenterDetail({
   navigation,
   route,
 }: RootScreenProps<Paths.RehabilitationCenterDetail>) {
   const { backgrounds, colors } = useTheme();
-  const { id } = route.params;
+  const { payload, ...paramsWithoutPayload } = route.params;
+  const { id } = paramsWithoutPayload;
   const progress = useSharedValue<number>(0);
-  const [post, setPost] = useState({});
+  const [post, setPost] = useState<Record<string, unknown>>(() => ({
+    ...asRecord(payload),
+    ...asRecord(paramsWithoutPayload),
+  }));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [sectionHeight, setSectionHeight] = useState(100);
   const [isVisible, setIsVisible] = useState(false);
@@ -79,12 +229,17 @@ export default function RehabilitationCenterDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
+        const currentlyFavorited = Boolean(asRecord(post).isFavorited);
+
         setPost((current) => ({
-          ...current,
-          isFavorited: !current?.isFavorited,
+          ...asRecord(current),
+          isFavorited: !currentlyFavorited,
         }));
+
         Toast.show(
-          post?.isFavorited ? "Removed from favorites" : "Added to favorites",
+          currentlyFavorited
+            ? "Removed from favorites"
+            : "Added to favorites",
           {
             animation: true,
             delay: 0,
@@ -99,15 +254,15 @@ export default function RehabilitationCenterDetail({
   });
 
   const handleToggleCollect = useCallback(() => {
-    if (!post.id) {
+    if (!centerId) {
       return;
     }
     mutation.mutate({
-      objectId: post.id,
+      objectId: centerId,
       // 收藏对象类型：1-康复中心 2-科普 3-动态
       objectType: 1,
     });
-  }, [post, mutation]);
+  }, [centerId, mutation]);
 
   useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
@@ -116,7 +271,9 @@ export default function RehabilitationCenterDetail({
       headerLeft: () => {
         return (
           <View style={styles.headerBtnGroup}>
-            <Pressable
+            <TouchableOpacity
+              accessibilityRole="button"
+              hitSlop={8}
               onPress={() => {
                 navigation.goBack();
               }}
@@ -125,18 +282,19 @@ export default function RehabilitationCenterDetail({
                 source={BackIcon as ImageURISource}
                 style={styles.headerBtnIcon}
               />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         );
       },
       headerRight: () => {
-        if (!post.id) {
+        if (!centerId) {
           return undefined;
         }
+        const isFavorited = Boolean(asRecord(post).isFavorited);
         return (
           <View style={styles.headerBtnGroup}>
             <Pressable onPress={handleToggleCollect}>
-              {post?.isFavorited ? (
+              {isFavorited ? (
                 <Image
                   source={CollectFIcon as ImageURISource}
                   style={styles.headerBtnIcon}
@@ -152,7 +310,7 @@ export default function RehabilitationCenterDetail({
         );
       },
     });
-  }, [navigation, post, handleToggleCollect]);
+  }, [centerId, handleToggleCollect, navigation, post]);
 
   const { data: postData, isSuccess: postDataIsSuccess } = useQuery({
     queryFn: () => {
@@ -166,9 +324,195 @@ export default function RehabilitationCenterDetail({
 
   useEffect(() => {
     if (postDataIsSuccess) {
-      setPost(postData.data || {});
+      setPost((current) => ({
+        ...current,
+        ...asRecord(postData?.data),
+      }));
     }
   }, [setPost, postData, postDataIsSuccess]);
+
+  const mergedSource = useMemo(
+    () => ({
+      ...asRecord(paramsWithoutPayload),
+      ...post,
+    }),
+    [paramsWithoutPayload, post],
+  );
+
+  const centerId = useMemo(() => {
+    const candidate = mergedSource.id ?? id;
+    if (candidate === null || candidate === undefined) {
+      return "";
+    }
+    return String(candidate);
+  }, [mergedSource, id]);
+
+  const detailHtml = useMemo(() => {
+    const sections: string[] = [];
+
+    const detailCandidates = [
+      mergedSource.detail,
+      mergedSource.details,
+      mergedSource.html,
+    ];
+
+    for (const candidate of detailCandidates) {
+      if (isNonEmptyString(candidate)) {
+        sections.push(candidate);
+        break;
+      }
+    }
+
+    const textKeys = [
+      "description",
+      "summary",
+      "intro",
+      "introduction",
+      "overview",
+      "about",
+    ];
+
+    for (const key of textKeys) {
+      if (sections.length > 0) {
+        break;
+      }
+      const value = mergedSource[key];
+      if (isNonEmptyString(value)) {
+        sections.push(`<p>${escapeHtml(value)}</p>`);
+      }
+    }
+
+    sections.push(
+      listHtml("Services", mergedSource.services),
+      listHtml("Facilities", mergedSource.facilities),
+      listHtml("Specialties", mergedSource.specialties),
+      listHtml("Accessibility", mergedSource.accessibleHighlights),
+      listHtml("Insurance", mergedSource.insurance),
+      hoursHtml(mergedSource.hours),
+    );
+
+    const filtered = sections.filter((section) =>
+      isNonEmptyString(section?.toString?.())
+    ) as string[];
+
+    if (filtered.length === 0) {
+      return "<p>Further information will be available soon.</p>";
+    }
+
+    return filtered.join("\n");
+  }, [mergedSource]);
+
+  const imageCandidates = useMemo(
+    () => extractImageUris(mergedSource, detailHtml),
+    [mergedSource, detailHtml],
+  );
+
+  const normalizedImageUris = useMemo(() => {
+    return imageCandidates
+      .map((uri) => normalizeImageUrl(uri))
+      .filter((uri): uri is string => Boolean(uri));
+  }, [imageCandidates]);
+
+  const previewImages = useMemo(
+    () =>
+      normalizedImageUris.map((uri) => ({
+        uri,
+        type: "image" as const,
+      })),
+    [normalizedImageUris],
+  );
+
+  const hasPreviewImages = normalizedImageUris.length > 0;
+
+  const ratingRaw = useMemo(() => {
+    const candidates = [
+      mergedSource.star,
+      mergedSource.rating,
+      mergedSource.score,
+      mergedSource.averageRating,
+    ];
+
+    for (const candidate of candidates) {
+      if (candidate === 0 || candidate === "0") {
+        return candidate;
+      }
+      if (typeof candidate === "number" && Number.isFinite(candidate)) {
+        return candidate;
+      }
+      if (isNonEmptyString(candidate)) {
+        return candidate;
+      }
+    }
+
+    return undefined;
+  }, [mergedSource]);
+
+  const ratingValue = useMemo(() => {
+    if (typeof ratingRaw === "number") {
+      return ratingRaw;
+    }
+    if (isNonEmptyString(ratingRaw)) {
+      const parsed = Number.parseFloat(ratingRaw);
+      return Number.isFinite(parsed) ? parsed : undefined;
+    }
+    return undefined;
+  }, [ratingRaw]);
+
+  const ratingDisplay = isNonEmptyString(ratingRaw)
+    ? ratingRaw
+    : ratingValue !== undefined
+    ? ratingValue.toFixed(1)
+    : undefined;
+
+  const reviewCount = useMemo(() => {
+    const candidates = [
+      mergedSource.commentNum,
+      mergedSource.reviewsCount,
+      mergedSource.reviewCount,
+      mergedSource.comments,
+    ];
+
+    for (const candidate of candidates) {
+      if (typeof candidate === "number" && Number.isFinite(candidate)) {
+        return candidate;
+      }
+      if (isNonEmptyString(candidate)) {
+        const parsed = Number.parseInt(candidate, 10);
+        if (Number.isFinite(parsed)) {
+          return parsed;
+        }
+      }
+    }
+    return undefined;
+  }, [mergedSource]);
+
+  const displayName = isNonEmptyString(mergedSource.name)
+    ? mergedSource.name
+    : "Rehabilitation Center";
+
+  const displayAddress = isNonEmptyString(mergedSource.address)
+    ? mergedSource.address
+    : undefined;
+
+  const distanceLabel = useMemo(() => {
+    const candidates = [
+      mergedSource.distance,
+      mergedSource.distanceKm,
+      mergedSource.distanceMiles,
+    ];
+
+    for (const candidate of candidates) {
+      if (typeof candidate === "number" && Number.isFinite(candidate)) {
+        return candidate.toFixed(1);
+      }
+      if (isNonEmptyString(candidate)) {
+        return candidate;
+      }
+    }
+    return undefined;
+  }, [mergedSource]);
+
+  const primaryImage = normalizedImageUris[0];
 
   const { data, hasNextPage } = useInfiniteQuery({
     enabled: selectedIndex !== 0,
@@ -184,7 +528,7 @@ export default function RehabilitationCenterDetail({
       if (selectedIndex === 1) {
         return doctorList({
           page: pageParam.pageParam,
-          rehabilitationCenterId: post.id,
+          rehabilitationCenterId: centerId,
         });
       }
 
@@ -192,7 +536,7 @@ export default function RehabilitationCenterDetail({
         return commentList({
           page: pageParam.pageParam,
           // 评论对象：1-动态帖子 2-科普 3-康复中心 4-医师
-          objectId: post.id,
+          objectId: centerId,
           objectType: 3,
         });
       }
@@ -256,7 +600,7 @@ export default function RehabilitationCenterDetail({
         scrollEnabled={false}
         source={{
           html:
-            Configs.HtmlHead + `<body><div>${post.detail || ""}</div></body>`,
+            Configs.HtmlHead + `<body><div>${detailHtml}</div></body>`,
         }}
         style={[
           {
@@ -265,22 +609,11 @@ export default function RehabilitationCenterDetail({
         ]}
       />
     );
-  }, [post, sectionHeight]);
+  }, [detailHtml, sectionHeight]);
 
-  const images = useMemo(() => {
-    let pictures = [];
-    if (post.backgroundImages) {
-      pictures = post.backgroundImages?.split(",").map((img) => ({
-        uri: img,
-        type: "image",
-      }));
-    }
-    return pictures;
-  }, [post]);
-
-  const postImages = useMemo(() => {
-    return post.backgroundImages ? post.backgroundImages?.split(",") : [];
-  }, [post]);
+  useEffect(() => {
+    setSectionHeight(100);
+  }, [detailHtml]);
 
   let dataList: any[] = [];
   if (data?.pages) {
@@ -292,54 +625,121 @@ export default function RehabilitationCenterDetail({
     );
   }
 
-  const handlePreview = (item) => {
-    setIsVisible(true);
-    setInitialIndex(images.findIndex((img) => img.uri === item));
-  };
+  const handlePreview = useCallback(
+    (uri?: string) => {
+      if (!uri) {
+        return;
+      }
+      const index = normalizedImageUris.findIndex((candidate) => candidate === uri);
+      if (index < 0) {
+        return;
+      }
+      setInitialIndex(index);
+      setIsVisible(true);
+    },
+    [normalizedImageUris],
+  );
+
+  const coordinates = useMemo(() => {
+    const latitudeCandidate = mergedSource.latitude ?? mergedSource.lat;
+    const longitudeCandidate =
+      mergedSource.longitude ?? mergedSource.lng ?? mergedSource.lon;
+
+    const latitude = Number.parseFloat(String(latitudeCandidate ?? ""));
+    const longitude = Number.parseFloat(String(longitudeCandidate ?? ""));
+
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      return undefined;
+    }
+
+    return { latitude, longitude };
+  }, [mergedSource]);
 
   const handleShowLocation = () => {
+    if (!coordinates) {
+      return;
+    }
+
     showLocation({
-      latitude: +post.latitude,
-      longitude: +post.longitude,
-      title: post.address,
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+      title: displayAddress ?? displayName,
       appsWhiteList: ["google-maps", "apple-maps"],
     });
   };
 
+  const distanceDisplay = useMemo(() => {
+    if (!distanceLabel) {
+      return undefined;
+    }
+    return /[a-zA-Z]/.test(distanceLabel) ? distanceLabel : `${distanceLabel}km`;
+  }, [distanceLabel]);
+
+  const ratingValueSanitized = useMemo(() => {
+    if (ratingValue === undefined) {
+      return 0;
+    }
+    return Math.min(Math.max(ratingValue, 0), 5);
+  }, [ratingValue]);
+
   const RenderListHeader = useCallback(() => {
+    const hasCarouselImages = normalizedImageUris.length > 0;
+    const carouselData = hasCarouselImages
+      ? normalizedImageUris
+      : [undefined];
+
     return (
       <View>
-        <Carousel
-          data={postImages}
-          height={211}
-          onProgressChange={progress}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => {
-                handlePreview(item);
-              }}
-            >
-              <ImageWithFallback
-                uri={String(item)}
-                style={styles.carouselImg}
-              />
-            </Pressable>
-          )}
-          width={Dimensions.get("window").width}
-        />
+        {hasCarouselImages ? (
+          <Carousel
+            data={carouselData}
+            enabled={normalizedImageUris.length > 1}
+            height={211}
+            loop={normalizedImageUris.length > 1}
+            onProgressChange={progress}
+            renderItem={({ item }) => (
+              <Pressable
+                disabled={!hasPreviewImages}
+                onPress={() => {
+                  if (hasPreviewImages) {
+                    handlePreview(item);
+                  }
+                }}
+              >
+                <ImageWithFallback
+                  uri={item}
+                  style={styles.carouselImg}
+                />
+              </Pressable>
+            )}
+            width={Dimensions.get("window").width}
+          />
+        ) : (
+          <ImageWithFallback style={styles.carouselImg} />
+        )}
         <View style={[styles.info, backgrounds.gray1600]}>
-          <Text style={styles.titleText}>{post.name}</Text>
+          <Text style={styles.titleText}>{displayName}</Text>
 
           <View style={styles.locationWrapper}>
             <View style={styles.locationLeft}>
-              <Text style={{ ...styles.locationText }}>{post.address}</Text>
-              {post.distance ? (
+              {displayAddress ? (
+                <Text style={styles.locationText}>{displayAddress}</Text>
+              ) : null}
+              {distanceDisplay ? (
                 <Text style={{ ...styles.distanceText, color: colors.gray800 }}>
-                  {post.distance}km
+                  {distanceDisplay}
                 </Text>
-              ) : undefined}
+              ) : null}
             </View>
-            <Pressable onPress={handleShowLocation}>
+            <Pressable
+              disabled={!coordinates}
+              onPress={handleShowLocation}
+              style={({ pressed }) => [
+                styles.locationButton,
+                !coordinates && styles.locationButtonDisabled,
+                pressed && styles.locationButtonPressed,
+              ]}
+            >
               <Image
                 source={LocationIcon as ImageURISource}
                 style={styles.locationIcon}
@@ -348,20 +748,39 @@ export default function RehabilitationCenterDetail({
           </View>
 
           <View style={styles.scoreWrapper}>
-            <Text style={styles.scoreText}>{post.star}</Text>
+            <Text style={styles.scoreText}>{ratingDisplay ?? "—"}</Text>
             <Rating
               disabled
               size={12}
-              rating={+post.star}
+              rating={ratingValueSanitized}
               fillColor="#333"
               touchColor="#000"
             />
+            <Text style={{ ...styles.commentNumberText, color: colors.gray800 }}>
+              ({reviewCount ?? 0})
+            </Text>
           </View>
         </View>
         <View style={[{ height: 8 }, backgrounds.gray1550]} />
       </View>
     );
-  }, [post, progress, navigation]);
+  }, [
+    backgrounds.gray1550,
+    backgrounds.gray1600,
+    colors.gray800,
+    coordinates,
+    displayAddress,
+    displayName,
+    distanceDisplay,
+    handlePreview,
+    handleShowLocation,
+    hasPreviewImages,
+    normalizedImageUris,
+    progress,
+    ratingDisplay,
+    ratingValueSanitized,
+    reviewCount,
+  ]);
 
   const renderSegmentedControl = () => {
     return (
@@ -384,23 +803,27 @@ export default function RehabilitationCenterDetail({
         <View style={styles.evaluationTitleLeft}>
           <View style={styles.commentStar}>
             <Text style={{ ...styles.commentStarText, color: colors.gray1600 }}>
-              {post.star}
+              {ratingDisplay ?? "—"}
             </Text>
           </View>
           <View>
             <Text>{"Very good"}</Text>
             <Text>
-              {post.commentNum || 0}
-              {"Reviews count"}
+              {reviewCount ?? 0}
+              {" Reviews count"}
             </Text>
           </View>
         </View>
         <Pressable
           onPress={() => {
             navigation.navigate(Paths.RehabilitationCenterEvaluate, {
-              id: post.id,
-              name: post.name,
-              coverImage: post.coverImage,
+              id: String(mergedSource.id ?? id ?? ""),
+              name: displayName,
+              coverImage:
+                primaryImage ??
+                (isNonEmptyString(mergedSource.coverImage)
+                  ? (mergedSource.coverImage as string)
+                  : undefined),
             });
           }}
           style={[
@@ -490,7 +913,7 @@ export default function RehabilitationCenterDetail({
         isVisible={isVisible}
         initialIndex={initialIndex}
         onRequestClose={() => setIsVisible(false)}
-        images={images}
+        images={previewImages}
       />
     </>
   );
@@ -522,6 +945,10 @@ const styles = StyleSheet.create({
   commentIcon: {
     height: 18,
     width: 18,
+  },
+  commentNumberText: {
+    fontSize: 12,
+    marginLeft: 4,
   },
   commentTitleText: {
     fontSize: 18,
@@ -587,8 +1014,19 @@ const styles = StyleSheet.create({
   },
   locationIcon: {
     height: 28,
-    marginBottom: 6,
     width: 28,
+  },
+  locationButton: {
+    alignItems: "center",
+    borderRadius: 18,
+    justifyContent: "center",
+    padding: 6,
+  },
+  locationButtonDisabled: {
+    opacity: 0.5,
+  },
+  locationButtonPressed: {
+    opacity: 0.7,
   },
   locationText: {
     fontSize: 13,

@@ -12,16 +12,30 @@ export type RootStackParamList = {
   [Paths.AboutUs]: undefined;
   [Paths.CarouselDetail]: {
     id: string;
+    image?: string;
+    title?: string;
+    description?: string;
+    payload?: Record<string, unknown>;
   };
   [Paths.ChangePassword]: undefined;
   [Paths.ChatDetail]: {
     userId: string;
+    assistantOnly?: boolean;
+    initialPrompt?: string;
   };
   [Paths.ChatMessage]: undefined;
   [Paths.Collection]: undefined;
   [Paths.Dynamic]: undefined;
   [Paths.DynamicDetail]: {
     id: string;
+    payload?: Record<string, unknown>;
+    pictures?: string | string[];
+    videos?: string | string[];
+    image?: string;
+    coverImage?: string;
+    content?: string;
+    title?: string;
+    user?: Record<string, unknown>;
   };
   [Paths.DynamicList]: {
     selectType?: number;
@@ -46,6 +60,15 @@ export type RootStackParamList = {
   [Paths.Profile]: undefined;
   [Paths.RehabilitationCenterDetail]: {
     id: string;
+    payload?: Record<string, unknown>;
+    coverImage?: string;
+    name?: string;
+    description?: string;
+    distance?: string;
+    star?: number | string;
+    rating?: number | string;
+    commentNum?: number | string;
+    reviewsCount?: number | string;
   };
   [Paths.RehabilitationCenterDoctor]: {
     id: string;

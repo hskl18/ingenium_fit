@@ -49,7 +49,7 @@ let request: any = () => Promise.resolve("granted");
 let RESULTS: any = { GRANTED: "granted", DENIED: "denied" };
 
 try {
-  const permissionsModule = require("react-native-permissions"); // eslint-disable-line @typescript-eslint/no-require-imports
+  const permissionsModule = require("react-native-permissions");
   check = permissionsModule.check;
   openSettings = permissionsModule.openSettings;
   PERMISSIONS = permissionsModule.PERMISSIONS;

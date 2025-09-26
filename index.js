@@ -1,6 +1,7 @@
 import "react-native-gesture-handler";
 import "react-native-url-polyfill/auto";
 import { AppRegistry, LogBox } from "react-native";
+import { configureReanimatedLogger } from "react-native-reanimated";
 
 import App from "./src/App";
 
@@ -10,6 +11,9 @@ import App from "./src/App";
 // }
 
 global.__ENABLE_LOGS__ = true;
+
+// Silence Reanimated's strict-mode warnings triggered by Expo Go's RN StrictMode wrapper
+configureReanimatedLogger({ strict: false });
 
 // Silence verbose logs in dev and production while keeping warnings/errors
 // Toggle by setting global.__ENABLE_LOGS__ = true in the console if needed

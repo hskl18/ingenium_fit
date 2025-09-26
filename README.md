@@ -1,198 +1,95 @@
-# Ingenium Fit
+# Ingenium Fit – Adaptive Sport Navigator
 
-This repo carries the full Ingenium Fit React Native application with the original multi-tab experience (home, dynamic feed, profile, messaging, etc.). Built with **Expo SDK 52** and the latest React Native architecture for optimal performance and developer experience.
+Ingenium Fit is a mixed-methods research prototype that explores how an iOS-based adaptive sport navigator can reduce barriers faced by athletes with disabilities. The app curates Pasadena resources, facilitates peer knowledge exchange, surfaces rehabilitation reviews, and embeds an AI assistant to help athletes plan transport, request equipment, and stay engaged with their care team.
 
-The mobile app is built with React Native + TypeScript using Expo's managed workflow. Styling leverages a tokenized theme system with React Native Paper components for accessibility. The New Architecture (Fabric + TurboModules) accelerates performance, while MMKV provides encrypted local storage for location, auth, and translated content. Expo Router handles navigation with file-based routing, targeting iOS 15+ and Android API 21+.
+The project was submitted to the **2025 Google IgniteCS Programming Expo** (Mobile & Web · Individual). Research goals focus on measuring changes in confidence, participation, and perceived accessibility by combining in-app surveys, analytics, and interviews with athletes and community partners.
 
-Key features include:
-• Knowledge-sharing posts where athletes exchange training/rehab tips
-• Doctor and rehab center reviews integrated alongside facility ratings  
-• Engagement actions (comments, likes, favorites, private messaging)
-• Real-time messaging and notifications
-• Location-based facility discovery
+## Core Capabilities
+
+- **Local discovery hub** – browse adaptive sport programs, rehab centers, transit tips, and equipment grants targeted to Pasadena.
+- **Community storytelling** – post updates, share rehab and training strategies, react, save, and privately message other athletes.
+- **Rehab intelligence** – rate facilities and doctors, review accessibility amenities, and bookmark favourites for quick comparison.
+- **Navigator messaging** – chat with a volunteer sports navigator and leverage an AI assistant (OpenAI `gpt-5-chat-latest`) for instant suggestions.
+- **Research instrumentation** – built-in surveys, engagement analytics, and exportable insights for mixed-method evaluation.
+
+## Architecture Snapshot
+
+- **Framework**: Expo SDK 52 · React Native 0.76 with Fabric/TurboModules enabled.
+- **Language**: TypeScript 5.
+- **State & Data**: Zustand for lightweight state, TanStack Query for networking, MMKV for secure storage.
+- **UI System**: React Native Paper + custom theming tokens (light/dark aware, accessible typography).
+- **Lists & Performance**: FlashList, Reanimated 3, Gesture Handler 2.
+- **AI Layer**: `src/services/openai.ts` securely reads the `openai_api` key from `.env` via `app.config.js`.
 
 ## Repository Layout
 
-- `mobile-app/` – React Native iOS/Android project (screens, navigation, services, stores, theming)
-- `technical-documentation.docx` – reference specs from the earlier full-stack effort
+```
+├── app.config.js        # Expo configuration (loads secrets from .env)
+├── assets/              # Icons, splash screens, illustrations
+├── src/
+│   ├── components/      # Atoms/Molecules/Templates
+│   ├── hooks/           # Custom hooks, i18n helpers
+│   ├── navigation/      # Stack + tab configuration
+│   ├── screens/         # Feature modules (Home, Dynamic feed, Messaging, Research tools)
+│   ├── services/        # API clients (mock + live), AI helper
+│   ├── store/           # Zustand slices
+│   ├── theme/           # Tokenized theming + typings
+│   └── translations/    # Localized copy scaffolding
+└── README.md
+```
 
 ## Prerequisites
 
-- Node.js 22+ (specified in package.json engines)
-- pnpm 9+ (package manager - specified in package.json)
-- Expo CLI - `npm install -g @expo/cli`
-- Watchman (macOS) - `brew install watchman`
-- Xcode 15+ with Command Line Tools (for iOS development)
-- iOS Simulator or physical iOS device
-- Android Studio (for Android development)
-- EAS CLI (optional, for cloud builds) - `npm install -g eas-cli`
+- Node.js **22+**
+- pnpm **9+** (`corepack enable` recommended)
+- Expo CLI (`npm install -g @expo/cli`)
+- Watchman (macOS) · Xcode 15+ (iOS) · Android Studio (Android)
 
 ## Getting Started
 
-1. **Clone and navigate to the project:**
+```bash
+git clone <repository-url>
+cd ingenium-fit
+pnpm install
+pnpm start
+```
 
-   ```bash
-   git clone <repository-url>
-   cd mobile-app
-   ```
+Scan the QR code in Expo Go or press `i`/`a` to launch the iOS simulator/Android emulator.
 
-2. **Install dependencies:**
-
-   ```bash
-   pnpm install
-   ```
-
-3. **Start the Expo development server:**
-
-   ```bash
-   pnpm start
-   # or
-   npx expo start --clear
-   ```
-
-## Development Options
-
-### Expo Go (Recommended for Development)
-
-1. Install Expo Go on your device from App Store/Play Store
-2. Run `pnpm start` and scan the QR code
-3. Instant reload and debugging without native builds
-
-### Native Development Builds
-
-For features requiring custom native code:
+### Development Builds (optional)
 
 ```bash
-# Create development build
 npx expo run:ios --device
 npx expo run:android --device
 ```
 
-### Using Xcode (iOS)
+### Useful scripts
 
-After running `npx expo run:ios`, you can open the generated Xcode project:
-
-1. Open `mobile-app/ios/kangfu_app.xcworkspace` in Xcode
-2. Select your target device/simulator
-3. Press Cmd+R to build and run
+```bash
+pnpm start       # Expo dev server
+pnpm ios         # Run on iOS simulator
+pnpm android     # Run on Android emulator
+pnpm lint        # ESLint (Expo lint)
+pnpm type:check  # tsconfig type checking
+```
 
 ## Troubleshooting
 
-### Expo Cache Issues
+- **Clear caches**: `npx expo start --clear`
+- **Metro reset**: `pnpm start --reset-cache`
+- **Pod install** (iOS): `cd ios && pod install --repo-update`
+- **Expo doctor**: `npx expo doctor`
 
-If you encounter bundling or build issues:
+## Notes for Contributors
 
-```bash
-# Clear Expo cache
-npx expo start --clear
+- Store secrets in `.env` (e.g., `openai_api=sk-...`). Expo loads them via `extra` in `app.config.js`.
+- Keep copy edits mirrored in `src/translations` for future localization.
+- MMKV is fall-backed to in-memory storage inside Expo Go; warnings are expected in development.
+- The AI assistant uses optimistic UI updates—avoid blocking calls in the chat screen to maintain responsiveness.
+- When adding data-driven features, favour React Query mutations/queries to stay consistent with the existing cache model.
 
-# Clear Metro cache
-pnpm start --reset-cache
+## License
 
-# Clear all caches
-npx expo start --clear --reset-cache
-```
+This repository is provided for research and educational use in conjunction with the IgniteCS Programming Expo submission.
 
-### Native Dependencies Issues
-
-For iOS native builds:
-
-```bash
-cd ios
-pod install --repo-update
-cd ..
-```
-
-### Node Modules Issues
-
-If dependencies seem corrupted:
-
-```bash
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
-```
-
-### Common Expo Issues
-
-```bash
-# Update Expo CLI
-npm install -g @expo/cli@latest
-
-# Check Expo doctor for issues
-npx expo doctor
-
-# Prebuild native directories (if needed)
-npx expo prebuild --clean
-```
-
-## Key Source Areas (mobile-app/src)
-
-- `screens/` – feature screens such as `Tabbar/Home`, `Dynamic`, `Message`, etc.
-- `navigation/` – React Navigation configuration for stacks and tabs.
-- `components/` – reusable UI pieces.
-- `store/`, `services/`, `hooks/` – state management, API wrappers, and utilities.
-- `theme/`, `translations/` – styling tokens and i18n resources.
-
-## Development Commands
-
-```bash
-# Start Expo development server
-pnpm start
-
-# Run on iOS simulator/device
-pnpm ios
-
-# Run on Android emulator/device
-pnpm android
-
-# Run on web browser
-pnpm web
-
-# Build for production (requires EAS)
-npx eas build --platform ios
-npx eas build --platform android
-
-# Submit to app stores (requires EAS)
-npx eas submit --platform ios
-npx eas submit --platform android
-
-# Type checking (if configured)
-pnpm type:check
-
-# Linting (if configured)
-pnpm lint
-
-# Testing (if configured)
-pnpm test
-```
-
-## Tech Stack & Dependencies
-
-Built with the latest versions (updated December 2024):
-
-- **Framework**: Expo SDK 52 + React Native 0.76.5 with New Architecture
-- **Language**: TypeScript 5.7.2
-- **State Management**: Zustand 5.0.9 for global state
-- **Navigation**: React Navigation v7 (bottom-tabs 7.4.8, native-stack 7.3.27)
-- **UI Components**: React Native Paper 5.15.0 with custom theming
-- **Animations**: React Native Reanimated 3.16.1
-- **Storage**: MMKV 3.3.2 for fast, encrypted local storage
-- **Gestures**: React Native Gesture Handler 2.20.0
-- **Icons & Graphics**: React Native SVG 15.8.0, Expo Vector Icons 14.0.4
-- **Data Fetching**: TanStack React Query 5.87.2
-- **Lists**: Shopify FlashList 2.0.4 for performance
-- **Permissions**: React Native Permissions 5.5.0
-- **Date/Time**: Day.js 1.11.15
-- **Error Boundaries**: React Error Boundary 5.0.1
-
-## Working Tips
-
-- **Expo Workflow**: Use Expo Go for rapid development, switch to development builds for custom native code
-- **Package Manager**: Project uses pnpm 9.15.2 - avoid mixing with npm or yarn
-- **Node Version**: Requires Node.js 22+ for optimal performance with latest dependencies
-- **UI Updates**: The UI and data models are already wired; prefer updating copy/assets/layouts instead of ripping out modules
-- **Translations**: Keep text edits in English unless expanding translations in `src/translations/`
-- **New Architecture**: App uses React Native's New Architecture (Fabric + TurboModules) for better performance
-- **Hot Reload**: Expo provides instant refresh - changes appear immediately without rebuilds
-- **Debugging**: Use Expo DevTools, React DevTools, or Flipper for debugging
-- **Platform Targets**: iOS 15+, Android API 21+ (Android 5.0+)
+more info https://docs.google.com/presentation/d/1PuFshxsBYVaxrjABdLOmHkKQMCQ_yPn-mvbmKFgBVeE/edit?usp=sharing

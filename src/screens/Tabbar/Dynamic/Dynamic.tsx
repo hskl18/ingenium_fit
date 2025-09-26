@@ -7,15 +7,14 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "@/hooks";
 import {
   Image,
   ImageURISource,
-  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { Button, Text } from "react-native-paper";
 
@@ -39,7 +38,6 @@ export default function Dynamic({
   navigation,
 }: RootScreenProps<Paths.Dynamic>) {
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
-  const { t } = useTranslation();
   const [selectType, setSelectType] = useState<number>(1);
   const [whetherRecommend, setWhetherRecommend] = useState<number | undefined>(
     1
@@ -201,32 +199,29 @@ export default function Dynamic({
             },
           ]}
         >
-          <View style={styles.heroWrapper}>
+          <View style={styles.heroCard}>
             <Text style={styles.heroBadge}>{"Community"}</Text>
-            <Text style={styles.titleText}>{"Community feed"}</Text>
-            <Text style={{ ...styles.heroSubtitle, color: colors.gray500 }}>
-              {"Share progress and learn from peers"}
+            <Text style={styles.titleText}>{"Community hub"}</Text>
+            <Text style={styles.heroSubtitle}>
+              {"Share wins, ask for advice, and celebrate progress together."}
             </Text>
-            <Button
-              accessibilityLabel={"Share progress"}
-              contentStyle={styles.publishButtonContent}
-              icon={() => (
-                <Image
-                  alt="publish-icon"
-                  source={EditIcon as ImageURISource}
-                  style={styles.publishButtonIcon}
-                />
-              )}
-              labelStyle={styles.publishButtonLabel}
-              mode="contained"
+            <TouchableOpacity
+              accessibilityHint={"Opens the publish screen"}
+              accessibilityLabel={"Create a community update"}
+              accessibilityRole="button"
+              activeOpacity={0.85}
               onPress={() => {
                 navigation.navigate(Paths.DynamicPublish);
               }}
-              style={styles.publishButton}
-              uppercase={false}
+              style={styles.publishCta}
             >
-              {"Share progress"}
-            </Button>
+              <Image
+                alt="Create an update"
+                source={EditIcon as ImageURISource}
+                style={styles.publishCtaIcon}
+              />
+              <Text style={styles.publishCtaLabel}>{"Create an update"}</Text>
+            </TouchableOpacity>
           </View>
           {categoryList.length > 0 ? (
             <>
@@ -276,41 +271,68 @@ export default function Dynamic({
 
           <View style={styles.updatesTitleWrapper}>
             <View style={styles.updatesTitleWrapperLeft}>
-              <Text
-                style={{
-                  ...styles.updatesTitle,
-                  color:
-                    +(whetherRecommend ?? 0) === 1
-                      ? navigationTheme.colors.primary
-                      : colors.gray800,
-                }}
+              <TouchableOpacity
+                accessibilityLabel="Recommended feed"
+                accessibilityRole="tab"
+                accessibilityState={{ selected: +(whetherRecommend ?? 0) === 1 }}
+                activeOpacity={0.85}
                 onPress={() => {
                   handleSetUpdatesType(1, "recommend");
                 }}
+                style={[
+                  styles.updatesTab,
+                  +(whetherRecommend ?? 0) === 1 && styles.updatesTabActive,
+                ]}
               >
-                {"Recommend"}
-              </Text>
-              <Text
-                style={{
-                  ...styles.updatesTitle,
-                  color:
-                    +selectType === 2
-                      ? navigationTheme.colors.primary
-                      : colors.gray800,
-                }}
+                <Text
+                  style={{
+                    ...styles.updatesTitle,
+                    color:
+                      +(whetherRecommend ?? 0) === 1
+                        ? "#0A1F44"
+                        : colors.gray800,
+                  }}
+                >
+                  {"Recommended"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityLabel="Most recent feed"
+                accessibilityRole="tab"
+                accessibilityState={{ selected: +selectType === 2 }}
+                activeOpacity={0.85}
                 onPress={() => {
                   handleSetUpdatesType(1, "recently");
                 }}
+                style={[
+                  styles.updatesTab,
+                  +selectType === 2 && styles.updatesTabActive,
+                ]}
               >
-                {"Recently"}
-              </Text>
+                <Text
+                  style={{
+                    ...styles.updatesTitle,
+                    color:
+                      +selectType === 2 ? "#0A1F44" : colors.gray800,
+                  }}
+                >
+                  {"Recent"}
+                </Text>
+              </TouchableOpacity>
             </View>
-            <Pressable onPress={showSortModal}>
+            <TouchableOpacity
+              accessibilityHint="Open sorting options"
+              accessibilityLabel="Filter feed"
+              accessibilityRole="button"
+              hitSlop={8}
+              onPress={showSortModal}
+              style={styles.filterButton}
+            >
               <Image
                 source={FilterIcon as ImageURISource}
                 style={styles.filterIcon}
               ></Image>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </>
@@ -344,9 +366,23 @@ export default function Dynamic({
 
 const styles = StyleSheet.create({
   container: { paddingTop: 38, paddingHorizontal: 20 },
+  filterButton: {
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    height: 40,
+    justifyContent: "center",
+    width: 40,
+    shadowColor: "#001C40",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 2,
+  },
   filterIcon: {
-    height: 16,
-    width: 16,
+    height: 18,
+    tintColor: "#0A8BCD",
+    width: 18,
   },
   friendUpdatesTitleWrapper: {
     alignItems: "center",
@@ -355,58 +391,75 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   header: {
-    backgroundColor: "#E3EFF8",
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
-    paddingBottom: 24,
+    backgroundColor: "#F2F6FB",
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    paddingBottom: 28,
     paddingHorizontal: 20,
   },
   safeScreen: {
     flex: 1,
   },
-  heroWrapper: {
-    paddingTop: 12,
+  heroCard: {
+    backgroundColor: "#0A8BCD",
+    borderRadius: 28,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    marginTop: 24,
+    shadowColor: "#001C40",
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 12 },
+    shadowRadius: 20,
+    elevation: 4,
   },
   heroBadge: {
     alignSelf: "flex-start",
-    backgroundColor: "rgba(0, 119, 210, 0.14)",
+    backgroundColor: "rgba(255, 255, 255, 0.16)",
     borderRadius: 999,
-    color: "#0B3A64",
+    color: "#FFFFFF",
     fontSize: 12,
     fontWeight: "600",
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   titleText: {
+    color: "#FFFFFF",
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: "700",
     lineHeight: 28,
     marginTop: 16,
-    color: "#0B2340",
   },
   heroSubtitle: {
+    color: "rgba(255, 255, 255, 0.85)",
     fontSize: 14,
     lineHeight: 20,
-    marginTop: 10,
+    marginTop: 12,
   },
-  publishButton: {
+  publishCta: {
     alignSelf: "flex-start",
-    borderRadius: 12,
-    marginTop: 18,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: 22,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    shadowColor: "#001C40",
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 14,
+    elevation: 3,
   },
-  publishButtonContent: {
-    paddingHorizontal: 18,
-    paddingVertical: 4,
+  publishCtaIcon: {
+    height: 20,
+    tintColor: "#0A1F44",
+    width: 20,
   },
-  publishButtonLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginLeft: 4,
-  },
-  publishButtonIcon: {
-    height: 18,
-    marginRight: 4,
-    width: 18,
+  publishCtaLabel: {
+    color: "#0A1F44",
+    fontSize: 15,
+    fontWeight: "700",
   },
   updates: {
     columnGap: 15,
@@ -417,7 +470,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   updatesTitle: {
-    fontSize: 20,
+    fontSize: 16,
+    fontWeight: "600",
   },
   updatesTitleWrapper: {
     alignItems: "center",
@@ -427,7 +481,21 @@ const styles = StyleSheet.create({
   },
   updatesTitleWrapperLeft: {
     flexDirection: "row",
-    gap: 30,
+    gap: 12,
+  },
+  updatesTab: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    shadowColor: "#001C40",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 1,
+  },
+  updatesTabActive: {
+    backgroundColor: "#EAF4FF",
   },
   topicIntro: {
     fontSize: 13,

@@ -16,6 +16,7 @@ import {
   StyleSheet,
   View,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import { Avatar, Button, Portal, Text, TextInput } from "react-native-paper";
@@ -30,6 +31,7 @@ import { useTheme } from "@/theme";
 
 import CommentItem from "@/components/common/CommentItem/CommentItem.tsx";
 import Empty from "@/components/common/Empty/Empty.tsx";
+import { ImageWithFallback } from "@/components/atoms";
 import { SafeScreen } from "@/components/templates";
 import ApplicationShare from "@/screens/Dynamic/components/ApplicationShare/ApplicationShare.tsx";
 
@@ -62,7 +64,7 @@ import { useKeyboardAnimation } from "react-native-keyboard-controller";
 import DeleteIcon from "@/assets/images/212.png";
 import GalleryPreview from "react-native-gallery-preview";
 import * as React from "react";
-import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
+import { normalizeImageUrl } from "@/utils/image";
 let VideoPlayer: any = null;
 try {
   const videoModule = require("react-native-video");
@@ -71,12 +73,65 @@ try {
   console.warn("VideoPlayer not available in Expo Go");
   VideoPlayer = ({ children }: any) => children;
 }
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim().length > 0;
+
+const toRecord = (value: unknown): Record<string, unknown> => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+  return value as Record<string, unknown>;
+};
+
+const collectFromValue = (value: unknown): string[] => {
+  if (!value) {
+    return [];
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((segment) => segment.trim())
+      .filter(Boolean);
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap((entry) => collectFromValue(entry));
+  }
+
+  if (typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    const nested =
+      record.url ??
+      record.uri ??
+      record.image ??
+      record.src ??
+      record.cover ??
+      record.value;
+    return collectFromValue(nested);
+  }
+
+  return [String(value)];
+};
+
+const uniqueStrings = (values: string[]): string[] => {
+  const set = new Set<string>();
+  values.forEach((value) => {
+    const trimmed = value.trim();
+    if (trimmed) {
+      set.add(trimmed);
+    }
+  });
+  return Array.from(set);
+};
+
 export default function DynamicDetail({
   route,
 }: RootScreenProps<Paths.DynamicDetail>) {
   const navigation = useNavigation();
   const { backgrounds, colors } = useTheme();
-  const { id } = route.params as { id: string };
+  const { payload, ...paramsWithoutPayload } = route.params;
+  const { id } = paramsWithoutPayload as { id: string };
 
   const userInfo = useUserStore((state) => state.userInfo);
   const queryClient = useQueryClient();
@@ -87,7 +142,10 @@ export default function DynamicDetail({
     outputRange: [1, 1],
   });
   const progress = useSharedValue<number>(0);
-  const [post, setPost] = useState({});
+  const [post, setPost] = useState<any>(() => ({
+    ...toRecord(payload),
+    ...paramsWithoutPayload,
+  }));
   const [commentContent, setCommentContent] = useState("");
   const [isShowShare, setIsShowShare] = useState(false);
   const [replyComment, setReplyComment] = useState(undefined);
@@ -193,8 +251,12 @@ export default function DynamicDetail({
   };
 
   const handlePreview = (item) => {
+    const index = images.findIndex((img) => img.uri === item.url);
+    if (index < 0) {
+      return;
+    }
+    setInitialIndex(index);
     setIsVisible(true);
-    setInitialIndex(images.findIndex((img) => img.uri === item.url));
   };
 
   useEffect(() => {
@@ -204,16 +266,20 @@ export default function DynamicDetail({
       headerLeft: () => {
         return (
           <View style={styles.headerBtnGroup}>
-            <Pressable
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               onPress={() => {
                 navigation.goBack();
               }}
+              style={styles.headerIconButton}
             >
               <Image
                 source={BackIcon as ImageURISource}
                 style={styles.headerBtnIcon}
-              ></Image>
-            </Pressable>
+              />
+            </TouchableOpacity>
           </View>
         );
       },
@@ -223,25 +289,39 @@ export default function DynamicDetail({
         }
         return (
           <View style={styles.headerBtnGroup}>
-            <Pressable onPress={handleToggleCollect}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                post?.isFavorited ? "Remove from favorites" : "Add to favorites"
+              }
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              onPress={handleToggleCollect}
+              style={styles.headerIconButton}
+            >
               {post?.isFavorited ? (
                 <Image
                   source={CollectFIcon as ImageURISource}
                   style={styles.headerBtnIcon}
-                ></Image>
+                />
               ) : (
                 <Image
                   source={CollectIcon as ImageURISource}
                   style={styles.headerBtnIcon}
-                ></Image>
+                />
               )}
             </Pressable>
             <View style={styles.menuWrapper}>
-              <Pressable onPress={toggleOpenMenu}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="More options"
+                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                onPress={toggleOpenMenu}
+                style={styles.headerIconButton}
+              >
                 <Image
                   source={MoreIcon as ImageURISource}
                   style={styles.headerBtnIcon}
-                ></Image>
+                />
               </Pressable>
 
               {visibleMenu ? (
@@ -327,7 +407,10 @@ export default function DynamicDetail({
     console.log("postData", postData);
 
     if (postDataIsSuccess) {
-      setPost(postData.data || {});
+      setPost((current: any) => ({
+        ...(current || {}),
+        ...toRecord(postData?.data),
+      }));
     }
   }, [setPost, postData, postDataIsSuccess]);
 
@@ -359,21 +442,27 @@ export default function DynamicDetail({
     },
     onSuccess: (response: IResponseData) => {
       if (response.code === 200) {
-        setPost((current) => ({
-          ...current,
-          isFavorited: !current?.isFavorited,
-        }));
-        Toast.show(
-          post?.isFavorited ? "Removed from favorites" : "Added to favorites",
-          {
-            animation: true,
-            delay: 0,
-            duration: 1000,
-            hideOnPress: true,
-            position: Toast.positions.CENTER,
-            shadow: true,
-          }
-        );
+        setPost((current: any) => {
+          const currentlyFavorited = Boolean(current?.isFavorited);
+          Toast.show(
+            currentlyFavorited
+              ? "Removed from favorites"
+              : "Added to favorites",
+            {
+              animation: true,
+              delay: 0,
+              duration: 1000,
+              hideOnPress: true,
+              position: Toast.positions.CENTER,
+              shadow: true,
+            }
+          );
+
+          return {
+            ...(current || {}),
+            isFavorited: !currentlyFavorited,
+          };
+        });
       }
     },
   });
@@ -499,36 +588,113 @@ export default function DynamicDetail({
     console.log("videoFullScreen", playVideo);
   };
 
-  const images = useMemo(() => {
-    let pictures = [];
-    if (post.pictures) {
-      pictures = post.pictures?.split(",").map((img) => ({
-        uri: img,
-        type: "image",
-      }));
-    }
-    return pictures;
-  }, [post]);
-  const postImages = useMemo(() => {
-    let videosOrimages = [];
-    if (post.videos) {
-      videosOrimages = videosOrimages.concat(
-        post.videos?.split(",").map((img) => ({
-          url: img,
-          type: "video",
-        }))
-      );
-    }
-    if (post.pictures) {
-      const pictures = post.pictures?.split(",").map((img) => ({
-        url: img,
-        type: "image",
-      }));
+  const pictureUris = useMemo(() => {
+    const candidates = [
+      (post as any)?.pictures,
+      (post as any)?.images,
+      (post as any)?.imageList,
+      (post as any)?.image,
+      (post as any)?.coverImage,
+      (post as any)?.cover,
+      (post as any)?.thumbnail,
+      (post as any)?.media,
+    ];
 
-      videosOrimages = videosOrimages.concat(pictures);
-    }
-    return videosOrimages;
+    return uniqueStrings(candidates.flatMap(collectFromValue));
   }, [post]);
+
+  const videoUris = useMemo(() => {
+    const candidates = [
+      (post as any)?.videos,
+      (post as any)?.videoList,
+      (post as any)?.video,
+    ];
+
+    return uniqueStrings(candidates.flatMap(collectFromValue));
+  }, [post]);
+
+  const normalizedPictures = useMemo(() => {
+    return pictureUris
+      .map((uri) => normalizeImageUrl(String(uri)))
+      .filter((uri): uri is string => Boolean(uri));
+  }, [pictureUris]);
+
+  const normalizedVideos = useMemo(() => {
+    return videoUris
+      .map((uri) => normalizeImageUrl(String(uri)))
+      .filter((uri): uri is string => Boolean(uri));
+  }, [videoUris]);
+
+  const displayTitle = useMemo(() => {
+    const source = toRecord(post);
+    const candidates = [
+      source.title,
+      source.heading,
+      source.headline,
+      source.name,
+      source.subject,
+    ];
+
+    for (const candidate of candidates) {
+      if (isNonEmptyString(candidate)) {
+        return candidate.trim();
+      }
+    }
+
+    const contentCandidate = source.content;
+    if (isNonEmptyString(contentCandidate)) {
+      const firstLine = contentCandidate
+        .split(/\r?\n+/)
+        .map((line) => line.trim())
+        .find(Boolean);
+      if (firstLine) {
+        return firstLine;
+      }
+    }
+
+    return undefined;
+  }, [post]);
+
+  const displayContent = useMemo(() => {
+    const source = toRecord(post);
+    const candidates = [
+      source.content,
+      source.description,
+      source.summary,
+      source.body,
+    ];
+
+    for (const candidate of candidates) {
+      if (isNonEmptyString(candidate)) {
+        return candidate.trim();
+      }
+    }
+
+    return undefined;
+  }, [post]);
+
+  const images = useMemo(
+    () =>
+      normalizedPictures.map((uri) => ({
+        uri,
+        type: "image" as const,
+      })),
+    [normalizedPictures],
+  );
+
+  const postImages = useMemo(() => {
+    const media: { url: string; type: "video" | "image" }[] = [];
+
+    normalizedVideos.forEach((url) => {
+      media.push({ url, type: "video" });
+    });
+
+    normalizedPictures.forEach((uri) => {
+      media.push({ url: uri, type: "image" });
+    });
+
+    return media;
+  }, [normalizedPictures, normalizedVideos]);
   let dataList: any[] = [];
   if (data?.pages) {
     dataList = (data.pages as any[]).flatMap((page, pageIndex) =>
@@ -540,49 +706,62 @@ export default function DynamicDetail({
   }
   console.log("progress.value", progress.value);
   const renderListHeader = useCallback(() => {
+    const hasMedia = postImages.length > 0;
     return (
       <View>
-        <Carousel
-          enabled={postImages.length > 1}
-          width={Dimensions.get("window").width}
-          height={282}
-          data={postImages}
-          onProgressChange={progress}
-          onConfigurePanGesture={(gestureChain) =>
-            gestureChain.activeOffsetX([-10, 10])
-          }
-          renderItem={({ item }) =>
-            item.type === "video" ? (
-              <VideoPlayer
-                paused
-                controls
-                source={{ uri: item.url }}
-                style={styles.carouselImg}
-              />
-            ) : (
-              <Pressable
-                onPress={() => {
-                  handlePreview(item);
-                }}
-              >
-                <Image
-                  key={item as string}
-                  source={{ uri: normalizeImageUrl(item.url) }}
-                  defaultSource={DEFAULT_PLACEHOLDER as unknown as number}
-                  style={styles.carouselImg}
-                />
-              </Pressable>
-            )
-          }
-        />
+        {hasMedia ? (
+          <>
+            <Carousel
+              enabled={postImages.length > 1}
+              width={Dimensions.get("window").width}
+              height={282}
+              data={postImages}
+              onProgressChange={progress}
+              onConfigurePanGesture={(gestureChain) =>
+                gestureChain.activeOffsetX([-10, 10])
+              }
+              renderItem={({ item }) =>
+                item.type === "video" ? (
+                  <VideoPlayer
+                    paused
+                    controls
+                    source={{ uri: item.url }}
+                    style={styles.carouselImg}
+                  />
+                ) : (
+                  <Pressable
+                    onPress={() => {
+                      handlePreview(item);
+                    }}
+                  >
+                    <ImageWithFallback
+                      uri={item.url}
+                      style={styles.carouselImg}
+                    />
+                  </Pressable>
+                )
+              }
+            />
 
-        <Pagination.Basic
-          progress={progress}
-          data={postImages}
-          activeDotStyle={backgrounds.primary}
-          dotStyle={{ backgroundColor: "rgba(0,0,0,0.28)", borderRadius: 50 }}
-          containerStyle={styles.indicatorWrapper}
-        />
+            {postImages.length > 1 ? (
+              <Pagination.Basic
+                progress={progress}
+                data={postImages}
+                activeDotStyle={backgrounds.primary}
+                dotStyle={{
+                  backgroundColor: "rgba(0,0,0,0.28)",
+                  borderRadius: 50,
+                }}
+                containerStyle={styles.indicatorWrapper}
+              />
+            ) : null}
+          </>
+        ) : (
+          <ImageWithFallback
+            uri={undefined}
+            style={styles.carouselImg}
+          />
+        )}
         <View style={[styles.userWrapper, backgrounds.gray1550]}>
           <View style={styles.avatarWrapper}>
             <Avatar.Image size={29} source={{ uri: post.user?.avatar }} />
@@ -622,7 +801,12 @@ export default function DynamicDetail({
           ) : undefined}
         </View>
         <View style={styles.content}>
-          <Text style={styles.contentText}>{post.content}</Text>
+          {displayTitle ? (
+            <Text style={styles.titleText}>{displayTitle}</Text>
+          ) : null}
+          {displayContent ? (
+            <Text style={styles.contentText}>{displayContent}</Text>
+          ) : null}
           <Text style={{ ...styles.timeText, color: colors.gray800 }}>
             {post?.createTime
               ? dayjs(+post?.createTime).format("YYYY-MM-DD HH:mm")
@@ -667,13 +851,26 @@ export default function DynamicDetail({
             source={CommentIcon as ImageURISource}
             style={styles.commentIcon}
           />
-          <Text style={{ ...styles.commentTitleText }}>
-            {"Comments"}({post.commentNum || 0})
-          </Text>
+          <Text style={{ ...styles.commentTitleText }}>{`Comments (${post.commentNum ?? 0})`}</Text>
         </View>
       </View>
     );
-  }, [post, progress, handleToggleLike]);
+  }, [
+    backgrounds.gray1550,
+    backgrounds.primary,
+    colors.gray800,
+    colors.gray1600,
+    displayContent,
+    displayTitle,
+    handlePreview,
+    handleToggleFollow,
+    handleToggleLike,
+    post,
+    postImages,
+    progress,
+    showShareModal,
+    userInfo.id,
+  ]);
 
   const renderItem = ({ item, index }) => {
     return (
@@ -807,11 +1004,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 28,
+    gap: 10,
   },
   contentText: {
-    marginBottom: 14,
-    fontSize: 17,
-    fontWeight: 600,
+    fontSize: 16,
+    lineHeight: 24,
+    color: "#1A2D4E",
+  },
+  titleText: {
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 28,
+    color: "#0A1F44",
   },
   headerBtnGroup: {
     paddingHorizontal: 10,
@@ -819,9 +1023,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
+  headerIconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(14, 23, 44, 0.55)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255, 255, 255, 0.35)",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "rgba(10, 22, 41, 0.32)",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.9,
+    shadowRadius: 6,
+    elevation: 4,
+  },
   headerBtnIcon: {
-    width: 34,
-    height: 34,
+    width: 18,
+    height: 18,
+    resizeMode: "contain",
   },
   menuWrapper: {
     position: "relative",
@@ -881,13 +1101,6 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 12,
     fontWeight: 500,
-  },
-  titleContainer: {
-    marginBottom: 15,
-  },
-  titleText: {
-    fontSize: 15,
-    fontWeight: 600,
   },
   tool: {
     alignItems: "center",

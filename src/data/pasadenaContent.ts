@@ -24,9 +24,8 @@ export const pasadenaRehabCenters = [
     name: "Huntington Hospital Rehabilitation Services",
     address: "100 W California Blvd, Pasadena, CA 91105",
     phone: "(626) 397-5000",
-    // Fields used by UI components
     coverImage:
-      "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1200&q=80&auto=format&fit=crop",
+      "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqyH3n8tgCozI-S1JPGsfm5jZzvuZZVoPPjS_INWi8jqgJSeMGQ9-BqlmXJT836oZDI81ckKCUvP02FaT6LPNzCs5HfSC1qEjBubCImL3T871--vSRnXR9g4L2Aw06EA3j8BctLVQ=s1360-w1360-h1020-rw",
     star: 4.7,
     commentNum: 128,
     isFavorited: false,
@@ -42,7 +41,7 @@ export const pasadenaRehabCenters = [
     address: "255 E Bonita Ave, Pomona, CA 91767",
     phone: "(909) 596-7733",
     coverImage:
-      "https://images.unsplash.com/photo-1504439468489-c8920d796a29?w=1200&q=80&auto=format&fit=crop",
+      "https://lh3.googleusercontent.com/p/AF1QipOcC4R1TLe9M5R3-4QeCfa3nFVGtpIJI8eSOZwC=s1360-w1360-h1020-rw",
     star: 4.8,
     commentNum: 203,
     isFavorited: true,
@@ -57,7 +56,7 @@ export const pasadenaKnowledgeSpotlights = [
     description: "Complete guide to accessible transit in Pasadena",
     category: "Transportation",
     coverImage:
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80&auto=format&fit=crop",
+      "https://cdn.beta.metro.net/wp-content/uploads/2021/05/04232857/feature-eastside-extension-2.jpeg",
     createTime: Date.now(),
   },
   {
@@ -66,7 +65,7 @@ export const pasadenaKnowledgeSpotlights = [
     description: "How to apply for adaptive sports equipment funding",
     category: "Equipment",
     coverImage:
-      "https://images.unsplash.com/photo-1576765608568-8ed91a7e59ad?w=1200&q=80&auto=format&fit=crop",
+      "https://www.stopwaste.org/sites/default/files/San%20Lorenzo%20Family%20Help%20Center_Stop%20Waste-6471_0.jpg",
     createTime: Date.now(),
   },
 ];
@@ -84,15 +83,13 @@ export const navigatorQuickActions = [
     id: "qa-2",
     title: "Find Accessible Programs",
     description: "Browse curated adaptive sport options near you",
-    icon: "https://images.unsplash.com/photo-1514512364185-4c2b3b9172c8?w=800&q=80&auto=format&fit=crop",
-    // in-app navigation handled in Home screen
+    icon: "https://accessibleicon.org/img/icon-iso-design-standardization.jpg",
   },
   {
     id: "qa-3",
     title: "Transit Companion",
     description: "Plan a trip with accessible transfers and support",
     icon: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&q=80&auto=format&fit=crop",
-    // in-app navigation handled in Home screen
   },
 ];
 
@@ -144,7 +141,7 @@ export const pasadenaCarousels = [
   {
     id: "c1",
     image:
-      "https://images.unsplash.com/photo-1520975922284-9bcd3a3ba87f?w=1600&q=80&auto=format&fit=crop",
+      "https://carouselhistory.com/wp-content/uploads/2016/05/Belmont-Looff-armored-carousel-horse-restored-running-horse-studio-2016.jpg",
     type: 1,
     // no external link; will open in-app detail
   },
@@ -158,7 +155,7 @@ export const pasadenaCarousels = [
   {
     id: "c3",
     image:
-      "https://images.unsplash.com/photo-1520975916090-3105956dac38?w=1600&q=80&auto=format&fit=crop",
+      "https://www.pasadenanow.com/weekendr/wp-content/uploads/2025/04/Carnival-Booths-fotor-2025040561552.png",
     type: 1,
     // no external link; will open in-app detail
   },
@@ -168,32 +165,32 @@ export const pasadenaCategories = [
   {
     id: "cat-1",
     name: "Wheelchair Basketball",
-    icon: "https://images.unsplash.com/photo-1521417531830-20fbd8d9be2e?w=600&q=80&auto=format&fit=crop",
+    icon: "https://cdn.prod.website-files.com/66a7ad387e177bc7c659bb45/66fd3ffca42a3926b064ffe5_66c5e4a95534c294675edf7d_20211205_FRA-GER__iwbf_FotoSteffieWunderl_0001.jpg",
   },
   {
     id: "cat-2",
     name: "Swimming",
-    icon: "https://images.unsplash.com/photo-1507499739999-097706ad8914?w=600&q=80&auto=format&fit=crop",
+    icon: "https://images.theconversation.com/files/371465/original/file-20201126-15-1h1jzzy.jpg?ixlib=rb-4.1.0&rect=0,394,3872,1935&q=45&auto=format&w=1356&h=668&fit=crop",
   },
   {
     id: "cat-3",
     name: "Handcycling",
-    icon: "https://images.unsplash.com/photo-1448969607083-5e7e1a23a3cb?w=600&q=80&auto=format&fit=crop",
+    icon: "https://www.tineli.co.nz/assets/Tineli-Sponsorship-Ambassador-Jonathan-Jono-Nelson-Hand-Cycling-Jono-Nelson-for-TINELI-Screen-Res-050-0600-min__ResizedImageWzYwMCw0MDBd.jpg",
   },
   {
     id: "cat-4",
     name: "Track & Field",
-    icon: "https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=600&q=80&auto=format&fit=crop",
+    icon: "https://img.olympics.com/images/image/private/t_s_pog_staticContent_hero_lg/f_auto/primary/hiuf5ahd3cbhr11q6m5m",
   },
   {
     id: "cat-5",
     name: "Climbing",
-    icon: "https://images.unsplash.com/photo-1516466723877-e4ec1d736c8a?w=600&q=80&auto=format&fit=crop",
+    icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnhIRM5b2s11qJDDXaBfIIduFydkYup0PJyA&s",
   },
   {
     id: "cat-6",
     name: "Tennis",
-    icon: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600&q=80&auto=format&fit=crop",
+    icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ49hzpYxQxtJXH7UHOwRM0BxAi_QjPnHZ5yw&s",
   },
 ];
 
@@ -202,7 +199,9 @@ export const pasadenaCommunityHighlights = [
     id: "ph-1",
     content: "First handcycle session on the Arroyo trail!",
     pictures:
-      "https://images.unsplash.com/photo-1521417531830-20fbd8d9be2e?w=1200&q=80&auto=format&fit=crop",
+      "https://myrgv.com/wp-content/uploads/2023/04/03242023_Hiker_Biker-Emergency-Location-Signs_5.jpg",
+    image:
+      "https://myrgv.com/wp-content/uploads/2023/04/03242023_Hiker_Biker-Emergency-Location-Signs_5.jpg",
     videos: "",
     createTime: Date.now(),
     likesNum: 12,
@@ -210,29 +209,32 @@ export const pasadenaCommunityHighlights = [
     user: {
       nickName: "Alex",
       avatar:
-        "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=80&auto=format&fit=crop",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSET7-hhlSFcFFA37UFyf0ff4pRf8priXXnDA&s",
     },
   },
   {
     id: "ph-2",
     content: "Wheelchair basketball pickup tonight was packed and fun",
     pictures:
-      "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=1200&q=80&auto=format&fit=crop",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRorszwXJ5FUJkTz6ULeq2dMmLAHfWMdeVMEQ&s",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRorszwXJ5FUJkTz6ULeq2dMmLAHfWMdeVMEQ&s",
     videos: "",
     createTime: Date.now(),
     likesNum: 38,
     isLiked: true,
     user: {
       nickName: "Jamie",
-      avatar:
-        "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=400&q=80&auto=format&fit=crop",
+      avatar: "https://www.svgrepo.com/show/9907/male-avatar.svg",
     },
   },
   {
     id: "ph-3",
     content: "Adaptive swim meet this weekend – see you there!",
     pictures:
-      "https://images.unsplash.com/photo-1507499739999-097706ad8914?w=1200&q=80&auto=format&fit=crop",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7UrMwrWYvGP0ntUqHl76_3JIt0loyPIIiaw&s",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7UrMwrWYvGP0ntUqHl76_3JIt0loyPIIiaw&s",
     videos: "",
     createTime: Date.now(),
     likesNum: 7,
@@ -240,7 +242,7 @@ export const pasadenaCommunityHighlights = [
     user: {
       nickName: "Sam",
       avatar:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80&auto=format&fit=crop",
+        "https://www.svgrepo.com/show/382105/male-avatar-boy-face-man-user-5.svg",
     },
   },
 ];

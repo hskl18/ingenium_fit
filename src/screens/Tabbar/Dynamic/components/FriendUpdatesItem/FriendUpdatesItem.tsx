@@ -19,6 +19,9 @@ import LikeFIcon from "@/assets/images/53.png";
 
 import { dayjs } from "@/plugins/day.ts";
 import { normalizeImageUrl } from "@/utils/image";
+
+const DEFAULT_AVATAR_URI =
+  "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png";
 let useAnimations: any = () => ({});
 try {
   const reanimatedConsole = require("@react-native-media-console/reanimated");
@@ -46,20 +49,71 @@ export default function FriendUpdatesItem({
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  let pictures = [];
-  let videos = [];
-  if (item.pictures) {
-    pictures = item.pictures.split(",");
+  const author = item?.user ?? item?.author ?? {};
+  const avatarUri = normalizeImageUrl(author?.avatar) ?? DEFAULT_AVATAR_URI;
+  const displayName =
+    author?.nickName || author?.nickname || author?.name || "Community member";
+  const createdAt = item?.createTime ?? item?.createdAt;
+  const parsedDate = createdAt ? dayjs(createdAt) : null;
+  const displayDate = parsedDate?.isValid()
+    ? parsedDate.format("YYYY-MM-DD")
+    : createdAt;
+
+  let pictures: string[] = [];
+  let videos: string[] = [];
+
+  if (item?.pictures) {
+    if (Array.isArray(item.pictures)) {
+      pictures = item.pictures.filter(Boolean);
+    } else if (typeof item.pictures === "string") {
+      pictures = item.pictures
+        .split(",")
+        .map((value: string) => value.trim())
+        .filter(Boolean);
+    }
   }
 
-  if (item.videos) {
-    videos = item.videos.split(",");
+  if (!pictures.length && Array.isArray(item?.images)) {
+    pictures = item.images.filter(Boolean);
   }
+
+  if (!pictures.length && item?.image) {
+    pictures = [item.image];
+  }
+
+  if (item?.videos) {
+    if (Array.isArray(item.videos)) {
+      videos = item.videos.filter(Boolean);
+    } else if (typeof item.videos === "string") {
+      videos = item.videos
+        .split(",")
+        .map((value: string) => value.trim())
+        .filter(Boolean);
+    }
+  }
+
+  const firstImage = pictures[0] || item?.coverImage || item?.image;
+  const picturesParam = pictures.length
+    ? pictures.join(",")
+    : typeof item?.pictures === "string"
+    ? item.pictures
+    : undefined;
+  const videosParam = videos.length
+    ? videos.join(",")
+    : typeof item?.videos === "string"
+    ? item.videos
+    : undefined;
   return (
     <Pressable
       onPress={() => {
         navigation.navigate(Paths.DynamicDetail, {
-          id: item.id,
+          id: String(item?.id ?? ""),
+          payload: item,
+          pictures: picturesParam,
+          videos: videosParam,
+          image: firstImage,
+          coverImage: firstImage,
+          content: item?.content,
         });
       }}
       style={[styles.container]}
@@ -98,18 +152,16 @@ export default function FriendUpdatesItem({
             {item.content}
           </Text>
           <Text style={{ ...styles.dateText, color: colors.gray800 }}>
-            {item?.createTime
-              ? dayjs(+item?.createTime).format("YYYY-MM-DD")
-              : item?.createTime}
+            {displayDate}
           </Text>
           <View style={styles.toolWrapper}>
             <View style={styles.toolLeft}>
               <ImageWithFallback
-                uri={normalizeImageUrl(item.user?.avatar)}
+                uri={avatarUri}
                 style={styles.avatar}
               />
               <Text style={{ ...styles.nameText, color: colors.gray800 }}>
-                {item.user?.nickName}
+                {displayName}
               </Text>
             </View>
 

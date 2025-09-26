@@ -22,20 +22,61 @@ export default function FriendUpdatesItem({ item }) {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  let pictures = [];
-  let videos = [];
-  if (item.pictures) {
-    pictures = item.pictures.split(",");
+  let pictures: string[] = [];
+  let videos: string[] = [];
+
+  if (item?.pictures) {
+    if (Array.isArray(item.pictures)) {
+      pictures = item.pictures.filter(Boolean);
+    } else if (typeof item.pictures === "string") {
+      pictures = item.pictures
+        .split(",")
+        .map((value: string) => value.trim())
+        .filter(Boolean);
+    }
   }
 
-  if (item.videos) {
-    videos = item.videos.split(",");
+  if (!pictures.length && Array.isArray(item?.images)) {
+    pictures = item.images.filter(Boolean);
   }
+
+  if (!pictures.length && item?.image) {
+    pictures = [item.image];
+  }
+
+  if (item?.videos) {
+    if (Array.isArray(item.videos)) {
+      videos = item.videos.filter(Boolean);
+    } else if (typeof item.videos === "string") {
+      videos = item.videos
+        .split(",")
+        .map((value: string) => value.trim())
+        .filter(Boolean);
+    }
+  }
+
+  const firstImage = pictures[0] || item?.coverImage || item?.image;
+  const picturesParam = pictures.length
+    ? pictures.join(",")
+    : typeof item?.pictures === "string"
+    ? item.pictures
+    : undefined;
+  const videosParam = videos.length
+    ? videos.join(",")
+    : typeof item?.videos === "string"
+    ? item.videos
+    : undefined;
   return (
     <Pressable
       onPress={() => {
         navigation.navigate(Paths.DynamicDetail, {
-          id: item.id,
+          id: String(item?.id ?? ""),
+          payload: item,
+          pictures: picturesParam,
+          videos: videosParam,
+          image: firstImage,
+          coverImage: firstImage,
+          content: item?.content,
         });
       }}
       style={[styles.container]}
@@ -45,7 +86,9 @@ export default function FriendUpdatesItem({ item }) {
           uri={normalizeImageUrl(pictures[0])}
           style={styles.coverImage}
         />
-        <Image source={PlayIcon as ImageURISource} style={styles.playIcon} />
+        {videos.length > 0 ? (
+          <Image source={PlayIcon as ImageURISource} style={styles.playIcon} />
+        ) : null}
       </View>
       <View style={styles.content}>
         <Text numberOfLines={1} style={styles.titleText}>

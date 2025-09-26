@@ -2,7 +2,7 @@ declare module "react-native-image-picker" {
   export interface ImagePickerResponse {
     didCancel?: boolean;
     error?: string;
-    assets?: Array<{
+    assets?: {
       uri?: string;
       width?: number;
       height?: number;
@@ -13,7 +13,7 @@ declare module "react-native-image-picker" {
       bitrate?: number;
       timestamp?: string;
       id?: string;
-    }>;
+    }[];
   }
 
   export interface ImagePickerOptions {

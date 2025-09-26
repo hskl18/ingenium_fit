@@ -5,20 +5,6 @@ import { Image, ImageURISource, StyleSheet, View } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import { Button, Text, TextInput } from "react-native-paper";
 
-type ScoreState = {
-  id: string | number;
-  label?: string;
-  minScore?: string | number;
-  maxScore?: string | number;
-};
-
-type DistanceState = {
-  id: string | number;
-  label?: string;
-  minDistance?: string | number;
-  maxDistance?: string | number;
-};
-
 import { Paths } from "@/navigation/paths.ts";
 import { RootScreenProps } from "@/navigation/types.ts";
 import { useTheme } from "@/theme";
@@ -34,6 +20,20 @@ import SortIcon from "@/assets/images/606.png";
 import { rehabilitationCenterList } from "@/services";
 import Empty from "@/components/common/Empty/Empty.tsx";
 import { useLocationStore } from "@/store";
+
+type ScoreState = {
+  id: string | number;
+  label?: string;
+  minScore?: string | number;
+  maxScore?: string | number;
+};
+
+type DistanceState = {
+  id: string | number;
+  label?: string;
+  minDistance?: string | number;
+  maxDistance?: string | number;
+};
 
 export default function RehabilitationCenterList({
   navigation,

@@ -15,6 +15,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { ImageWithFallback } from "@/components/atoms";
 import { Pressable } from "react-native-gesture-handler";
@@ -70,7 +71,9 @@ export function RehabilitationCenterDoctor({
       headerLeft: () => {
         return (
           <View style={styles.headerBtnGroup}>
-            <Pressable
+            <TouchableOpacity
+              accessibilityRole="button"
+              hitSlop={8}
               onPress={() => {
                 navigation.goBack();
               }}
@@ -79,7 +82,7 @@ export function RehabilitationCenterDoctor({
                 source={BackIcon as ImageURISource}
                 style={styles.headerBtnIcon}
               />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         );
       },

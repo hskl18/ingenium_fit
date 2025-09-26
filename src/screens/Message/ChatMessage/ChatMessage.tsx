@@ -44,7 +44,6 @@ export default function ChatMessage({
   } = useInfiniteQuery({
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      console.log(lastPage, allPages);
       if (!lastPage?.rows || lastPage.rows?.length < 20) {
         return undefined;
       }
@@ -63,8 +62,6 @@ export default function ChatMessage({
   if (data?.pages) {
     dataList = data?.pages.flatMap((item) => item?.rows || []);
   }
-
-  console.log(data);
 
   const renderItem = ({ item, index }) => {
     return (

@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -15,8 +15,8 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  TouchableOpacity,
 } from "react-native";
-import { Pressable } from "react-native-gesture-handler";
 import { Avatar, Button, Text, TextInput } from "react-native-paper";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-reanimated-carousel";
@@ -31,15 +31,9 @@ import { SafeScreen } from "@/components/templates";
 import FriendUpdatesItem from "@/screens/Tabbar/Dynamic/components/FriendUpdatesItem/FriendUpdatesItem.tsx";
 
 import ArrowIcon from "@/assets/images/17.png";
-import MessageIcon from "@/assets/images/18.png";
-import SearchIcon from "@/assets/images/19.png";
 
 import {
-  navigatorQuickActions,
-  navigatorSpotlights,
-  navigatorWorkflow,
   pasadenaCarousels,
-  pasadenaCategories,
   pasadenaCommunityHighlights,
   pasadenaKnowledgeSpotlights,
   pasadenaRehabCenters,
@@ -47,28 +41,41 @@ import {
 
 import {
   carouselList,
-  getLeaveWordUnReadNumAndLatest,
   getLoginUser,
-  getUnReadNumAndLatest,
-  locationCity,
   postList,
   rehabilitationCenterList,
-  scienceCategoryList,
   scienceList,
 } from "@/services";
 import { useLocationStore, useUserStore } from "@/store";
 import { useFocusEffect } from "@react-navigation/native";
 import SciencePopularizationItem from "@/components/common/SciencePopularizationItem/SciencePopularizationItem.tsx";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { normalizeImageUrl, DEFAULT_PLACEHOLDER } from "@/utils/image";
+import { normalizeImageUrl } from "@/utils/image";
 import { ImageWithFallback } from "@/components/atoms";
 
 const NON_LATIN_REGEX = /[^\x00-\x7F]/;
 
+const AI_DAILY_SUGGESTIONS = [
+  {
+    id: "check-in",
+    title: "Daily check-in",
+    description: "Log how you're feeling so the assistant can adapt support.",
+  },
+  {
+    id: "plan",
+    title: "Plan today",
+    description: "Let AI suggest activities, rides, and reminders in seconds.",
+  },
+  {
+    id: "discover",
+    title: "Discover inspiration",
+    description: "Ask for fresh adaptive ideas matched to your goals.",
+  },
+];
+
 export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   const { backgrounds, colors, navigationTheme, variant } = useTheme();
   const [searchKey, setSearchKey] = useState("");
-  const [categoryList, setCategoryList] = useState(pasadenaCategories);
   const [recommendedPosts, setRecommendedPosts] = useState(
     pasadenaCommunityHighlights
   );
@@ -76,8 +83,6 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     pasadenaKnowledgeSpotlights
   );
   const [carousels, setCarouses] = useState(pasadenaCarousels);
-  const [message, setMessage] = useState({});
-  const [leaveWord, setLeaveWord] = useState({});
   const progress = useSharedValue<number>(0);
   const [userInfo, setUserInfo] = useUserStore(
     useShallow((state) => [state.userInfo, state.setUserInfo])
@@ -97,29 +102,6 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
       return () => {};
     }, [queryClient])
   );
-
-  const { data: messageData, isSuccess: messageIsSuccess } = useQuery({
-    queryFn: getUnReadNumAndLatest,
-    queryKey: [Paths.Home, "refresh", "getUnReadNumAndLatest"],
-  });
-
-  const { data: leaveWordData, isSuccess: leaveWordIsSuccess } = useQuery({
-    queryFn: getLeaveWordUnReadNumAndLatest,
-    queryKey: [Paths.Home, "refresh", "getLeaveWordUnReadNumAndLatest"],
-  });
-
-  useEffect(() => {
-    if (__DEV__) console.log("messageData", messageData);
-    if (messageIsSuccess) {
-      setMessage(messageData.data || {});
-    }
-  }, [setMessage, messageData, messageIsSuccess]);
-
-  useEffect(() => {
-    if (leaveWordIsSuccess) {
-      setLeaveWord(leaveWordData?.data || {});
-    }
-  }, [setLeaveWord, leaveWordData, leaveWordIsSuccess]);
 
   /**
    * 推荐科普
@@ -265,38 +247,6 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
   }, [carouselInfoIsError]);
 
   /**
-   * 科普分类列表
-   */
-
-  const {
-    data: scienceCategoryData,
-    isSuccess: scienceCategoryIsSuccess,
-    isError: scienceCategoryIsError,
-  } = useQuery({
-    queryFn: scienceCategoryList,
-    queryKey: [Paths.Home, "refresh", "scienceCategoryList"],
-  });
-
-  useEffect(() => {
-    if (scienceCategoryIsSuccess) {
-      const categories = (scienceCategoryData?.data || []).filter(
-        (item) => item?.name && !NON_LATIN_REGEX.test(item.name) && item?.icon
-      );
-      if (categories.length > 0) {
-        setCategoryList(categories);
-      } else {
-        setCategoryList(pasadenaCategories);
-      }
-    }
-  }, [setCategoryList, scienceCategoryData, scienceCategoryIsSuccess]);
-
-  useEffect(() => {
-    if (scienceCategoryIsError) {
-      setCategoryList(pasadenaCategories);
-    }
-  }, [scienceCategoryIsError]);
-
-  /**
    * 康复中心
    */
 
@@ -323,6 +273,30 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     );
   };
 
+  const launchAssistantConversation = useCallback(
+    (prompt?: string) => {
+      const base = typeof prompt === "string" ? prompt : searchKey;
+      const trimmed = base.trim();
+
+      navigation.navigate(Paths.ChatDetail, {
+        assistantOnly: true,
+        initialPrompt: trimmed.length > 0 ? trimmed : undefined,
+        userId: "assistant",
+      });
+
+      setSearchKey("");
+    },
+    [navigation, searchKey]
+  );
+
+  const handleSearchSubmit = useCallback(() => {
+    launchAssistantConversation();
+  }, [launchAssistantConversation]);
+
+  const handleAssistantLaunch = useCallback(() => {
+    launchAssistantConversation();
+  }, [launchAssistantConversation]);
+
   const handleCarouselClick = (item: any) => {
     console.log("item", item);
     if (item?.linkUrl) {
@@ -333,7 +307,11 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
     switch (+item.type) {
       case 1: {
         navigation.navigate(Paths.CarouselDetail, {
-          id: item.id,
+          id: String(item.id ?? ''),
+          image: item.image,
+          title: item.title,
+          description: item.description,
+          payload: item,
         });
         break;
       }
@@ -344,8 +322,51 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
         break;
       }
       case 3: {
+        let pictures: string[] = [];
+        let videos: string[] = [];
+
+        const itemPictures = item?.pictures ?? item?.images;
+        if (Array.isArray(itemPictures)) {
+          pictures = itemPictures.filter(Boolean).map((value) => String(value));
+        } else if (typeof itemPictures === "string") {
+          pictures = itemPictures
+            .split(",")
+            .map((value: string) => value.trim())
+            .filter(Boolean);
+        } else if (typeof item?.image === "string") {
+          pictures = [item.image];
+        }
+
+        const rawVideos = item?.videos;
+        if (Array.isArray(rawVideos)) {
+          videos = rawVideos.filter(Boolean).map((value) => String(value));
+        } else if (typeof rawVideos === "string") {
+          videos = rawVideos
+            .split(",")
+            .map((value: string) => value.trim())
+            .filter(Boolean);
+        }
+
+        const firstImage = pictures[0] || item?.coverImage || item?.image;
+        const picturesParam = pictures.length
+          ? pictures.join(",")
+          : typeof item?.pictures === "string"
+          ? item.pictures
+          : undefined;
+        const videosParam = videos.length
+          ? videos.join(",")
+          : typeof item?.videos === "string"
+          ? item.videos
+          : undefined;
+
         navigation.navigate(Paths.DynamicDetail, {
-          id: item.objectId,
+          id: String(item.objectId ?? item.id ?? ""),
+          payload: item,
+          pictures: picturesParam,
+          videos: videosParam,
+          image: firstImage,
+          coverImage: firstImage,
+          content: item?.content,
         });
         break;
       }
@@ -369,6 +390,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
 
   const renderListHeader = () => {
     const displayCity = location?.city || "Pasadena, CA";
+    const displayName = userInfo?.nickName || "Explorer";
     return (
       <>
         <StatusBar
@@ -384,7 +406,11 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
           ]}
         >
           <View style={styles.titleWrapper}>
-            <Pressable
+            <TouchableOpacity
+              accessibilityHint="Opens the location picker"
+              accessibilityLabel={`Current location ${displayCity}`}
+              accessibilityRole="button"
+              hitSlop={8}
               onPress={() => {
                 navigation.navigate(Paths.SelectLocation, {
                   source: Paths.Home,
@@ -405,220 +431,85 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                 source={ArrowIcon as ImageURISource}
                 style={styles.arrowIcon}
               />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate(Paths.Message);
-              }}
-            >
-              <Image
-                alt="message-icon"
-                source={MessageIcon as ImageURISource}
-                style={styles.messageIcon}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.heroCard}>
+            <View style={styles.heroHeader}>
+              <Avatar.Image
+                size={56}
+                source={{
+                  uri: userInfo?.avatar,
+                }}
               />
-
-              {leaveWord?.unReadMessageNum + message?.unReadNum > 0 ? (
-                <View style={styles.readFlag}></View>
-              ) : undefined}
-            </Pressable>
-          </View>
-          <View style={styles.avatarWrapper}>
-            <Avatar.Image
-              size={28}
-              source={{
-                uri: userInfo?.avatar,
-              }}
-            />
-            <Text style={styles.nameText}>Hi,{userInfo.nickName}</Text>
-          </View>
-          <View style={styles.searchWrapper}>
-            <TextInput
-              maxLength={255}
-              activeUnderlineColor="transparent"
-              label=""
-              mode="outlined"
-              onChangeText={(text) => {
-                setSearchKey(text);
-              }}
-              outlineColor="transparent"
-              outlineStyle={styles.textInputOutline}
-              placeholder={"Search for services"}
-              style={[{ flex: 1, height: 44 }, backgrounds.blue8]}
-              underlineColor="transparent"
-              value={searchKey}
-            />
-            <Pressable
-              onPress={() => {
-                navigation.navigate(Paths.Search, {
-                  searchKey,
-                });
-                setTimeout(() => {
-                  setSearchKey("");
-                }, 100);
-              }}
-            >
-              <Image
-                alt={"search"}
-                source={SearchIcon as ImageURISource}
-                style={styles.searchIcon}
+              <View style={styles.heroTextGroup}>
+                <Text style={styles.heroGreeting}>{`Hi, ${displayName}`}</Text>
+                <Text style={styles.heroSubheading}>Your daily AI companion</Text>
+              </View>
+            </View>
+            <Text style={styles.heroBadge}>AI daily brief</Text>
+            <Text style={styles.heroTagline}>Plan · Adapt · Shine</Text>
+            <Text style={styles.heroDescription}>
+              Get quick suggestions, reminders, and support tailored to today.
+            </Text>
+            <View style={styles.searchWrapper}>
+              <TextInput
+                accessibilityLabel="Ask the AI assistant"
+                activeUnderlineColor="transparent"
+                inputMode="search"
+                keyboardType="default"
+                label=""
+                maxLength={255}
+                mode="outlined"
+                onChangeText={(text) => {
+                  setSearchKey(text);
+                }}
+                outlineColor="transparent"
+                outlineStyle={styles.textInputOutline}
+                placeholder={"Ask the assistant"}
+                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                returnKeyType="search"
+                selectionColor="rgba(255, 255, 255, 0.8)"
+                style={styles.searchInput}
+                underlineColor="transparent"
+                value={searchKey}
+                onSubmitEditing={() => {
+                handleSearchSubmit();
+                }}
               />
-            </Pressable>
+            </View>
+            <TouchableOpacity
+              accessibilityHint="Opens the updates feed for more ideas"
+              accessibilityLabel="Open AI suggestions"
+              accessibilityRole="button"
+              activeOpacity={0.85}
+              onPress={handleAssistantLaunch}
+              style={styles.navigatorCta}
+            >
+              <Text style={styles.navigatorCtaText}>Open AI suggestions</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.heroBadge}>Adaptive Sport Navigator</Text>
-          <Text style={{ ...styles.heroTagline, color: colors.gray800 }}>
-            Start your adaptive sports journey
-          </Text>
-          <Text style={{ ...styles.heroDescription, color: colors.gray500 }}>
-            Discover programs, plan transit, and get support.
-          </Text>
-          <Button
-            mode="contained"
-            uppercase={false}
-            onPress={() => {
-              openExternalLink(navigatorQuickActions[0]?.linkUrl);
-            }}
-            style={styles.navigatorButton}
-            contentStyle={styles.navigatorButtonContent}
-            labelStyle={styles.navigatorButtonLabel}
-          >
-            {"Start navigator call"}
-          </Button>
         </View>
         <View style={styles.container}>
-          <View style={styles.quickActionsSection}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Quick actions</Text>
-              <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-                Jump into the most common tasks
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.quickActions}
-            >
-              {navigatorQuickActions.map((action) => (
-                <Pressable
-                  key={action.id}
-                  accessibilityRole="button"
-                  onPress={() => {
-                    openExternalLink(action.linkUrl);
+          <View style={styles.aiSection}>
+            <Text style={styles.sectionTitle}>AI daily suggestions</Text>
+            <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
+              Stay on track with quick prompts you can act on now
+            </Text>
+            {AI_DAILY_SUGGESTIONS.map((suggestion) => (
+              <View key={suggestion.id} style={styles.aiCard}>
+                <Text style={styles.aiCardTitle}>{suggestion.title}</Text>
+                <Text
+                  style={{
+                    ...styles.aiCardDescription,
+                    color: colors.gray500,
                   }}
-                  style={styles.quickActionCard}
                 >
-                  <ImageWithFallback
-                    uri={action.icon}
-                    style={styles.quickActionImage}
-                  />
-                  <View style={styles.quickActionContent}>
-                    <Text style={styles.quickActionTitle}>{action.title}</Text>
-                    <Text
-                      numberOfLines={3}
-                      style={{
-                        ...styles.quickActionDescription,
-                        color: colors.gray500,
-                      }}
-                    >
-                      {action.description}
-                    </Text>
-                  </View>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.workflowSection}>
-            <Text style={styles.sectionTitle}>Navigator workflow</Text>
-            <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-              How it works from intake to activity
-            </Text>
-            <View style={styles.workflowSteps}>
-              {navigatorWorkflow.map((step, index) => (
-                <View key={step.id} style={styles.workflowCard}>
-                  <View style={styles.workflowBadge}>
-                    <Text style={styles.workflowBadgeText}>{index + 1}</Text>
-                  </View>
-                  <View style={styles.workflowContent}>
-                    <Text style={styles.workflowTitle}>{step.title}</Text>
-                    <Text
-                      style={{
-                        ...styles.workflowDescription,
-                        color: colors.gray500,
-                      }}
-                    >
-                      {step.description}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.spotlightSection}>
-            <Text style={styles.sectionTitle}>
-              Transit & equipment spotlights
-            </Text>
-            <Text style={{ ...styles.sectionCaption, color: colors.gray500 }}>
-              Highlights from the community
-            </Text>
-            {navigatorSpotlights.map((spotlight) => (
-              <Pressable
-                key={spotlight.id}
-                accessibilityRole="button"
-                onPress={() => {
-                  openExternalLink(spotlight.linkUrl);
-                }}
-                style={styles.spotlightCard}
-              >
-                <ImageWithFallback
-                  uri={spotlight.image}
-                  style={styles.spotlightImage}
-                />
-                <View style={styles.spotlightContent}>
-                  <Text style={styles.spotlightBadge}>{spotlight.badge}</Text>
-                  <Text style={styles.spotlightTitle}>{spotlight.title}</Text>
-                  <Text
-                    style={{
-                      ...styles.spotlightDescription,
-                      color: colors.gray500,
-                    }}
-                  >
-                    {spotlight.description}
-                  </Text>
-                </View>
-              </Pressable>
-            ))}
-          </View>
-
-          <View style={styles.categoriesWrapper}>
-            <Text style={styles.friendUpdatesTitle}>Popular categories</Text>
-          </View>
-          <ScrollView
-            contentContainerStyle={styles.categories}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
-            {categoryList.map((item, index) => (
-              <Pressable
-                key={item.id}
-                onPress={() => {
-                  navigation.navigate(Paths.SciencePopularizationList, {
-                    id: item.id,
-                    name: item.name,
-                  });
-                }}
-                style={styles.category}
-              >
-                <ImageWithFallback
-                  uri={item.icon}
-                  style={styles.categoryImage}
-                />
-                <Text style={{ ...styles.categoryText, color: colors.gray800 }}>
-                  {item.name}
+                  {suggestion.description}
                 </Text>
-              </Pressable>
+              </View>
             ))}
-          </ScrollView>
+          </View>
+
           {carousels.length > 0 ? (
             <View style={styles.swiperWrapper}>
               <Carousel
@@ -628,7 +519,11 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                 height={154}
                 onProgressChange={progress}
                 renderItem={({ item }) => (
-                  <Pressable
+                  <TouchableOpacity
+                    accessibilityHint={item.title || "Opens featured content"}
+                    accessibilityLabel={item.title || "Featured highlight"}
+                    accessibilityRole="button"
+                    activeOpacity={0.85}
                     onPress={() => {
                       handleCarouselClick(item);
                     }}
@@ -637,7 +532,7 @@ export default function Home({ navigation }: RootScreenProps<Paths.Home>) {
                       uri={normalizeImageUrl(item.image)}
                       style={styles.swiperImage}
                     />
-                  </Pressable>
+                  </TouchableOpacity>
                 )}
                 width={Dimensions.get("window").width - 40}
               />
@@ -763,51 +658,103 @@ const styles = StyleSheet.create({
     height: 12,
     width: 12,
   },
-  avatar: {
-    borderRadius: 14,
-    height: 28,
-    width: 28,
+  heroCard: {
+    backgroundColor: "#0A83D1",
+    borderRadius: 24,
+    gap: 14,
+    marginTop: 20,
+    padding: 20,
+    shadowColor: "#001C40",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 18,
+    elevation: 4,
   },
-  avatarWrapper: {
+  heroHeader: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 10,
-    marginTop: 8,
+    gap: 12,
+  },
+  heroTextGroup: {
+    flex: 1,
+    gap: 2,
+  },
+  heroGreeting: {
+    color: "#FFFFFF",
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 26,
+  },
+  heroSubheading: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 13,
+    lineHeight: 18,
   },
   heroBadge: {
     alignSelf: "flex-start",
-    backgroundColor: "rgba(0, 119, 210, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.16)",
     borderRadius: 999,
-    color: "#0077D2",
+    color: "#FFFFFF",
     fontSize: 12,
     fontWeight: "600",
-    marginTop: 24,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    marginTop: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 4,
   },
   heroDescription: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 10,
+    color: "rgba(255, 255, 255, 0.85)",
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 4,
   },
-  navigatorButton: {
-    alignSelf: "flex-start",
-    borderRadius: 12,
+  heroTagline: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "700",
+    lineHeight: 26,
+    marginTop: 8,
+  },
+  navigatorCta: {
+    alignSelf: "stretch",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
     marginTop: 16,
+    paddingHorizontal: 22,
+    paddingVertical: 12,
+    shadowColor: "#001C40",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 3,
   },
-  navigatorButtonContent: {
-    paddingHorizontal: 24,
-    paddingVertical: 6,
-  },
-  navigatorButtonLabel: {
+  navigatorCtaText: {
+    color: "#0A1F44",
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "700",
+    textAlign: "center",
   },
-  quickActionsSection: {
+  aiSection: {
+    gap: 16,
     marginTop: 32,
   },
-  sectionHeader: {
-    marginBottom: 16,
+  aiCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 18,
+    shadowColor: "#001C40",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  aiCardTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  aiCardDescription: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 6,
   },
   sectionTitle: {
     fontSize: 20,
@@ -817,144 +764,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     marginTop: 6,
-  },
-  quickActions: {
-    columnGap: 16,
-    paddingRight: 20,
-  },
-  quickActionCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 18,
-    padding: 16,
-    width: 220,
-    shadowColor: "#001C40",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 8 },
-    shadowRadius: 16,
-    elevation: 2,
-  },
-  quickActionImage: {
-    borderRadius: 14,
-    height: 100,
-    width: "100%",
-  },
-  quickActionContent: {
-    marginTop: 12,
-  },
-  quickActionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  quickActionDescription: {
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 6,
-  },
-  workflowSection: {
-    marginTop: 40,
-  },
-  workflowSteps: {
-    marginTop: 20,
-    rowGap: 16,
-  },
-  workflowCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    flexDirection: "row",
-    gap: 16,
-    padding: 16,
-    shadowColor: "#001C40",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 6 },
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  workflowBadge: {
-    alignItems: "center",
-    backgroundColor: "rgba(0, 119, 210, 0.12)",
-    borderRadius: 999,
-    height: 40,
-    justifyContent: "center",
-    width: 40,
-  },
-  workflowBadgeText: {
-    color: "#0077D2",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  workflowContent: {
-    flex: 1,
-  },
-  workflowTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  workflowDescription: {
-    fontSize: 13,
-    lineHeight: 20,
-    marginTop: 8,
-  },
-  spotlightSection: {
-    marginTop: 40,
-  },
-  spotlightCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 18,
-    marginTop: 20,
-    overflow: "hidden",
-    shadowColor: "#001C40",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 8 },
-    shadowRadius: 16,
-    elevation: 2,
-  },
-  spotlightImage: {
-    height: 150,
-    width: "100%",
-  },
-  spotlightContent: {
-    padding: 16,
-  },
-  spotlightBadge: {
-    alignSelf: "flex-start",
-    backgroundColor: "rgba(0, 119, 210, 0.12)",
-    borderRadius: 999,
-    color: "#0077D2",
-    fontSize: 12,
-    fontWeight: "700",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  spotlightTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginTop: 12,
-  },
-  spotlightDescription: {
-    fontSize: 13,
-    lineHeight: 20,
-    marginTop: 8,
-  },
-  categories: {
-    columnGap: 24,
-  },
-  categoriesWrapper: {
-    marginBottom: 18,
-    marginTop: 38,
-  },
-  category: {
-    alignItems: "center",
-    width: 71,
-  },
-  categoryImage: {
-    height: 71,
-    width: 71,
-  },
-  categoryText: {
-    fontSize: 12,
-    lineHeight: 12,
-    marginTop: 13,
-    textAlign: "center",
   },
   container: { paddingHorizontal: 20 },
   friendUpdatesTitle: {
@@ -969,42 +778,35 @@ const styles = StyleSheet.create({
     marginTop: 38,
   },
   header: {
-    backgroundColor: "#E6F1FF",
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
-    paddingBottom: 18,
+    backgroundColor: "#F2F6FB",
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    paddingBottom: 24,
     paddingHorizontal: 20,
-  },
-  heroTagline: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 16,
-  },
-  messageIcon: {
-    height: 40,
-    width: 40,
-  },
-  nameText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    lineHeight: 18,
+    gap: 12,
   },
   safeScreen: {
     flex: 1,
     paddingBottom: 10,
-  },
-  searchIcon: {
-    height: 44,
-    width: 44,
   },
   scrollView: {
     flex: 1,
   },
   searchWrapper: {
     alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.18)",
+    borderRadius: 16,
     flexDirection: "row",
-    gap: 12,
-    marginTop: 26,
+    gap: 8,
+    marginTop: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 42,
+    backgroundColor: "transparent",
+    color: "#FFFFFF",
   },
   swiperImage: {
     borderRadius: 18,
@@ -1039,7 +841,7 @@ const styles = StyleSheet.create({
   titleWrapper: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     marginTop: 14,
   },
   updates: {
@@ -1047,15 +849,6 @@ const styles = StyleSheet.create({
   },
   updatesTitle: {
     fontSize: 20,
-  },
-  readFlag: {
-    backgroundColor: "#F2262F",
-    borderRadius: "50%",
-    height: 8,
-    position: "absolute",
-    right: 10,
-    top: 10,
-    width: 8,
   },
   updatesTitleWrapper: {
     alignItems: "center",

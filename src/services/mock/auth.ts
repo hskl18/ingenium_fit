@@ -40,7 +40,7 @@ export const authApi = {
           lastName: "Doe",
           nickname: "johndoe",
           avatar:
-            "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=200&h=200&fit=crop&crop=faces&auto=format",
+            "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png",
         },
       },
     };

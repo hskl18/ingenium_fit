@@ -7,8 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import { Linking } from "react-native";
+ Linking } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { storage } from "@/storage";
@@ -109,7 +108,7 @@ function App() {
         id: "demo-user",
         nickName: "Demo User",
         avatar:
-          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+          "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png",
       })
     );
   }, [toggleLanguage]);
