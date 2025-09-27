@@ -32,3 +32,8 @@ yarn-error.log
 #Ignore cursor AI rules
 .cursor/rules/codacy.mdc
 .env
+.DS_Store
+.cursor/
+.codacy/
+.expo/
+.vscode/
