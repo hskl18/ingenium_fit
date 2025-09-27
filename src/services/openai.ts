@@ -19,49 +19,82 @@ const getApiKey = (): string => {
   return apiKey;
 };
 
+const collectTextSegments = (
+  value: unknown,
+  visited = new Set<unknown>()
+): string[] => {
+  if (value === null || value === undefined) {
+    return [];
+  }
+
+  if (typeof value === "string") {
+    return [value];
+  }
+
+  if (typeof value !== "object") {
+    return [];
+  }
+
+  if (visited.has(value)) {
+    return [];
+  }
+
+  visited.add(value);
+
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => collectTextSegments(item, visited));
+  }
+
+  const record = value as Record<string, unknown>;
+  const candidateKeys = [
+    "content",
+    "text",
+    "value",
+    "output_text",
+    "outputText",
+    "output",
+    "plain_text",
+    "string_value",
+    "values",
+    "data",
+    "responses",
+    "response",
+    "outputs",
+    "message",
+    "messages",
+    "parts",
+    "items",
+    "segments",
+    "children",
+  ];
+
+  let results: string[] = [];
+
+  for (const key of candidateKeys) {
+    if (key in record) {
+      results = results.concat(collectTextSegments(record[key], visited));
+    }
+  }
+
+  return results;
+};
+
 const normalizeMessageContent = (message: unknown): string => {
-  if (!message || typeof message !== "object") {
-    return "";
+  const segments = collectTextSegments(message);
+
+  const seen = new Set<string>();
+  const cleaned: string[] = [];
+
+  for (const segment of segments) {
+    const trimmed = segment.trim();
+    if (!trimmed || seen.has(trimmed)) {
+      continue;
+    }
+    seen.add(trimmed);
+    cleaned.push(trimmed);
   }
 
-  const content = (message as { content?: unknown }).content;
-
-  if (typeof content === "string") {
-    return content.trim();
-  }
-
-  if (Array.isArray(content)) {
-    const combined = content
-      .map((part) => {
-        if (!part) {
-          return "";
-        }
-
-        if (typeof part === "string") {
-          return part;
-        }
-
-        if (typeof part === "object") {
-          const maybeText =
-            (part as { text?: unknown }).text ??
-            (part as { content?: unknown }).content ??
-            (part as { value?: unknown }).value;
-
-          if (typeof maybeText === "string") {
-            return maybeText;
-          }
-        }
-
-        return "";
-      })
-      .filter((segment) => typeof segment === "string" && segment.trim().length > 0)
-      .join("\n")
-      .trim();
-
-    return combined;
-  }
-
-  return "";
+  return cleaned.join("\n").trim();
 };
 
 export async function requestAssistantReply(
